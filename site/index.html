@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SignalFeed — Live Cyber & Geopolitics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: #1c1c1c; color: #e4e0da; font-family: 'Space Grotesk', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 2px; }
+
+  .app { display: flex; flex-direction: column; height: 100vh; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 20px; min-height: 54px; background: #242424; border-bottom: 1px solid #3a3a3a; flex-shrink: 0; flex-wrap: wrap; }
+  .brand { font-weight: 700; letter-spacing: .06em; font-size: 14px; }
+  .brand span { color: #7ab8b8; }
+
+  .live { display: flex; align-items: center; gap: 9px; background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 8px; padding: 7px 14px; font-size: 11px; color: #888880; }
+  .live b { color: #8fcfa8; font-weight: 500; letter-spacing: .12em; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #8fcfa8; animation: pulse 2s infinite; flex-shrink: 0; }
+  .live.warn b { color: #d9b36a; } .live.warn .dot { background: #d9b36a; animation: none; }
+  .live.error b { color: #d07a68; } .live.error .dot { background: #d07a68; animation: none; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(143,207,168,.55); } 70% { box-shadow: 0 0 0 8px rgba(143,207,168,0); } 100% { box-shadow: 0 0 0 0 rgba(143,207,168,0); } }
+
+  .actions { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #888880; }
+  button { font-family: inherit; cursor: pointer; }
+  .btn { background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 7px; padding: 6px 12px; color: #c8c4be; font-size: 12px; font-weight: 600; }
+  .btn:hover { border-color: #7ab8b8; color: #e4e0da; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  #notif { background: none; border: none; font-size: 15px; padding: 2px 4px; }
+
+  main { display: flex; flex: 1; min-height: 0; }
+  .col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .col + .col { border-left: 1px solid #3a3a3a; }
+  .col-head { padding: 14px 18px 11px; background: #242424; border-bottom: 1px solid #3a3a3a; }
+  .col-title { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+  .bar { width: 3px; height: 18px; border-radius: 2px; }
+  .col-title h2 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .count { font-size: 10px; color: #888880; background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 10px; padding: 1px 8px; }
+  .newcount { font-size: 10px; color: #1c1c1c; background: #8fcfa8; border-radius: 10px; padding: 1px 8px; font-weight: 600; display: none; border: none; }
+  .newcount.show { display: inline-block; }
+  .pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .pill { font-size: 10px; border-radius: 4px; padding: 3px 9px; white-space: nowrap; cursor: pointer; background: #2e2e2e; color: #a09c96; border: 1px solid #3a3a3a; }
+  .pill:hover { color: #e4e0da; }
+  .list { flex: 1; overflow-y: auto; padding: 8px 10px; }
+  .item { padding: 13px 11px; margin-bottom: 3px; border-radius: 7px; border: 1px solid transparent; cursor: pointer; }
+  .item:hover { background: #262626; border-color: #3a3a3a; }
+  .item.new { background: #1f2a24; border-color: #2f4a3a; }
+  .item-title { font-size: 13px; font-weight: 500; color: #d8d4ce; line-height: 1.5; margin-bottom: 5px; }
+  .item-desc { font-size: 12px; color: #9a968f; line-height: 1.55; margin-bottom: 7px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #888880; flex-wrap: wrap; }
+  .src { border-radius: 3px; padding: 2px 7px; background: #2a2a2a; border: 1px solid #3a3a3a; }
+  .badge-new { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: #1c1c1c; background: #8fcfa8; border-radius: 3px; padding: 1px 6px; }
+  .empty { padding: 30px 16px; text-align: center; color: #888880; font-size: 12px; line-height: 1.7; }
+
+  .cyber .bar { background: #7ab8b8; } .cyber h2, .cyber .src { color: #7ab8b8; }
+  .geo .bar { background: #c4974a; }   .geo h2, .geo .src { color: #c4974a; }
+  .cyber .pill.active { background: #1e3838; color: #7ab8b8; border-color: #7ab8b8; }
+  .geo .pill.active { background: #2a1e08; color: #c4974a; border-color: #c4974a; }
+
+  .toast { position: fixed; right: 20px; bottom: 20px; background: #1f2a24; border: 1px solid #2f4a3a; color: #8fcfa8; border-radius: 10px; padding: 12px 16px; font-size: 12px; max-width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,.4); opacity: 0; transform: translateY(10px); transition: opacity .25s, transform .25s; pointer-events: none; z-index: 50; }
+  .toast.show { opacity: 1; transform: none; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(10,10,10,.8); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 100; }
+  .overlay.show { display: flex; }
+  .modal { background: #262626; border: 1px solid #3a3a3a; border-radius: 14px; max-width: 580px; width: 100%; padding: 26px 28px; max-height: 80vh; overflow-y: auto; }
+  .modal h3 { font-size: 16px; font-weight: 600; line-height: 1.45; margin: 10px 0 18px; }
+  .modal .label { font-size: 10px; color: #7ab8b8; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+  .modal p { font-size: 13px; color: #a8a49e; line-height: 1.75; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #3a3a3a; }
+  .modal-actions a { flex: 1; text-align: center; background: #2a3434; border: 1px solid #3f5555; border-radius: 8px; padding: 10px; color: #7ab8b8; font-size: 12px; font-weight: 700; text-decoration: none; }
+  .modal-actions a:hover { border-color: #7ab8b8; }
+  .srcrow { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #333; font-size: 12px; }
+  .srcrow .ok { color: #8fcfa8; } .srcrow .bad { color: #d07a68; }
+  .srcrow small { display: block; color: #888880; font-size: 10px; margin-top: 2px; }
+  .srcrow span:last-child { color: #888880; font-size: 11px; text-align: right; }
+  .srchead { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #888880; margin: 16px 0 4px; }
+
+  @media (max-width: 760px) {
+    html, body { overflow: auto; height: auto; }
+    .app { height: auto; }
+    header { padding: 10px 16px; }
+    main { flex-direction: column; }
+    .col + .col { border-left: none; border-top: 1px solid #3a3a3a; }
+    .list { max-height: 70vh; }
+  }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .toast { transition: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">SIGNAL<span>FEED</span></div>
+    <div class="live mono" id="live">
+      <span class="dot"></span><b id="liveLabel">LIVE</b>
+      <span id="liveText">Loading…</span>
+    </div>
+    <div class="actions mono">
+      <button class="btn" id="markRead">✓ Mark all read</button>
+      <button class="btn" id="showSources">Sources</button>
+      <button class="btn" id="checkNow">↻ Check now</button>
+      <button id="notif" title="Turn on desktop notifications for new headlines">🔕</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="col cyber">
+      <div class="col-head">
+        <div class="col-title"><div class="bar"></div><h2 class="mono">Cybersecurity</h2><span class="count mono" id="cyberCount"></span><span class="newcount mono" id="cyberNew"></span></div>
+        <div class="pills mono" id="cyberPills"></div>
+      </div>
+      <div class="list" id="cyberList"><div class="empty mono">Loading…</div></div>
+    </section>
+    <section class="col geo">
+      <div class="col-head">
+        <div class="col-title"><div class="bar"></div><h2 class="mono">Geopolitics</h2><span class="count mono" id="geoCount"></span><span class="newcount mono" id="geoNew"></span></div>
+        <div class="pills mono" id="geoPills"></div>
+      </div>
+      <div class="list" id="geoList"><div class="empty mono">Loading…</div></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast mono" id="toast"></div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+// ---------- CONFIG ----------
+const DATA_URL = 'data/headlines.json';
+const CHECK_EVERY_MS = 60 * 1000;          // the page checks for a fresh file every minute
+const STALE_AFTER_MS = 30 * 60 * 1000;     // warn if GitHub hasn't refreshed in 30 minutes
+const NEW_WINDOW_MS = 24 * 3600 * 1000;    // only stories from the last 24h can be NEW
+const SEEN_KEY = 'signalfeed_seen_v2';
+
+// ---------- STATE ----------
+const state = {
+  items: [], sources: [], generatedAt: null,
+  cyberFilter: null, geoFilter: null,
+  seen: new Set(), firstVisit: false,
+  lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
+};
+const $ = id => document.getElementById(id);
+const BASE_TITLE = document.title;
+
+// ---------- STORAGE (remembers what you've already seen, on this browser only) ----------
+try {
+  const raw = localStorage.getItem(SEEN_KEY);
+  if (raw) JSON.parse(raw).forEach(l => state.seen.add(l)); else state.firstVisit = true;
+} catch { state.firstVisit = true; }
+function saveSeen() {
+  try { localStorage.setItem(SEEN_KEY, JSON.stringify([...state.seen].slice(-3000))); } catch {}
+}
+
+// ---------- HELPERS ----------
+function ago(date) {
+  const d = new Date(date); if (isNaN(d)) return '';
+  const m = Math.floor((Date.now() - d) / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  return h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`;
+}
+const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const clock = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+const isNew = a => !state.seen.has(a.link) && (Date.now() - new Date(a.date)) < NEW_WINDOW_MS;
+const safeUrl = u => /^https:\/\//i.test(u) ? u : '#';
+
+// ---------- LOAD ----------
+async function check() {
+  if (state.busy) return;
+  if (location.protocol === 'file:') {
+    state.error = 'Open this page from its GitHub Pages address, not from your computer.';
+    updateLive(); render(); return;
+  }
+  state.busy = true; $('checkNow').disabled = true; updateLive();
+  try {
+    const res = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status === 404 ? 'No headlines yet: the first GitHub run hasn\'t finished.' : `Couldn't load headlines (HTTP ${res.status}).`);
+    const data = await res.json();
+    const before = new Set(state.items.map(a => a.link));
+    const hadData = state.items.length > 0;
+    state.items = data.items || [];
+    state.sources = data.sources || [];
+    state.generatedAt = data.generatedAt;
+    state.error = '';
+
+    if (state.firstVisit) {                 // first time ever: start with everything marked as read
+      state.items.forEach(a => state.seen.add(a.link)); saveSeen(); state.firstVisit = false;
+    }
+    if (hadData) {
+      const fresh = state.items.filter(a => !before.has(a.link) && isNew(a));
+      if (fresh.length) announce(fresh);
+    }
+  } catch (e) {
+    state.error = e.message || 'Connection problem — retrying.';
+  } finally {
+    state.busy = false; $('checkNow').disabled = false;
+    state.lastCheck = new Date(); state.nextCheck = Date.now() + CHECK_EVERY_MS;
+    render(); updateLive();
+  }
+}
+
+// ---------- ALERTS ----------
+function announce(fresh) {
+  fresh.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const n = fresh.length;
+  showToast(n === 1 ? `New · ${fresh[0].source}: ${fresh[0].title}` : `${n} new headlines — latest: ${fresh[0].title}`);
+  if (document.hidden) {
+    state.unseenWhileHidden += n;
+    document.title = `(${state.unseenWhileHidden}) ${BASE_TITLE}`;
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const note = new Notification(n === 1 ? `SignalFeed · ${fresh[0].source}` : `SignalFeed · ${n} new headlines`, { body: fresh[0].title, tag: 'signalfeed' });
+      note.onclick = () => { window.focus(); note.close(); };
+    }
+  }
+}
+let toastTimer;
+function showToast(text) {
+  const t = $('toast'); t.textContent = text; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 6000);
+}
+
+// ---------- STATUS LINE ----------
+function updateLive() {
+  const live = $('live');
+  const stale = state.generatedAt && (Date.now() - new Date(state.generatedAt)) > STALE_AFTER_MS;
+  live.classList.toggle('error', !!state.error);
+  live.classList.toggle('warn', !state.error && !!stale);
+  $('liveLabel').textContent = state.error ? 'PROBLEM' : stale ? 'DELAYED' : 'LIVE';
+  if (state.error) { $('liveText').textContent = state.error; live.title = ''; return; }
+  if (state.busy) { $('liveText').textContent = 'Checking…'; return; }
+  const next = Math.max(0, Math.ceil((state.nextCheck - Date.now()) / 1000));
+  const fetched = state.generatedAt ? `sources read ${ago(state.generatedAt)}` : 'waiting for first run';
+  $('liveText').textContent = `${fetched} · next check ${next}s`;
+  live.title = state.generatedAt ? `GitHub last read all sources at ${clock(new Date(state.generatedAt))}` : '';
+}
+
+// ---------- RENDER ----------
+function renderColumn(key) {
+  const all = state.items.filter(a => a.category === key).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const filter = state[key + 'Filter'];
+  const items = filter ? all.filter(a => a.source === filter) : all;
+  const sources = [...new Set(all.map(a => a.source))].sort();
+  const newCount = all.filter(isNew).length;
+
+  $(key + 'Count').textContent = items.length || '';
+  $(key + 'New').textContent = `${newCount} new`;
+  $(key + 'New').classList.toggle('show', newCount > 0);
+  $(key + 'Pills').innerHTML = ['All', ...sources].map(s => {
+    const active = (s === 'All' && !filter) || s === filter;
+    return `<span class="pill${active ? ' active' : ''}" data-key="${key}" data-src="${esc(s)}">${esc(s)}</span>`;
+  }).join('');
+
+  const list = $(key + 'List');
+  const scroll = list.scrollTop;
+  list.innerHTML = items.length
+    ? items.map(a => `
+      <div class="item${isNew(a) ? ' new' : ''}" data-link="${esc(a.link)}">
+        <div class="item-title">${esc(a.title)}</div>
+        ${a.description ? `<div class="item-desc">${esc(a.description)}</div>` : ''}
+        <div class="meta mono">${isNew(a) ? '<span class="badge-new">NEW</span>' : ''}<span class="src">${esc(a.source)}</span><span>${ago(a.date)}</span></div>
+      </div>`).join('')
+    : `<div class="empty mono">${state.error ? esc(state.error) : state.generatedAt ? 'No stories in this column yet.' : 'Loading…'}</div>`;
+  list.scrollTop = scroll;
+}
+function render() { renderColumn('cyber'); renderColumn('geo'); }
+
+// ---------- POPUPS ----------
+function openModal(html) { $('modal').innerHTML = html; $('overlay').classList.add('show'); }
+const closeModal = () => $('overlay').classList.remove('show');
+
+function openArticle(a) {
+  state.seen.add(a.link); saveSeen(); render();
+  openModal(`
+    <div class="meta mono"><span class="src" style="color:${a.category === 'geo' ? '#c4974a' : '#7ab8b8'}">${esc(a.source)}</span><span>${ago(a.date)} · ${esc(new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>
+    <h3>${esc(a.title)}</h3>
+    <div class="label mono">Summary</div>
+    <p>${esc(a.description || 'This source didn\'t provide a summary. Open the article to read it.')}</p>
+    <div class="modal-actions">
+      <a href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener noreferrer">READ FULL ARTICLE →</a>
+      <button class="btn" data-close>CLOSE</button>
+    </div>`);
+}
+
+function openSources() {
+  const row = s => `
+    <div class="srcrow mono">
+      <span class="${s.ok ? 'ok' : 'bad'}">${s.ok ? '✓' : '✗'}</span>
+      <span>${esc(s.name)}${s.ok ? '' : `<small>${esc(s.error || 'not reachable')}</small>`}</span>
+      <span>${s.stored} stories${s.newest ? ` · newest ${ago(s.newest)}` : ''}</span>
+    </div>`;
+  const group = cat => state.sources.filter(s => s.category === cat).map(row).join('');
+  openModal(`
+    <h3>Sources</h3>
+    <p class="mono" style="font-size:11px">Status from GitHub's last read ${state.generatedAt ? `(${ago(state.generatedAt)})` : ''}. A ✗ means the site couldn't be read on that run — its earlier stories stay visible.</p>
+    <div class="srchead mono">Cybersecurity</div>${group('cyber')}
+    <div class="srchead mono">Geopolitics</div>${group('geo')}
+    <div class="modal-actions"><button class="btn" data-close style="flex:1">CLOSE</button></div>`);
+}
+
+// ---------- NOTIFICATIONS ----------
+function updateNotifIcon() {
+  if (!('Notification' in window)) { $('notif').style.display = 'none'; return; }
+  $('notif').textContent = Notification.permission === 'granted' ? '🔔' : '🔕';
+  $('notif').title = Notification.permission === 'granted' ? 'Desktop notifications are on'
+    : Notification.permission === 'denied' ? 'Notifications are blocked in your browser settings'
+    : 'Click to get a desktop notification for new headlines';
+}
+
+// ---------- EVENTS ----------
+document.addEventListener('click', e => {
+  const pill = e.target.closest('.pill');
+  if (pill) { const k = pill.dataset.key, s = pill.dataset.src; state[k + 'Filter'] = (s === 'All' || state[k + 'Filter'] === s) ? null : s; renderColumn(k); return; }
+  const item = e.target.closest('.item');
+  if (item) { const a = state.items.find(x => x.link === item.dataset.link); if (a) openArticle(a); return; }
+  if (e.target === $('overlay') || e.target.closest('[data-close]')) closeModal();
+});
+$('checkNow').onclick = () => check();
+$('showSources').onclick = openSources;
+$('markRead').onclick = () => { state.items.forEach(a => state.seen.add(a.link)); saveSeen(); render(); };
+$('notif').onclick = async () => {
+  if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
+  updateNotifIcon();
+};
+document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { state.unseenWhileHidden = 0; document.title = BASE_TITLE; check(); }
+});
+
+// ---------- START ----------
+updateNotifIcon();
+check();
+setInterval(() => { if (Date.now() >= state.nextCheck) check(); }, 5000);
+setInterval(updateLive, 1000);
+setInterval(render, 60000);   // keeps "x minutes ago" accurate
+</script>
+</body>
+</html>
