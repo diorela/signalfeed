@@ -287,7 +287,6 @@
       <p id="heroLine">Loading today's briefing…</p>
       <div class="hero-actions">
         <button class="btn primary" id="urgent">Start with what's urgent <span aria-hidden="true">→</span></button>
-        <button class="btn" id="markRead">Mark all read</button>
       </div>
     </div>
     <div class="tiles">
@@ -310,10 +309,6 @@
     </div>
   </section>
 
-  <section class="ticker" aria-label="Just in">
-    <span class="tag mono">JUST IN</span>
-    <div class="ticker-items" id="ticker"></div>
-  </section>
 
   <div class="cols">
     <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber">
@@ -534,13 +529,6 @@ function renderHero() {
   $('urgent').innerHTML = exploited.length ? 'Start with what\'s urgent <span aria-hidden="true">→</span>' : 'Read the latest <span aria-hidden="true">→</span>';
 }
 
-function renderTicker() {
-  const latest = state.items.slice(0, 4);
-  $('ticker').innerHTML = latest.length
-    ? latest.map((a, i) => `${i ? '<span class="sep" aria-hidden="true">•</span>' : ''}<button type="button" data-open="${esc(a.link)}"><span class="when">${esc(short(a.date))} · ${esc(a.source)}</span>${esc(a.title)}</button>`).join('')
-    : `<span style="color:var(--ticker-muted);font-size:14px">${state.error ? esc(state.error) : 'Waiting for the first headlines…'}</span>`;
-}
-
 // ---------- COLUMNS ----------
 function pickLead(key, list, filtering) {
   if (!list.length) return null;
@@ -614,7 +602,7 @@ function renderColumn(key, toTop = false) {
 }
 
 function render() {
-  renderHero(); renderTicker(); renderColumn('cyber'); renderColumn('geo');
+  renderHero(); renderColumn('cyber'); renderColumn('geo');
   const ok = state.sources.filter(s => s.ok).length;
   $('footLine').textContent = state.sources.length ? `${ok} of ${state.sources.length} sources read ${ago(state.generatedAt)} · stories kept for 3 weeks` : 'Stories kept for 3 weeks';
 }
@@ -728,7 +716,6 @@ $('urgent').onclick = () => {
 };
 $('tileExploited').onclick = () => setTopic('cyber', 'exploited');
 $('tileVictims').onclick = () => setTopic('cyber', 'impact');
-$('markRead').onclick = () => { state.items.forEach(a => state.seen.add(a.link)); saveSeen(); render(); showToast('All caught up', 'Every story is marked as read.'); };
 $('checkNow').onclick = () => check();
 $('showSources').onclick = openSources;
 for (const key of ['cyber', 'geo']) {
