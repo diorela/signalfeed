@@ -334,6 +334,7 @@
         <label class="fsel"><span>Region</span><select id="cyberRegion" data-key="cyber" data-f="region"></select></label>
       </div>
       <div class="resultline" id="cyberResult" hidden></div>
+      <div id="cyberLead"></div>
       <div class="stories" id="cyberList"></div>
     </section>
 
@@ -348,6 +349,7 @@
         <label class="fsel"><span>Region</span><select id="geoRegion" data-key="geo" data-f="region"></select></label>
       </div>
       <div class="resultline" id="geoResult" hidden></div>
+      <div id="geoLead"></div>
       <div class="stories" id="geoList"></div>
     </section>
   </div>
@@ -576,19 +578,29 @@ function renderColumn(key, toTop = false) {
   result.hidden = !filtering;
   result.innerHTML = filtering ? `<span>${items.length} of ${all.length} stories${state.tokens.length ? ` matching “${esc(state.query)}”` : ''}</span><button data-reset="${key}">Clear filters</button>` : '';
 
-  const rest = items;
+  const lead = pickLead(key, items, filtering);
+  $(key + 'Lead').innerHTML = lead ? `
+    <article class="lead" data-open="${esc(lead.link)}">
+      <div class="badges"><span class="kicker mono">${filtering ? 'TOP RESULT' : 'LEAD STORY'}</span>${isNew(lead) ? '<span class="newb">NEW</span>' : ''}</div>
+      <h3 class="display"><button type="button" data-open="${esc(lead.link)}">${SF.highlight(lead.title, state.tokens, esc)}</button></h3>
+      ${lead.description ? `<p>${SF.highlight(lead.description, state.tokens, esc)}</p>` : ''}
+      <div class="foot">${badge(lead.source, 'sm')}<span>${esc(lead.source)} · ${esc(ago(lead.date))}</span>
+        <a href="${esc(safeUrl(lead.link))}" target="_blank" rel="noopener noreferrer" data-read="${esc(lead.link)}">Read article →</a></div>
+    </article>` : '';
+
+  const rest = items.filter(a => a !== lead);
   const shown = rest.slice(0, f.limit);
   const list = $(key + 'List');
   const y = window.scrollY;
   const emptyText = state.error ? state.error : !state.generatedAt ? 'Loading…'
     : filtering ? 'No stories match. Try fewer keywords, another topic or all regions.' : 'No stories in this column yet.';
-  list.innerHTML = !items.length ? `<div class="empty">${esc(emptyText)}</div>` : shown.map(a => `
+  list.innerHTML = !lead ? `<div class="empty">${esc(emptyText)}</div>` : shown.map(a => `
     <article class="story${isNew(a) ? ' unread' : ''}" data-open="${esc(a.link)}">
       ${badge(a.source)}
       <div class="s-body">
         <h4 class="s-title"><button type="button" data-open="${esc(a.link)}">${SF.highlight(a.title, state.tokens, esc)}</button></h4>
         ${state.tokens.length && a.description ? `<p class="s-desc">${SF.highlight(a.description, state.tokens, esc)}</p>` : ''}
-        <div class="s-meta">${isNew(a) ? '<span class="newb">NEW</span>' : ''}<span>${esc(a.source)} · ${esc(ago(a.date))}</span>${tagsFor(a)}</div>
+        <div class="s-meta">${isNew(a) ? '<span class="newb">NEW</span>' : ''}<span>${esc(a.source)} · ${esc(ago(a.date))}</span></div>
       </div>
     </article>`).join('')
     + (rest.length > shown.length ? `<button class="showmore" data-more="${key}">Show ${Math.min(50, rest.length - shown.length)} more <span style="color:var(--muted);font-weight:500">(${rest.length - shown.length} left)</span></button>` : '');
@@ -645,7 +657,6 @@ function openArticle(a) {
   openModal(`
     <div class="row">${badge(a.source, 'sm')}<span>${esc(a.source)} · ${esc(ago(a.date))} · ${esc(new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>
     <h3 class="display">${esc(a.title)}</h3>
-    <div class="row">${tagsFor(a, 4)}</div>
     <p>${esc(a.description || 'This source didn\'t provide a summary. Open the article to read it.')}</p>
     <div class="modal-actions">
       <a class="btn primary" href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener noreferrer">Read full article →</a>
