@@ -175,20 +175,18 @@
   .col-head h2 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; }
   .col-head .counts { font-size: 13px; color: var(--muted); }
   .col-head .counts b { color: var(--new-ink); }
-  .region { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-  .region select { height: 40px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); padding: 0 10px; font-size: 14px; }
-
-  .pills, .topics { display: flex; flex-wrap: wrap; gap: 8px; }
-  .pill { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink-2); font-size: 13px; }
-  .pill:hover { border-color: var(--faint); }
-  .pill.active { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600; }
-  .topic { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 10px; border: 1px solid transparent; background: var(--c-bg); color: var(--c-ink); font-size: 13px; font-weight: 600; }
-  .topic .d { width: 8px; height: 8px; border-radius: 50%; background: var(--c-dot); }
-  .topic .n { font-weight: 500; opacity: .85; }
-  .topic:hover { border-color: var(--c-dot); }
-  .topic.active { border: 2px solid var(--c-dot); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-dot) 22%, transparent); }
-  .topic.zero:not(.active) { opacity: .45; }
-  .more-topics { height: 36px; padding: 0 13px; border-radius: 10px; border: 1px dashed var(--border-2); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+  .filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .fsel { position: relative; display: flex; flex-direction: column; gap: 0; min-width: 0; }
+  .fsel span { position: absolute; left: 12px; top: 7px; font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .02em; pointer-events: none; }
+  .fsel select { appearance: none; -webkit-appearance: none; width: 100%; height: 50px; padding: 18px 32px 0 12px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); font-size: 14px; font-weight: 500; color: var(--ink); text-overflow: ellipsis; white-space: nowrap; overflow: hidden; cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 17px) 22px, calc(100% - 12px) 22px; background-size: 5px 5px; background-repeat: no-repeat; }
+  .fsel select:hover { border-color: var(--faint); }
+  .fsel select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .fsel.on select { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .fsel.on span { color: var(--accent-ink); }
+  .fsel option { color: #111; }
+  @media (max-width: 520px) { .filters { grid-template-columns: 1fr; } }
   .resultline { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
   .resultline button { background: none; border: none; color: var(--accent-ink); font-weight: 600; text-decoration: underline; padding: 0; }
 
@@ -315,10 +313,12 @@
       <div class="col-head">
         <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>
         <div><h2 class="display" id="h-cyber">Cybersecurity</h2><span class="counts" id="cyberCounts"></span></div>
-        <label class="region">Region <select id="cyberRegion" data-key="cyber"></select></label>
       </div>
-      <div class="pills" id="cyberPills"></div>
-      <div class="topics" id="cyberTopics"></div>
+      <div class="filters">
+        <label class="fsel"><span>Topic</span><select id="cyberTopic" data-key="cyber" data-f="topic"></select></label>
+        <label class="fsel"><span>Source</span><select id="cyberSource" data-key="cyber" data-f="source"></select></label>
+        <label class="fsel"><span>Region</span><select id="cyberRegion" data-key="cyber" data-f="region"></select></label>
+      </div>
       <div class="resultline" id="cyberResult" hidden></div>
       <div id="cyberLead"></div>
       <div class="stories" id="cyberList"></div>
@@ -328,10 +328,12 @@
       <div class="col-head">
         <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>
         <div><h2 class="display" id="h-geo">Geopolitics</h2><span class="counts" id="geoCounts"></span></div>
-        <label class="region">Region <select id="geoRegion" data-key="geo"></select></label>
       </div>
-      <div class="pills" id="geoPills"></div>
-      <div class="topics" id="geoTopics"></div>
+      <div class="filters">
+        <label class="fsel"><span>Topic</span><select id="geoTopic" data-key="geo" data-f="topic"></select></label>
+        <label class="fsel"><span>Source</span><select id="geoSource" data-key="geo" data-f="source"></select></label>
+        <label class="fsel"><span>Region</span><select id="geoRegion" data-key="geo" data-f="region"></select></label>
+      </div>
       <div class="resultline" id="geoResult" hidden></div>
       <div id="geoLead"></div>
       <div class="stories" id="geoList"></div>
@@ -553,20 +555,14 @@ function renderColumn(key, toTop = false) {
   const newCount = all.filter(isNew).length;
 
   $(key + 'Counts').innerHTML = all.length ? `${all.length} stories${newCount ? ` · <b>${newCount} new</b>` : ''}` : '';
-  $(key + 'Pills').innerHTML = ['All sources', ...sources].map(s => {
-    const isAll = s === 'All sources', active = isAll ? !f.source : f.source === s;
-    return `<button class="pill${active ? ' active' : ''}" data-key="${key}" data-src="${esc(isAll ? '' : s)}" aria-pressed="${active}">${esc(s)}</button>`;
-  }).join('');
-
-  const order = TOPIC_ORDER[key];
-  const defs = order.map(id => SF.TOPICS[key].find(t => t.id === id)).filter(Boolean);
-  const visible = f.allTopics ? defs : defs.filter((t, i) => i < TOPICS_SHOWN || t.id === f.topic);
-  $(key + 'Topics').innerHTML = visible.map(t => {
-    const n = pre.filter(a => a._topics.includes(t.id)).length;
-    const active = f.topic === t.id;
-    return `<button class="topic p-${TOPIC_COLOR[t.id]}${active ? ' active' : ''}${n ? '' : ' zero'}" data-key="${key}" data-topic="${t.id}" title="${esc(t.hint)}" aria-pressed="${active}"><span class="d"></span>${esc(t.label)}<span class="n">${n}</span></button>`;
-  }).join('') + (defs.length > TOPICS_SHOWN
-    ? `<button class="more-topics" data-alltopics="${key}">${f.allTopics ? 'Fewer topics' : `+${defs.length - visible.length} topics`}</button>` : '');
+  const opt = (v, label, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(label)}</option>`;
+  $(key + 'Topic').innerHTML = opt('', 'All topics', !f.topic) + TOPIC_ORDER[key]
+    .map(id => SF.TOPICS[key].find(t => t.id === id)).filter(Boolean)
+    .map(t => opt(t.id, `${t.label} (${pre.filter(a => a._topics.includes(t.id)).length})`, f.topic === t.id)).join('');
+  $(key + 'Source').innerHTML = opt('', 'All sources', !f.source) + sources
+    .map(src => opt(src, `${src} (${all.filter(a => a.source === src).length})`, f.source === src)).join('');
+  $(key + 'Region').value = f.region;
+  for (const n of ['Topic', 'Source', 'Region']) $(key + n).parentElement.classList.toggle('on', !!$(key + n).value);
 
   const result = $(key + 'Result');
   result.hidden = !filtering;
@@ -697,12 +693,6 @@ document.addEventListener('click', e => {
   const t = e.target;
   if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
   if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; state.seen.add(l); saveSeen(); setTimeout(render, 0); return; }
-  const pill = t.closest('.pill');
-  if (pill) { const f = state.f[pill.dataset.key]; f.source = pill.dataset.src || null; f.limit = PAGE_SIZE; renderColumn(pill.dataset.key); return; }
-  const topic = t.closest('.topic');
-  if (topic) { const k = topic.dataset.key; setTopic(k, state.f[k].topic === topic.dataset.topic ? null : topic.dataset.topic); return; }
-  const allT = t.closest('[data-alltopics]');
-  if (allT) { const f = state.f[allT.dataset.alltopics]; f.allTopics = !f.allTopics; renderColumn(allT.dataset.alltopics); return; }
   const reset = t.closest('[data-reset]');
   if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); renderColumn('cyber'); renderColumn('geo'); return; }
   const more = t.closest('[data-more]');
@@ -720,7 +710,9 @@ $('checkNow').onclick = () => check();
 $('showSources').onclick = openSources;
 for (const key of ['cyber', 'geo']) {
   $(key + 'Region').innerHTML = '<option value="">All regions</option>' + SF.REGIONS.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join('');
-  $(key + 'Region').onchange = e => { const f = state.f[key]; f.region = e.target.value; f.limit = PAGE_SIZE; renderColumn(key); };
+  for (const n of ['Topic', 'Source', 'Region']) $(key + n).onchange = e => {
+    const f = state.f[key], v = e.target.value; f[e.target.dataset.f] = n === 'Region' ? v : (v || null); f.limit = PAGE_SIZE; renderColumn(key);
+  };
 }
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) { state.unseenWhileHidden = 0; document.title = BASE_TITLE; check(); }
