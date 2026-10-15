@@ -147,7 +147,7 @@
   .b-nav[hidden] { display: none; }
   @media (max-width: 640px) { .breaking { flex-wrap: wrap; } .b-item { flex-basis: 100%; flex-direction: column; gap: 2px; order: 3; } .b-item .b-title { white-space: normal; } .b-nav { margin-left: auto; } }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-  .tiles { flex: 1 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .tiles { flex: 1 1 400px; max-width: 520px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .tile { border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; text-align: left; border: 1px solid transparent; background: var(--surface); }
   button.tile:hover { border-color: var(--faint); }
   .tile .num { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
@@ -317,12 +317,6 @@
         <span class="label">Victims this week</span>
         <span class="sub" id="viSub">companies &amp; governments hit</span>
       </button>
-      <div class="tile rd">
-        <span class="num display" id="rdNum">–</span>
-        <span class="label">Caught up today</span>
-        <div class="progress" aria-hidden="true"><div id="rdBar" style="width:0%"></div></div>
-        <span class="sub" id="rdSub"></span>
-      </div>
     </div>
   </section>
 
@@ -537,9 +531,6 @@ function renderHero() {
   $('exSub').textContent = exploited.length ? [...new Set(exploited.map(a => a.source))].slice(0, 3).join(' · ') + ' · last 24h' : 'nothing new in the last 24 hours';
   $('viNum').textContent = state.generatedAt ? victims.length : '–';
   $('viSub').textContent = victims.length ? 'companies & governments hit · tap to see' : 'no new victims reported this week';
-  $('rdNum').innerHTML = state.generatedAt ? `${readToday}<small>/${today.length}</small>` : '–';
-  $('rdBar').style.width = today.length ? `${Math.round(readToday / today.length * 100)}%` : '100%';
-  $('rdSub').textContent = !today.length ? 'No stories yet today' : readToday === today.length ? "You're all caught up" : `${today.length - readToday} to go before you're caught up`;
 
   if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
   const lead = newCount ? `${newCount} new ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : "You're all caught up.";
