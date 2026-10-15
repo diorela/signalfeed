@@ -3,180 +3,354 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SignalFeed — Live Cyber & Geopolitics</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>SignalFeed — Cyber & World Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script>
+  // Apply the saved theme before the page paints (no flash).
+  (function () {
+    let t = null;
+    try { t = localStorage.getItem('signalfeed_theme'); } catch {}
+    if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; overflow: hidden; }
-  body { background: #1c1c1c; color: #e4e0da; font-family: 'Space Grotesk', sans-serif; }
-  .mono { font-family: 'JetBrains Mono', monospace; }
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 2px; }
-
-  .app { display: flex; flex-direction: column; height: 100vh; }
-  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 20px; min-height: 54px; background: #242424; border-bottom: 1px solid #3a3a3a; flex-shrink: 0; flex-wrap: wrap; }
-  .brand { font-weight: 700; letter-spacing: .06em; font-size: 14px; }
-  .brand span { color: #7ab8b8; }
-
-  .live { display: flex; align-items: center; gap: 9px; background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 8px; padding: 7px 14px; font-size: 11px; color: #888880; }
-  .live b { color: #8fcfa8; font-weight: 500; letter-spacing: .12em; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #8fcfa8; animation: pulse 2s infinite; flex-shrink: 0; }
-  .live.warn b { color: #d9b36a; } .live.warn .dot { background: #d9b36a; animation: none; }
-  .live.error b { color: #d07a68; } .live.error .dot { background: #d07a68; animation: none; }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(143,207,168,.55); } 70% { box-shadow: 0 0 0 8px rgba(143,207,168,0); } 100% { box-shadow: 0 0 0 0 rgba(143,207,168,0); } }
-
-  .actions { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #888880; }
-  button { font-family: inherit; cursor: pointer; }
-  .btn { background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 7px; padding: 6px 12px; color: #c8c4be; font-size: 12px; font-weight: 600; }
-  .btn:hover { border-color: #7ab8b8; color: #e4e0da; }
-  .btn:disabled { opacity: .5; cursor: default; }
-  #notif { background: none; border: none; font-size: 15px; padding: 2px 4px; }
-
-  main { display: flex; flex: 1; min-height: 0; }
-  .col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .col + .col { border-left: 1px solid #3a3a3a; }
-  .col-head { padding: 14px 18px 11px; background: #242424; border-bottom: 1px solid #3a3a3a; }
-  .col-title { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
-  .bar { width: 3px; height: 18px; border-radius: 2px; }
-  .col-title h2 { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
-  .count { font-size: 10px; color: #888880; background: #2c2c2c; border: 1px solid #3a3a3a; border-radius: 10px; padding: 1px 8px; }
-  .newcount { font-size: 10px; color: #1c1c1c; background: #8fcfa8; border-radius: 10px; padding: 1px 8px; font-weight: 600; display: none; border: none; }
-  .newcount.show { display: inline-block; }
-  .pills { display: flex; flex-wrap: wrap; gap: 5px; }
-  .pill { font-size: 10px; border-radius: 4px; padding: 3px 9px; white-space: nowrap; cursor: pointer; background: #2e2e2e; color: #a09c96; border: 1px solid #3a3a3a; }
-  .pill:hover { color: #e4e0da; }
-  .list { flex: 1; overflow-y: auto; padding: 8px 10px; }
-  .item { padding: 13px 11px; margin-bottom: 3px; border-radius: 7px; border: 1px solid transparent; cursor: pointer; }
-  .item:hover { background: #262626; border-color: #3a3a3a; }
-  .item.new { background: #1f2a24; border-color: #2f4a3a; }
-  .item-title { font-size: 13px; font-weight: 500; color: #d8d4ce; line-height: 1.5; margin-bottom: 5px; }
-  .item-desc { font-size: 12px; color: #9a968f; line-height: 1.55; margin-bottom: 7px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .meta { display: flex; align-items: center; gap: 7px; font-size: 10px; color: #888880; flex-wrap: wrap; }
-  .src { border-radius: 3px; padding: 2px 7px; background: #2a2a2a; border: 1px solid #3a3a3a; }
-  .badge-new { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: #1c1c1c; background: #8fcfa8; border-radius: 3px; padding: 1px 6px; }
-  .empty { padding: 30px 16px; text-align: center; color: #888880; font-size: 12px; line-height: 1.7; }
-
-  /* ---- filters ---- */
-  .cyber { --accent: #7ab8b8; --accent-bg: #1e3838; }
-  .geo   { --accent: #c4974a; --accent-bg: #2a1e08; }
-  .filters { display: flex; flex-direction: column; gap: 8px; margin-top: 11px; }
-  .searchrow { display: flex; gap: 6px; }
-  .search { flex: 1; position: relative; min-width: 0; }
-  .search input { width: 100%; background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 6px; padding: 7px 28px; color: #e4e0da; font: 12px 'JetBrains Mono', monospace; }
-  .search input::placeholder { color: #6e6b66; }
-  .search input:focus { outline: none; border-color: var(--accent); }
-  .search .icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: #888880; font-size: 13px; pointer-events: none; }
-  .search .clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888880; font-size: 15px; padding: 2px 6px; display: none; }
-  .search .clear:hover { color: #e4e0da; }
-  .search.has .clear { display: block; }
-  select.region { background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 6px; color: #c8c4be; font: 11px 'JetBrains Mono', monospace; padding: 0 8px; cursor: pointer; }
-  select.region:focus { outline: none; border-color: var(--accent); }
-  .topics { display: flex; flex-wrap: wrap; gap: 5px; }
-  .topic { font: 10px 'JetBrains Mono', monospace; border-radius: 12px; padding: 3px 10px; cursor: pointer; background: transparent; color: #a09c96; border: 1px dashed #464646; }
-  .topic:hover { color: #e4e0da; border-color: #6a6a6a; }
-  .topic .n { color: #6e6b66; margin-left: 5px; }
-  .topic.active { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
-  .topic.active .n { color: var(--accent); }
-  .topic.zero:not(.active) { opacity: .4; }
-  .resultline { display: none; align-items: center; gap: 10px; font-size: 10px; color: #888880; }
-  .resultline.show { display: flex; }
-  .resultline button { background: none; border: none; color: var(--accent); font: inherit; text-decoration: underline; padding: 0; }
-  mark { background: rgba(217,179,106,.3); color: inherit; border-radius: 2px; padding: 0 1px; }
-  .more { display: block; margin: 10px auto 16px; }
-
-  .cyber .bar { background: #7ab8b8; } .cyber h2, .cyber .src { color: #7ab8b8; }
-  .geo .bar { background: #c4974a; }   .geo h2, .geo .src { color: #c4974a; }
-  .cyber .pill.active { background: #1e3838; color: #7ab8b8; border-color: #7ab8b8; }
-  .geo .pill.active { background: #2a1e08; color: #c4974a; border-color: #c4974a; }
-
-  .toast { position: fixed; right: 20px; bottom: 20px; background: #1f2a24; border: 1px solid #2f4a3a; color: #8fcfa8; border-radius: 10px; padding: 12px 16px; font-size: 12px; max-width: 360px; box-shadow: 0 8px 24px rgba(0,0,0,.4); opacity: 0; transform: translateY(10px); transition: opacity .25s, transform .25s; pointer-events: none; z-index: 50; }
-  .toast.show { opacity: 1; transform: none; }
-
-  .overlay { position: fixed; inset: 0; background: rgba(10,10,10,.8); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 100; }
-  .overlay.show { display: flex; }
-  .modal { background: #262626; border: 1px solid #3a3a3a; border-radius: 14px; max-width: 580px; width: 100%; padding: 26px 28px; max-height: 80vh; overflow-y: auto; }
-  .modal h3 { font-size: 16px; font-weight: 600; line-height: 1.45; margin: 10px 0 18px; }
-  .modal .label { font-size: 10px; color: #7ab8b8; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
-  .modal p { font-size: 13px; color: #a8a49e; line-height: 1.75; }
-  .modal-actions { display: flex; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid #3a3a3a; }
-  .modal-actions a { flex: 1; text-align: center; background: #2a3434; border: 1px solid #3f5555; border-radius: 8px; padding: 10px; color: #7ab8b8; font-size: 12px; font-weight: 700; text-decoration: none; }
-  .modal-actions a:hover { border-color: #7ab8b8; }
-  .srcrow { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #333; font-size: 12px; }
-  .srcrow .ok { color: #8fcfa8; } .srcrow .bad { color: #d07a68; }
-  .srcrow small { display: block; color: #888880; font-size: 10px; margin-top: 2px; }
-  .srcrow span:last-child { color: #888880; font-size: 11px; text-align: right; }
-  .srchead { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #888880; margin: 16px 0 4px; }
-
-  @media (max-width: 760px) {
-    html, body { overflow: auto; height: auto; }
-    .app { height: auto; }
-    header { padding: 10px 16px; }
-    main { flex-direction: column; }
-    .col + .col { border-left: none; border-top: 1px solid #3a3a3a; }
-    .list { max-height: 70vh; }
+  /* ---------- THEMES ---------- */
+  :root, [data-theme="light"] {
+    --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #F7F9FC; --border: #E3E7F0; --border-2: #DDE2EC;
+    --ink: #10142A; --ink-2: #3B4258; --muted: #5A6178; --faint: #8A90A3;
+    --cyber: #2851E8; --on-cyber: #FFFFFF; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF;
+    --lead-cyber: #EEF3FF; --lead-geo: #FFF1EA; --lead-chip: #FFFFFF;
+    --ticker-bg: #10142A; --ticker-ink: #FFFFFF; --ticker-muted: #9AA6C9; --ticker-tag-bg: #B9F18C; --ticker-tag-ink: #10142A;
+    --new-bg: #E3F7EA; --new-ink: #146C3A; --live-bg: #E8F8EE; --live-ink: #146C3A; --live-dot: #1FA855;
+    --warn-bg: #FFF4D6; --warn-ink: #7A4B00; --err-bg: #FFE9E7; --err-ink: #A8261A;
+    --tile-ex-bg: #FFEFE6; --tile-ex-num: #B93A0B; --tile-ex-sub: #6B4A3C;
+    --tile-vi-bg: #EFEAFF; --tile-vi-num: #5B37C8; --tile-vi-sub: #574C77;
+    --track: #E6E9F2; --mark: rgba(255, 196, 0, .38); --shadow: 0 12px 32px rgba(16, 20, 42, .08);
+    --overlay: rgba(16, 20, 42, .45);
+    color-scheme: light;
   }
-  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .toast { transition: none; } }
+  [data-theme="dark"] {
+    --bg: #0B0F17; --surface: #131A26; --surface-2: #0F1520; --border: #1E2738; --border-2: #263045;
+    --ink: #EEF2F8; --ink-2: #C3CBDB; --muted: #9BA6BC; --faint: #7C879D;
+    --cyber: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17;
+    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-chip: #0B0F17;
+    --ticker-bg: #1A2333; --ticker-ink: #EEF2F8; --ticker-muted: #9BA6BC; --ticker-tag-bg: #34D399; --ticker-tag-ink: #0B0F17;
+    --new-bg: #11281F; --new-ink: #6EE7B7; --live-bg: #11281F; --live-ink: #6EE7B7; --live-dot: #34D399;
+    --warn-bg: #2A220C; --warn-ink: #FCD267; --err-bg: #3A1C16; --err-ink: #FF9B80;
+    --tile-ex-bg: #2A1610; --tile-ex-num: #FF7A59; --tile-ex-sub: #D2BCB2;
+    --tile-vi-bg: #1C1833; --tile-vi-num: #B69CFF; --tile-vi-sub: #C6BEE6;
+    --track: #263045; --mark: rgba(251, 191, 36, .32); --shadow: 0 12px 32px rgba(0, 0, 0, .35);
+    --overlay: rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+
+  /* Topic and source colours: bg / ink / dot for each palette, in both themes. */
+  [data-theme="light"] {
+    --orange-bg:#FFE3D6; --orange-ink:#9A3412; --orange-dot:#E2520F;
+    --violet-bg:#EFEAFF; --violet-ink:#4C2DAE; --violet-dot:#7048E8;
+    --blue-bg:#E3EEFF;   --blue-ink:#1849A9;   --blue-dot:#2E6FE8;
+    --pink-bg:#FFE4EE;   --pink-ink:#A3174A;   --pink-dot:#D6336C;
+    --green-bg:#E3F5E8;  --green-ink:#1E6B35;  --green-dot:#2F9E44;
+    --slate-bg:#EEF1F6;  --slate-ink:#3B4258;  --slate-dot:#6B7389;
+    --teal-bg:#DDF4F1;   --teal-ink:#0F5F5A;   --teal-dot:#12A594;
+    --amber-bg:#FFF2D2;  --amber-ink:#7A4B00;  --amber-dot:#D98E04;
+    --indigo-bg:#E7E9FF; --indigo-ink:#3730A3; --indigo-dot:#5B5BD6;
+  }
+  [data-theme="dark"] {
+    --orange-bg:#3A1C16; --orange-ink:#FF9B80; --orange-dot:#FF7A59;
+    --violet-bg:#1C1833; --violet-ink:#C9B6FF; --violet-dot:#B69CFF;
+    --blue-bg:#13233A;   --blue-ink:#8CC4FF;   --blue-dot:#6CB4FF;
+    --pink-bg:#2A1220;   --pink-ink:#FF9CC8;   --pink-dot:#FF7AB6;
+    --green-bg:#11281F;  --green-ink:#6EE7B7;  --green-dot:#34D399;
+    --slate-bg:#1F2737;  --slate-ink:#C3CBDB;  --slate-dot:#8A94A8;
+    --teal-bg:#0F2A2A;   --teal-ink:#5EEAD4;   --teal-dot:#2DD4BF;
+    --amber-bg:#2A220C;  --amber-ink:#FCD267;  --amber-dot:#FBBF24;
+    --indigo-bg:#1B1D3A; --indigo-ink:#A5B4FC; --indigo-dot:#818CF8;
+  }
+  .p-orange { --c-bg: var(--orange-bg); --c-ink: var(--orange-ink); --c-dot: var(--orange-dot); }
+  .p-violet { --c-bg: var(--violet-bg); --c-ink: var(--violet-ink); --c-dot: var(--violet-dot); }
+  .p-blue   { --c-bg: var(--blue-bg);   --c-ink: var(--blue-ink);   --c-dot: var(--blue-dot); }
+  .p-pink   { --c-bg: var(--pink-bg);   --c-ink: var(--pink-ink);   --c-dot: var(--pink-dot); }
+  .p-green  { --c-bg: var(--green-bg);  --c-ink: var(--green-ink);  --c-dot: var(--green-dot); }
+  .p-slate  { --c-bg: var(--slate-bg);  --c-ink: var(--slate-ink);  --c-dot: var(--slate-dot); }
+  .p-teal   { --c-bg: var(--teal-bg);   --c-ink: var(--teal-ink);   --c-dot: var(--teal-dot); }
+  .p-amber  { --c-bg: var(--amber-bg);  --c-ink: var(--amber-ink);  --c-dot: var(--amber-dot); }
+  .p-indigo { --c-bg: var(--indigo-bg); --c-ink: var(--indigo-ink); --c-dot: var(--indigo-dot); }
+
+  /* ---------- BASE ---------- */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 'Instrument Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a { color: var(--cyber); }
+  :focus-visible { outline: 2px solid var(--cyber); outline-offset: 2px; }
+  .display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .wrap { max-width: 1360px; margin: 0 auto; padding-inline: 32px; }
+  @media (max-width: 640px) { .wrap { padding-inline: 16px; } }
+
+  .btn { height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink); font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+  .btn:hover { border-color: var(--faint); }
+  .btn.icon { width: 44px; padding: 0; justify-content: center; }
+  .btn.primary { background: var(--cyber); color: var(--on-cyber); border-color: transparent; font-weight: 700; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .icon-svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- HEADER ---------- */
+  header { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; padding-block: 12px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .logo-mark { width: 38px; height: 38px; border-radius: 11px; background: var(--cyber); color: var(--on-cyber); display: flex; align-items: center; justify-content: center; }
+  .logo-text { font-size: 23px; font-weight: 800; }
+  .logo-text span { color: var(--cyber); }
+  .search { flex: 1 1 320px; max-width: 620px; display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 999px; padding: 0 8px 0 18px; height: 46px; }
+  .search:focus-within { border-color: var(--cyber); }
+  .search input { flex: 1; min-width: 0; border: none; background: transparent; outline: none; font-size: 15px; }
+  .search input::placeholder { color: var(--faint); }
+  .search .kbd { font-size: 11px; color: var(--faint); border: 1px solid var(--border-2); border-radius: 6px; padding: 1px 6px; }
+  .search .clear { display: none; border: none; background: none; color: var(--muted); font-size: 20px; width: 32px; height: 32px; border-radius: 50%; }
+  .search.has .clear { display: block; } .search.has .kbd { display: none; }
+  .actions { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .live { display: inline-flex; align-items: center; gap: 8px; background: var(--live-bg); color: var(--live-ink); border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .live .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--live-dot); animation: pulse 2s infinite; }
+  .live.warn { background: var(--warn-bg); color: var(--warn-ink); } .live.warn .dot { background: var(--warn-ink); animation: none; }
+  .live.error { background: var(--err-bg); color: var(--err-ink); } .live.error .dot { background: var(--err-ink); animation: none; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--live-dot) 55%, transparent); } 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+  /* ---------- HERO ---------- */
+  main { padding-block: 30px 56px; display: flex; flex-direction: column; gap: 26px; }
+  .hero { display: flex; flex-wrap: wrap; gap: 28px; align-items: stretch; }
+  .hero-text { flex: 1 1 420px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; color: var(--muted); }
+  .hero h1 { margin: 0; font-size: clamp(36px, 5vw, 52px); line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; }
+  .hero p { margin: 0; font-size: 18px; color: var(--ink-2); max-width: 540px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .tiles { flex: 1 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .tile { border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; text-align: left; border: 1px solid transparent; background: var(--surface); }
+  button.tile:hover { border-color: var(--faint); }
+  .tile .num { font-size: 56px; font-weight: 800; line-height: 1; }
+  .tile .num small { font-size: 26px; color: var(--faint); font-weight: 700; }
+  .tile .label { font-weight: 700; font-size: 16px; }
+  .tile .sub { font-size: 13px; color: var(--muted); }
+  .tile.ex { background: var(--tile-ex-bg); } .tile.ex .num { color: var(--tile-ex-num); } .tile.ex .sub { color: var(--tile-ex-sub); }
+  .tile.vi { background: var(--tile-vi-bg); } .tile.vi .num { color: var(--tile-vi-num); } .tile.vi .sub { color: var(--tile-vi-sub); }
+  .tile.rd { border-color: var(--border); }
+  .progress { height: 8px; border-radius: 99px; background: var(--track); overflow: hidden; }
+  .progress div { height: 100%; border-radius: 99px; background: var(--cyber); transition: width .4s; }
+
+  /* ---------- TICKER ---------- */
+  .ticker { background: var(--ticker-bg); color: var(--ticker-ink); border-radius: 16px; padding: 12px 18px; display: flex; align-items: center; gap: 16px; overflow: hidden; }
+  .ticker .tag { flex: none; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--ticker-tag-ink); background: var(--ticker-tag-bg); border-radius: 8px; padding: 5px 10px; }
+  .ticker-items { display: flex; gap: 8px; min-width: 0; overflow: hidden; }
+  .ticker-items button { flex: 0 1 auto; min-width: 0; background: none; border: none; color: var(--ticker-ink); text-align: left; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 6px; border-radius: 8px; }
+  .ticker-items button:hover { background: rgba(255,255,255,.08); }
+  .ticker-items .when { color: var(--ticker-muted); margin-right: 8px; }
+  .ticker-items .sep { color: var(--ticker-muted); flex: none; align-self: center; }
+
+  /* ---------- COLUMNS ---------- */
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr)); gap: 28px; align-items: start; }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 90px; }
+  @media (max-width: 640px) { .col { padding: 16px; border-radius: 18px; } }
+  @media (max-width: 640px) {
+    .actions { flex-wrap: nowrap; width: 100%; }
+    .actions { gap: 6px; }
+    .actions > * { flex: none; }
+    .actions .live { flex: 1 1 auto; min-width: 0; margin-right: auto; overflow: hidden; }
+    .actions .live .dot { flex: none; }
+    .actions .live span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ticker { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .ticker-items { flex-direction: column; gap: 2px; width: 100%; }
+    .ticker-items .sep, .ticker-items button:nth-of-type(n+3) { display: none; }
+    .ticker-items button { width: 100%; }
+  }
+  .col.geo { --accent: var(--geo); --on-accent: var(--on-geo); --lead: var(--lead-geo); --accent-ink: var(--geo-ink); }
+  .col.cyber { --accent: var(--cyber); --on-accent: var(--on-cyber); --lead: var(--lead-cyber); --accent-ink: var(--cyber); }
+  .col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .col-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; }
+  .col-head h2 { margin: 0; font-size: 26px; font-weight: 800; line-height: 1.1; }
+  .col-head .counts { font-size: 13px; color: var(--muted); }
+  .col-head .counts b { color: var(--new-ink); }
+  .region { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .region select { height: 40px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); padding: 0 10px; font-size: 14px; }
+
+  .pills, .topics { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink-2); font-size: 13px; }
+  .pill:hover { border-color: var(--faint); }
+  .pill.active { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600; }
+  .topic { display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: 10px; border: 1px solid transparent; background: var(--c-bg); color: var(--c-ink); font-size: 13px; font-weight: 700; }
+  .topic .d { width: 8px; height: 8px; border-radius: 50%; background: var(--c-dot); }
+  .topic .n { font-weight: 500; opacity: .85; }
+  .topic:hover { border-color: var(--c-dot); }
+  .topic.active { border: 2px solid var(--c-dot); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-dot) 22%, transparent); }
+  .topic.zero:not(.active) { opacity: .45; }
+  .more-topics { height: 36px; padding: 0 13px; border-radius: 10px; border: 1px dashed var(--border-2); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+  .resultline { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
+  .resultline button { background: none; border: none; color: var(--accent-ink); font-weight: 700; text-decoration: underline; padding: 0; }
+
+  .lead { background: var(--lead); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; }
+  .lead .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .lead .kicker { font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--surface); background: var(--ink); border-radius: 6px; padding: 4px 8px; }
+  .lead .tag { background: var(--lead-chip); }
+  .lead h3 { margin: 0; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.15; font-weight: 700; }
+  .lead h3 button { all: unset; cursor: pointer; }
+  .lead h3 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .lead p { margin: 0; color: var(--ink-2); }
+  .lead .foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .lead .foot a { margin-left: auto; font-weight: 700; text-decoration: none; color: var(--accent-ink); }
+  .lead .foot a:hover { text-decoration: underline; }
+
+  .avatar { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--c-bg); color: var(--c-ink); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .avatar.sm { width: 30px; height: 30px; font-size: 10.5px; }
+  .tag { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; color: var(--c-ink); background: var(--c-bg); border-radius: 6px; padding: 2px 7px; }
+  .tag.region-tag { --c-bg: var(--slate-bg); --c-ink: var(--slate-ink); font-weight: 600; }
+  .newb { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--new-ink); background: var(--new-bg); border-radius: 6px; padding: 2px 7px; }
+
+  .stories { display: flex; flex-direction: column; }
+  .story { display: flex; gap: 14px; padding: 16px 6px; border-top: 1px solid var(--border); border-radius: 12px; cursor: pointer; }
+  .story:hover { background: var(--surface-2); }
+  .story.unread .s-title { font-weight: 700; }
+  .s-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .s-title { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.35; }
+  .s-title button { all: unset; cursor: pointer; }
+  .s-title button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .s-desc { margin: 0; font-size: 14px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .s-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+  .showmore { height: 46px; border-radius: 12px; border: 1px solid var(--border-2); background: var(--surface-2); font-weight: 700; }
+  .showmore:hover { border-color: var(--faint); }
+  .empty { padding: 28px 12px; text-align: center; color: var(--muted); }
+
+  footer.site { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); }
+
+  /* ---------- POPUPS ---------- */
+  .overlay { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+  .overlay.show { display: flex; }
+  .modal { background: var(--surface); color: var(--ink); border-radius: 22px; max-width: 620px; width: 100%; padding: 28px; max-height: 86vh; overflow-y: auto; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; }
+  .modal h3 { margin: 0; font-size: 26px; line-height: 1.18; font-weight: 700; }
+  .modal p { margin: 0; color: var(--ink-2); line-height: 1.7; }
+  .modal .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+  .modal-actions a { flex: 1; justify-content: center; text-decoration: none; }
+  .srcrow { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--border); font-size: 14px; }
+  .srcrow .ok { color: var(--new-ink); font-weight: 700; } .srcrow .bad { color: var(--err-ink); font-weight: 700; }
+  .srcrow small { display: block; color: var(--err-ink); font-size: 12px; }
+  .srcrow .stat { color: var(--muted); font-size: 13px; text-align: right; }
+  .srchead { font-size: 12px; font-weight: 600; letter-spacing: .12em; color: var(--muted); margin-top: 8px; }
+
+  .toast { position: fixed; right: 20px; bottom: 20px; max-width: 380px; background: var(--ink); color: var(--surface); border-radius: 14px; padding: 14px 18px; font-size: 14px; box-shadow: var(--shadow); opacity: 0; transform: translateY(10px); transition: opacity .25s, transform .25s; pointer-events: none; z-index: 60; }
+  .toast.show { opacity: 1; transform: none; }
+  .toast b { display: block; font-size: 12px; letter-spacing: .08em; opacity: .75; margin-bottom: 2px; }
+
+  @media (prefers-reduced-motion: reduce) { .live .dot { animation: none; } .toast, .progress div { transition: none; } }
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <div class="brand">SIGNAL<span>FEED</span></div>
-    <div class="live mono" id="live">
-      <span class="dot"></span><b id="liveLabel">LIVE</b>
-      <span id="liveText">Loading…</span>
-    </div>
-    <div class="actions mono">
-      <button class="btn" id="markRead">✓ Mark all read</button>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#" aria-label="SignalFeed home">
+      <span class="logo-mark"><svg class="icon-svg" viewBox="0 0 24 24" style="width:22px;height:22px;stroke-width:2.3" aria-hidden="true"><path d="M3 12h3.5l2.5-7 5 14 2.5-7H21"></path></svg></span>
+      <span class="logo-text display">Signal<span>Feed</span></span>
+    </a>
+    <label class="search" id="searchBox">
+      <svg class="icon-svg" viewBox="0 0 24 24" style="width:18px;height:18px;color:var(--muted)" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+      <span class="sr">Search all stories</span>
+      <input id="search" type="text" autocomplete="off" placeholder="Search everything — e.g. french supermarket attack">
+      <span class="kbd mono" aria-hidden="true">/</span>
+      <button class="clear" id="clearSearch" type="button" aria-label="Clear search">×</button>
+    </label>
+    <div class="actions">
+      <span class="live" id="live" role="status"><span class="dot"></span><span id="liveText">Loading…</span></span>
+      <button class="btn icon" id="checkNow" aria-label="Check for new stories now" title="Check for new stories now">
+        <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"></path><path d="M21 3v6h-6"></path></svg>
+      </button>
       <button class="btn" id="showSources">Sources</button>
-      <button class="btn" id="checkNow">↻ Check now</button>
-      <button id="notif" title="Turn on desktop notifications for new headlines">🔕</button>
+      <button class="btn icon" id="theme" aria-label="Switch to dark mode" title="Switch theme">
+        <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" id="themeIcon"></svg>
+      </button>
+      <button class="btn icon" id="notif" aria-label="Turn on desktop notifications">
+        <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" id="notifIcon"></svg>
+      </button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <section class="col cyber">
-      <div class="col-head">
-        <div class="col-title"><div class="bar"></div><h2 class="mono">Cybersecurity</h2><span class="count mono" id="cyberCount"></span><span class="newcount mono" id="cyberNew"></span></div>
-        <div class="pills mono" id="cyberPills"></div>
-        <div class="filters">
-          <div class="searchrow">
-            <label class="search" id="cyberSearchBox"><span class="icon">⌕</span>
-              <input id="cyberSearch" data-key="cyber" type="text" autocomplete="off" placeholder="Keywords, e.g. french supermarket attack" aria-label="Search cybersecurity headlines">
-              <button class="clear" data-clear="cyber" aria-label="Clear search">×</button></label>
-            <select class="region" id="cyberRegion" data-key="cyber" aria-label="Region"></select>
-          </div>
-          <div class="topics" id="cyberTopics"></div>
-          <div class="resultline mono" id="cyberResult"></div>
-        </div>
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-text">
+      <span class="eyebrow mono" id="dateLine"></span>
+      <h1 class="display" id="greeting">Hello, Dior.</h1>
+      <p id="heroLine">Loading today's briefing…</p>
+      <div class="hero-actions">
+        <button class="btn primary" id="urgent">Start with what's urgent <span aria-hidden="true">→</span></button>
+        <button class="btn" id="markRead">Mark all read</button>
       </div>
-      <div class="list" id="cyberList"><div class="empty mono">Loading…</div></div>
-    </section>
-    <section class="col geo">
-      <div class="col-head">
-        <div class="col-title"><div class="bar"></div><h2 class="mono">Geopolitics</h2><span class="count mono" id="geoCount"></span><span class="newcount mono" id="geoNew"></span></div>
-        <div class="pills mono" id="geoPills"></div>
-        <div class="filters">
-          <div class="searchrow">
-            <label class="search" id="geoSearchBox"><span class="icon">⌕</span>
-              <input id="geoSearch" data-key="geo" type="text" autocomplete="off" placeholder="Keywords, e.g. taiwan chips export" aria-label="Search geopolitics headlines">
-              <button class="clear" data-clear="geo" aria-label="Clear search">×</button></label>
-            <select class="region" id="geoRegion" data-key="geo" aria-label="Region"></select>
-          </div>
-          <div class="topics" id="geoTopics"></div>
-          <div class="resultline mono" id="geoResult"></div>
-        </div>
+    </div>
+    <div class="tiles">
+      <button class="tile ex" id="tileExploited" type="button">
+        <span class="num display" id="exNum">–</span>
+        <span class="label">Actively exploited</span>
+        <span class="sub" id="exSub">in the last 24 hours</span>
+      </button>
+      <button class="tile vi" id="tileVictims" type="button">
+        <span class="num display" id="viNum">–</span>
+        <span class="label">Victims this week</span>
+        <span class="sub" id="viSub">companies &amp; governments hit</span>
+      </button>
+      <div class="tile rd">
+        <span class="num display" id="rdNum">–</span>
+        <span class="label">Caught up today</span>
+        <div class="progress" aria-hidden="true"><div id="rdBar" style="width:0%"></div></div>
+        <span class="sub" id="rdSub"></span>
       </div>
-      <div class="list" id="geoList"><div class="empty mono">Loading…</div></div>
+    </div>
+  </section>
+
+  <section class="ticker" aria-label="Just in">
+    <span class="tag mono">JUST IN</span>
+    <div class="ticker-items" id="ticker"></div>
+  </section>
+
+  <div class="cols">
+    <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber">
+      <div class="col-head">
+        <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>
+        <div><h2 class="display" id="h-cyber">Cybersecurity</h2><span class="counts" id="cyberCounts"></span></div>
+        <label class="region">Region <select id="cyberRegion" data-key="cyber"></select></label>
+      </div>
+      <div class="pills" id="cyberPills"></div>
+      <div class="topics" id="cyberTopics"></div>
+      <div class="resultline" id="cyberResult" hidden></div>
+      <div id="cyberLead"></div>
+      <div class="stories" id="cyberList"></div>
     </section>
-  </main>
-</div>
 
-<div class="toast mono" id="toast"></div>
+    <section class="col geo" id="col-geo" aria-labelledby="h-geo">
+      <div class="col-head">
+        <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>
+        <div><h2 class="display" id="h-geo">Geopolitics</h2><span class="counts" id="geoCounts"></span></div>
+        <label class="region">Region <select id="geoRegion" data-key="geo"></select></label>
+      </div>
+      <div class="pills" id="geoPills"></div>
+      <div class="topics" id="geoTopics"></div>
+      <div class="resultline" id="geoResult" hidden></div>
+      <div id="geoLead"></div>
+      <div class="stories" id="geoList"></div>
+    </section>
+  </div>
 
-<div class="overlay" id="overlay">
-  <div class="modal" id="modal"></div>
-</div>
+  <footer class="site">
+    <span id="footLine">Stories kept for 3 weeks</span>
+    <span>SignalFeed · your cyber &amp; world briefing</span>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="overlay" id="overlay"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Details"></div></div>
 
 <script src="filters.js"></script>
 <script>
@@ -185,43 +359,77 @@ const DATA_URL = 'data/headlines.json';
 const CHECK_EVERY_MS = 60 * 1000;          // the page checks for a fresh file every minute
 const STALE_AFTER_MS = 30 * 60 * 1000;     // warn if GitHub hasn't refreshed in 30 minutes
 const NEW_WINDOW_MS = 24 * 3600 * 1000;    // only stories from the last 24h can be NEW
+const PAGE_SIZE = 25;
+const TOPICS_SHOWN = 5;
 const SEEN_KEY = 'signalfeed_seen_v2';
+const NAME = 'Dior';
+
+// Colour for each topic, and a badge for each source.
+const TOPIC_COLOR = {
+  exploited: 'orange', impact: 'violet', vulns: 'blue', ransomware: 'pink', nation: 'green', law: 'slate',
+  infra: 'teal', ai: 'indigo', phishing: 'amber', supply: 'teal', regulation: 'indigo',
+  conflict: 'orange', diplomacy: 'blue', sanctions: 'amber', elections: 'violet', cybertech: 'teal',
+  energy: 'amber', humanitarian: 'green', terror: 'pink',
+};
+// Order topics by urgency, not by definition order.
+const TOPIC_ORDER = {
+  cyber: ['exploited', 'impact', 'vulns', 'ransomware', 'nation', 'law', 'infra', 'ai', 'phishing', 'supply', 'regulation'],
+  geo: ['conflict', 'diplomacy', 'sanctions', 'elections', 'cybertech', 'energy', 'humanitarian', 'terror'],
+};
+const SOURCE_BADGE = {
+  'The Hacker News': ['THN', 'indigo'], 'BleepingComputer': ['BC', 'blue'], 'Dark Reading': ['DR', 'orange'],
+  'SecurityWeek': ['SW', 'amber'], 'Krebs on Security': ['KoS', 'green'], 'SANS ISC': ['ISC', 'violet'], 'IT-Connect': ['IT', 'teal'],
+  'BBC World': ['BBC', 'pink'], 'The Guardian': ['G', 'blue'], 'Al Jazeera': ['AJ', 'amber'], 'Foreign Policy': ['FP', 'violet'], 'France 24': ['F24', 'teal'],
+};
 
 // ---------- STATE ----------
 const state = {
   items: [], sources: [], generatedAt: null,
-  f: {                                       // filters for each column
-    cyber: { source: null, topic: null, region: '', query: '', tokens: [], limit: 200 },
-    geo:   { source: null, topic: null, region: '', query: '', tokens: [], limit: 200 },
+  query: '', tokens: [],
+  f: {
+    cyber: { source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
+    geo:   { source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
   },
   seen: new Set(), firstVisit: false,
   lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
 };
 const $ = id => document.getElementById(id);
 const BASE_TITLE = document.title;
+const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo].find(t => t.id === id);
+const regionLabel = id => (SF.REGIONS.find(r => r.id === id) || {}).label || '';
 
-// ---------- STORAGE (remembers what you've already seen, on this browser only) ----------
+// ---------- STORAGE (remembers what you've read, on this browser only) ----------
 try {
   const raw = localStorage.getItem(SEEN_KEY);
   if (raw) JSON.parse(raw).forEach(l => state.seen.add(l)); else state.firstVisit = true;
 } catch { state.firstVisit = true; }
-function saveSeen() {
-  try { localStorage.setItem(SEEN_KEY, JSON.stringify([...state.seen].slice(-3000))); } catch {}
-}
+function saveSeen() { try { localStorage.setItem(SEEN_KEY, JSON.stringify([...state.seen].slice(-6000))); } catch {} }
 
 // ---------- HELPERS ----------
 function ago(date) {
   const d = new Date(date); if (isNaN(d)) return '';
   const m = Math.floor((Date.now() - d) / 60000);
   if (m < 1) return 'just now';
-  if (m < 60) return `${m}m ago`;
+  if (m < 60) return `${m} min ago`;
   const h = Math.floor(m / 60);
   return h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`;
 }
+const short = s => ago(s).replace(' ago', '').replace(' min', 'm');
 const esc = s => String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-const clock = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 const isNew = a => !state.seen.has(a.link) && (Date.now() - new Date(a.date)) < NEW_WINDOW_MS;
 const safeUrl = u => /^https:\/\//i.test(u) ? u : '#';
+const byDate = (a, b) => new Date(b.date) - new Date(a.date);
+const within = (a, ms) => Date.now() - new Date(a.date) < ms;
+function badge(source, sm = '') {
+  const [txt, color] = SOURCE_BADGE[source] || [String(source || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase(), 'slate'];
+  return `<span class="avatar ${sm} p-${color}" aria-hidden="true">${esc(txt)}</span>`;
+}
+function tagsFor(a, max = 2) {
+  const order = TOPIC_ORDER[a.category] || [];
+  const topics = [...a._topics].sort((x, y) => order.indexOf(x) - order.indexOf(y)).slice(0, max);
+  return topics.map(id => `<span class="tag p-${TOPIC_COLOR[id] || 'slate'}">${esc(topicDef(id).label)}</span>`).join('')
+    + (a._regions[0] ? `<span class="tag region-tag">${esc(regionLabel(a._regions[0]))}</span>` : '');
+}
 
 // ---------- LOAD ----------
 async function check() {
@@ -240,12 +448,11 @@ async function check() {
     state.items = (data.items || []).map(a => {
       const c = SF.classify(a);                 // work out topics and regions once per load
       return Object.assign(a, { _text: c.text + ' ' + SF.norm(a.source), _topics: c.topics, _regions: c.regions });
-    });
+    }).sort(byDate);
     state.sources = data.sources || [];
     state.generatedAt = data.generatedAt;
     state.error = '';
-
-    if (state.firstVisit) {                 // first time ever: start with everything marked as read
+    if (state.firstVisit) {                   // first visit ever: start with everything marked as read
       state.items.forEach(a => state.seen.add(a.link)); saveSeen(); state.firstVisit = false;
     }
     if (hadData) {
@@ -263,183 +470,281 @@ async function check() {
 
 // ---------- ALERTS ----------
 function announce(fresh) {
-  fresh.sort((a, b) => new Date(b.date) - new Date(a.date));
-  const n = fresh.length;
-  showToast(n === 1 ? `New · ${fresh[0].source}: ${fresh[0].title}` : `${n} new headlines — latest: ${fresh[0].title}`);
+  const n = fresh.length, top = fresh[0];
+  showToast(n === 1 ? `New · ${top.source}` : `${n} new stories`, top.title);
   if (document.hidden) {
     state.unseenWhileHidden += n;
     document.title = `(${state.unseenWhileHidden}) ${BASE_TITLE}`;
     if ('Notification' in window && Notification.permission === 'granted') {
-      const note = new Notification(n === 1 ? `SignalFeed · ${fresh[0].source}` : `SignalFeed · ${n} new headlines`, { body: fresh[0].title, tag: 'signalfeed' });
+      const note = new Notification(n === 1 ? `SignalFeed · ${top.source}` : `SignalFeed · ${n} new stories`, { body: top.title, tag: 'signalfeed' });
       note.onclick = () => { window.focus(); note.close(); };
     }
   }
 }
 let toastTimer;
-function showToast(text) {
-  const t = $('toast'); t.textContent = text; t.classList.add('show');
+function showToast(head, text) {
+  const t = $('toast'); t.innerHTML = `<b>${esc(head)}</b>${esc(text)}`; t.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 6000);
 }
 
-// ---------- STATUS LINE ----------
+// ---------- STATUS ----------
 function updateLive() {
   const live = $('live');
   const stale = state.generatedAt && (Date.now() - new Date(state.generatedAt)) > STALE_AFTER_MS;
   live.classList.toggle('error', !!state.error);
   live.classList.toggle('warn', !state.error && !!stale);
-  $('liveLabel').textContent = state.error ? 'PROBLEM' : stale ? 'DELAYED' : 'LIVE';
-  if (state.error) { $('liveText').textContent = state.error; live.title = ''; return; }
-  if (state.busy) { $('liveText').textContent = 'Checking…'; return; }
+  let text;
+  if (state.error) text = state.error;
+  else if (state.busy && !state.generatedAt) text = 'Loading…';
+  else if (!state.generatedAt) text = 'Waiting for first update';
+  else text = `${stale ? 'Delayed' : 'Live'} · updated ${ago(state.generatedAt)}`;
+  $('liveText').textContent = text;
   const next = Math.max(0, Math.ceil((state.nextCheck - Date.now()) / 1000));
-  const fetched = state.generatedAt ? `sources read ${ago(state.generatedAt)}` : 'waiting for first run';
-  $('liveText').textContent = `${fetched} · next check ${next}s`;
-  live.title = state.generatedAt ? `GitHub last read all sources at ${clock(new Date(state.generatedAt))}` : '';
+  live.title = state.generatedAt ? `Sources last read at ${new Date(state.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · next check in ${next}s` : '';
 }
 
-// ---------- RENDER ----------
+// ---------- HERO ----------
+function renderHero() {
+  const now = new Date(), h = now.getHours();
+  $('greeting').textContent = `${h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'}, ${NAME}.`;
+  $('dateLine').textContent = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`.toUpperCase();
+
+  const cyber = state.items.filter(a => a.category === 'cyber');
+  const exploited = cyber.filter(a => a._topics.includes('exploited') && within(a, 864e5));
+  const victims = cyber.filter(a => a._topics.includes('impact') && within(a, 7 * 864e5));
+  const newCount = state.items.filter(isNew).length;
+  const midnight = new Date(now); midnight.setHours(0, 0, 0, 0);
+  const today = state.items.filter(a => new Date(a.date) >= midnight);
+  const readToday = today.filter(a => state.seen.has(a.link)).length;
+
+  $('exNum').textContent = state.generatedAt ? exploited.length : '–';
+  $('exSub').textContent = exploited.length ? [...new Set(exploited.map(a => a.source))].slice(0, 3).join(' · ') + ' · last 24h' : 'nothing new in the last 24 hours';
+  $('viNum').textContent = state.generatedAt ? victims.length : '–';
+  $('viSub').textContent = victims.length ? 'companies & governments hit · tap to see' : 'no new victims reported this week';
+  $('rdNum').innerHTML = state.generatedAt ? `${readToday}<small>/${today.length}</small>` : '–';
+  $('rdBar').style.width = today.length ? `${Math.round(readToday / today.length * 100)}%` : '100%';
+  $('rdSub').textContent = !today.length ? 'No stories yet today' : readToday === today.length ? "You're all caught up" : `${today.length - readToday} to go before you're caught up`;
+
+  if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
+  const lead = newCount ? `${newCount} new ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : "You're all caught up.";
+  const urgent = exploited.length === 0 ? 'Nothing new is being actively exploited right now.'
+    : exploited.length === 1 ? 'One flaw is being exploited right now: start there.'
+    : `${exploited.length} flaws are being exploited right now: start there.`;
+  $('heroLine').textContent = `${lead} ${urgent}`;
+  $('urgent').innerHTML = exploited.length ? 'Start with what\'s urgent <span aria-hidden="true">→</span>' : 'Read the latest <span aria-hidden="true">→</span>';
+}
+
+function renderTicker() {
+  const latest = state.items.slice(0, 4);
+  $('ticker').innerHTML = latest.length
+    ? latest.map((a, i) => `${i ? '<span class="sep" aria-hidden="true">•</span>' : ''}<button type="button" data-open="${esc(a.link)}"><span class="when">${esc(short(a.date))} · ${esc(a.source)}</span>${esc(a.title)}</button>`).join('')
+    : `<span style="color:var(--ticker-muted);font-size:14px">${state.error ? esc(state.error) : 'Waiting for the first headlines…'}</span>`;
+}
+
+// ---------- COLUMNS ----------
+function pickLead(key, list, filtering) {
+  if (!list.length) return null;
+  if (filtering) return list[0];
+  if (key === 'cyber') {
+    return list.find(a => a._topics.includes('exploited') && within(a, 864e5))
+      || list.find(a => a._topics.includes('impact') && within(a, 864e5))
+      || list[0];
+  }
+  return list[0];
+}
+
 function renderColumn(key, toTop = false) {
   const f = state.f[key];
-  const all = state.items.filter(a => a.category === key).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const all = state.items.filter(a => a.category === key);
   const sources = [...new Set(all.map(a => a.source))].sort();
   if (f.source && !sources.includes(f.source)) f.source = null;
   const bySource = f.source ? all.filter(a => a.source === f.source) : all;
-  // Everything except the topic, so each topic button can show how many stories it would give.
-  const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, f.tokens));
+  const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, state.tokens));
   const items = f.topic ? pre.filter(a => a._topics.includes(f.topic)) : pre;
+  const filtering = !!(f.topic || f.region || f.source || state.tokens.length);
   const newCount = all.filter(isNew).length;
-  const filtering = !!(f.topic || f.region || f.tokens.length);
 
-  $(key + 'Count').textContent = bySource.length || '';
-  $(key + 'New').textContent = `${newCount} new`;
-  $(key + 'New').classList.toggle('show', newCount > 0);
-  $(key + 'Pills').innerHTML = ['All', ...sources].map(s => {
-    const active = (s === 'All' && !f.source) || s === f.source;
-    return `<span class="pill${active ? ' active' : ''}" data-key="${key}" data-src="${esc(s)}">${esc(s)}</span>`;
+  $(key + 'Counts').innerHTML = all.length ? `${all.length} stories${newCount ? ` · <b>${newCount} new</b>` : ''}` : '';
+  $(key + 'Pills').innerHTML = ['All sources', ...sources].map(s => {
+    const isAll = s === 'All sources', active = isAll ? !f.source : f.source === s;
+    return `<button class="pill${active ? ' active' : ''}" data-key="${key}" data-src="${esc(isAll ? '' : s)}" aria-pressed="${active}">${esc(s)}</button>`;
   }).join('');
-  $(key + 'Topics').innerHTML = SF.TOPICS[key].map(t => {
+
+  const order = TOPIC_ORDER[key];
+  const defs = order.map(id => SF.TOPICS[key].find(t => t.id === id)).filter(Boolean);
+  const visible = f.allTopics ? defs : defs.filter((t, i) => i < TOPICS_SHOWN || t.id === f.topic);
+  $(key + 'Topics').innerHTML = visible.map(t => {
     const n = pre.filter(a => a._topics.includes(t.id)).length;
-    return `<button class="topic${f.topic === t.id ? ' active' : ''}${n ? '' : ' zero'}" data-key="${key}" data-topic="${t.id}" title="${esc(t.hint)}">${esc(t.label)}<span class="n">${n}</span></button>`;
-  }).join('');
-  const result = $(key + 'Result');
-  result.classList.toggle('show', filtering);
-  result.innerHTML = filtering ? `<span>${items.length} of ${bySource.length} stories</span><button data-reset="${key}">Clear filters</button>` : '';
+    const active = f.topic === t.id;
+    return `<button class="topic p-${TOPIC_COLOR[t.id]}${active ? ' active' : ''}${n ? '' : ' zero'}" data-key="${key}" data-topic="${t.id}" title="${esc(t.hint)}" aria-pressed="${active}"><span class="d"></span>${esc(t.label)}<span class="n">${n}</span></button>`;
+  }).join('') + (defs.length > TOPICS_SHOWN
+    ? `<button class="more-topics" data-alltopics="${key}">${f.allTopics ? 'Fewer topics' : `+${defs.length - visible.length} topics`}</button>` : '');
 
+  const result = $(key + 'Result');
+  result.hidden = !filtering;
+  result.innerHTML = filtering ? `<span>${items.length} of ${all.length} stories${state.tokens.length ? ` matching “${esc(state.query)}”` : ''}</span><button data-reset="${key}">Clear filters</button>` : '';
+
+  const lead = pickLead(key, items, filtering);
+  $(key + 'Lead').innerHTML = lead ? `
+    <article class="lead" data-open="${esc(lead.link)}">
+      <div class="badges"><span class="kicker mono">${filtering ? 'TOP RESULT' : 'LEAD STORY'}</span>${isNew(lead) ? '<span class="newb">NEW</span>' : ''}${tagsFor(lead, 3)}</div>
+      <h3 class="display"><button type="button" data-open="${esc(lead.link)}">${SF.highlight(lead.title, state.tokens, esc)}</button></h3>
+      ${lead.description ? `<p>${SF.highlight(lead.description, state.tokens, esc)}</p>` : ''}
+      <div class="foot">${badge(lead.source, 'sm')}<span>${esc(lead.source)} · ${esc(ago(lead.date))}</span>
+        <a href="${esc(safeUrl(lead.link))}" target="_blank" rel="noopener noreferrer" data-read="${esc(lead.link)}">Read article →</a></div>
+    </article>` : '';
+
+  const rest = items.filter(a => a !== lead);
+  const shown = rest.slice(0, f.limit);
   const list = $(key + 'List');
-  const scroll = toTop ? 0 : list.scrollTop;
-  const shown = items.slice(0, f.limit);
-  const emptyText = state.error ? state.error
-    : !state.generatedAt ? 'Loading…'
-    : filtering ? 'No stories match these filters. Try fewer keywords or another topic.'
-    : 'No stories in this column yet.';
-  list.innerHTML = shown.length
-    ? shown.map(a => `
-      <div class="item${isNew(a) ? ' new' : ''}" data-link="${esc(a.link)}">
-        <div class="item-title">${SF.highlight(a.title, f.tokens, esc)}</div>
-        ${a.description ? `<div class="item-desc">${SF.highlight(a.description, f.tokens, esc)}</div>` : ''}
-        <div class="meta mono">${isNew(a) ? '<span class="badge-new">NEW</span>' : ''}<span class="src">${esc(a.source)}</span><span>${ago(a.date)}</span></div>
-      </div>`).join('')
-      + (items.length > shown.length ? `<button class="btn more mono" data-more="${key}">Show more (${items.length - shown.length} left)</button>` : '')
-    : `<div class="empty mono">${esc(emptyText)}</div>`;
-  list.scrollTop = scroll;
+  const y = window.scrollY;
+  const emptyText = state.error ? state.error : !state.generatedAt ? 'Loading…'
+    : filtering ? 'No stories match. Try fewer keywords, another topic or all regions.' : 'No stories in this column yet.';
+  list.innerHTML = !lead ? `<div class="empty">${esc(emptyText)}</div>` : shown.map(a => `
+    <article class="story${isNew(a) ? ' unread' : ''}" data-open="${esc(a.link)}">
+      ${badge(a.source)}
+      <div class="s-body">
+        <h4 class="s-title"><button type="button" data-open="${esc(a.link)}">${SF.highlight(a.title, state.tokens, esc)}</button></h4>
+        ${state.tokens.length && a.description ? `<p class="s-desc">${SF.highlight(a.description, state.tokens, esc)}</p>` : ''}
+        <div class="s-meta">${isNew(a) ? '<span class="newb">NEW</span>' : ''}<span>${esc(a.source)} · ${esc(ago(a.date))}</span>${tagsFor(a)}</div>
+      </div>
+    </article>`).join('')
+    + (rest.length > shown.length ? `<button class="showmore" data-more="${key}">Show ${Math.min(50, rest.length - shown.length)} more <span style="color:var(--muted);font-weight:500">(${rest.length - shown.length} left)</span></button>` : '');
+  if (toTop) $('col-' + key).scrollIntoView({ block: 'start', behavior: 'smooth' }); else window.scrollTo({ top: y });
 }
-function render() { renderColumn('cyber'); renderColumn('geo'); }
+
+function render() {
+  renderHero(); renderTicker(); renderColumn('cyber'); renderColumn('geo');
+  const ok = state.sources.filter(s => s.ok).length;
+  $('footLine').textContent = state.sources.length ? `${ok} of ${state.sources.length} sources read ${ago(state.generatedAt)} · stories kept for 3 weeks` : 'Stories kept for 3 weeks';
+}
 
 // ---------- POPUPS ----------
-function openModal(html) { $('modal').innerHTML = html; $('overlay').classList.add('show'); }
-const closeModal = () => $('overlay').classList.remove('show');
+let lastFocus = null;
+function openModal(html) { lastFocus = document.activeElement; $('modal').innerHTML = html; $('overlay').classList.add('show'); $('modal').querySelector('[data-close]')?.focus(); }
+function closeModal() { $('overlay').classList.remove('show'); lastFocus?.focus?.(); }
 
 function openArticle(a) {
   state.seen.add(a.link); saveSeen(); render();
   openModal(`
-    <div class="meta mono"><span class="src" style="color:${a.category === 'geo' ? '#c4974a' : '#7ab8b8'}">${esc(a.source)}</span><span>${ago(a.date)} · ${esc(new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>
-    <h3>${esc(a.title)}</h3>
-    <div class="label mono">Summary</div>
+    <div class="row">${badge(a.source, 'sm')}<span>${esc(a.source)} · ${esc(ago(a.date))} · ${esc(new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>
+    <h3 class="display">${esc(a.title)}</h3>
+    <div class="row">${tagsFor(a, 4)}</div>
     <p>${esc(a.description || 'This source didn\'t provide a summary. Open the article to read it.')}</p>
     <div class="modal-actions">
-      <a href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener noreferrer">READ FULL ARTICLE →</a>
-      <button class="btn" data-close>CLOSE</button>
+      <a class="btn primary" href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener noreferrer">Read full article →</a>
+      <button class="btn" data-close>Close</button>
     </div>`);
 }
 
 function openSources() {
   const row = s => `
-    <div class="srcrow mono">
-      <span class="${s.ok ? 'ok' : 'bad'}">${s.ok ? '✓' : '✗'}</span>
+    <div class="srcrow"><span class="${s.ok ? 'ok' : 'bad'}">${s.ok ? '✓' : '✗'}</span>
       <span>${esc(s.name)}${s.ok ? '' : `<small>${esc(s.error || 'not reachable')}</small>`}</span>
-      <span>${s.stored} stories${s.newest ? ` · newest ${ago(s.newest)}` : ''}</span>
-    </div>`;
-  const group = cat => state.sources.filter(s => s.category === cat).map(row).join('');
+      <span class="stat">${s.stored} stories${s.newest ? ` · newest ${esc(ago(s.newest))}` : ''}</span></div>`;
+  const group = cat => state.sources.filter(s => s.category === cat).map(row).join('') || '<div class="srcrow"><span></span><span>No data yet</span><span></span></div>';
   openModal(`
-    <h3>Sources</h3>
-    <p class="mono" style="font-size:11px">Status from GitHub's last read ${state.generatedAt ? `(${ago(state.generatedAt)})` : ''}. A ✗ means the site couldn't be read on that run — its earlier stories stay visible.</p>
-    <div class="srchead mono">Cybersecurity</div>${group('cyber')}
-    <div class="srchead mono">Geopolitics</div>${group('geo')}
-    <div class="modal-actions"><button class="btn" data-close style="flex:1">CLOSE</button></div>`);
+    <h3 class="display">Sources</h3>
+    <p style="font-size:14px">Status from the last read of all sites${state.generatedAt ? ` (${esc(ago(state.generatedAt))})` : ''}. A ✗ means a site couldn't be read that time; its earlier stories stay visible.</p>
+    <div class="srchead mono">CYBERSECURITY</div>${group('cyber')}
+    <div class="srchead mono">GEOPOLITICS</div>${group('geo')}
+    <div class="modal-actions"><button class="btn" data-close style="flex:1;justify-content:center">Close</button></div>`);
 }
 
-// ---------- NOTIFICATIONS ----------
+// ---------- THEME & NOTIFICATIONS ----------
+const ICONS = {
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>',
+  sun: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>',
+  bellOff: '<path d="M6 8a6 6 0 0 1 9.3-5"></path><path d="M18 8c0 7 3 9 3 9H9"></path><path d="M6 8c0 7-3 9-3 9h2"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path><path d="M3 3l18 18"></path>',
+};
+function updateThemeButton() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  $('themeIcon').innerHTML = dark ? ICONS.sun : ICONS.moon;
+  $('theme').setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+}
+$('theme').onclick = () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem('signalfeed_theme', next); } catch {}
+  updateThemeButton();
+};
 function updateNotifIcon() {
   if (!('Notification' in window)) { $('notif').style.display = 'none'; return; }
-  $('notif').textContent = Notification.permission === 'granted' ? '🔔' : '🔕';
-  $('notif').title = Notification.permission === 'granted' ? 'Desktop notifications are on'
-    : Notification.permission === 'denied' ? 'Notifications are blocked in your browser settings'
-    : 'Click to get a desktop notification for new headlines';
+  const on = Notification.permission === 'granted';
+  $('notifIcon').innerHTML = on ? ICONS.bell : ICONS.bellOff;
+  const label = on ? 'Desktop notifications are on' : Notification.permission === 'denied' ? 'Notifications are blocked in your browser settings' : 'Turn on desktop notifications for new stories';
+  $('notif').setAttribute('aria-label', label); $('notif').title = label;
 }
-
-// ---------- EVENTS ----------
-document.addEventListener('click', e => {
-  const pill = e.target.closest('.pill');
-  if (pill) { const k = pill.dataset.key, s = pill.dataset.src, f = state.f[k]; f.source = (s === 'All' || f.source === s) ? null : s; f.limit = 200; renderColumn(k, true); return; }
-  const topic = e.target.closest('.topic');
-  if (topic) { const k = topic.dataset.key, f = state.f[k]; f.topic = f.topic === topic.dataset.topic ? null : topic.dataset.topic; f.limit = 200; renderColumn(k, true); return; }
-  const reset = e.target.closest('[data-reset]');
-  if (reset) { const k = reset.dataset.reset; setQuery(k, ''); Object.assign(state.f[k], { topic: null, region: '' }); $(k + 'Region').value = ''; renderColumn(k, true); return; }
-  const clear = e.target.closest('[data-clear]');
-  if (clear) { e.preventDefault(); const k = clear.dataset.clear; setQuery(k, ''); renderColumn(k, true); $(k + 'Search').focus(); return; }
-  const more = e.target.closest('[data-more]');
-  if (more) { state.f[more.dataset.more].limit += 200; renderColumn(more.dataset.more); return; }
-  const item = e.target.closest('.item');
-  if (item) { const a = state.items.find(x => x.link === item.dataset.link); if (a) openArticle(a); return; }
-  if (e.target === $('overlay') || e.target.closest('[data-close]')) closeModal();
-});
-$('checkNow').onclick = () => check();
-$('showSources').onclick = openSources;
-$('markRead').onclick = () => { state.items.forEach(a => state.seen.add(a.link)); saveSeen(); render(); };
 $('notif').onclick = async () => {
   if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
   updateNotifIcon();
 };
-document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
+
+// ---------- SEARCH (applies to both columns) ----------
+function setQuery(value) {
+  state.query = value; state.tokens = SF.parseQuery(value);
+  state.f.cyber.limit = state.f.geo.limit = PAGE_SIZE;
+  $('search').value = value;
+  $('searchBox').classList.toggle('has', !!value);
+}
+let searchTimer;
+$('search').addEventListener('input', e => {
+  const v = e.target.value;
+  $('searchBox').classList.toggle('has', !!v);
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { setQuery(v); renderColumn('cyber'); renderColumn('geo'); }, 150);
+});
+$('search').addEventListener('keydown', e => { if (e.key === 'Escape') { setQuery(''); renderColumn('cyber'); renderColumn('geo'); } });
+$('clearSearch').onclick = e => { e.preventDefault(); setQuery(''); renderColumn('cyber'); renderColumn('geo'); $('search').focus(); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('overlay').classList.contains('show')) { closeModal(); return; }
+  const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName);
+  if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey) { e.preventDefault(); $('search').focus(); }
+});
+
+// ---------- CLICKS ----------
+function setTopic(key, topic) { const f = state.f[key]; f.topic = topic; f.limit = PAGE_SIZE; renderColumn(key, true); }
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
+  if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; state.seen.add(l); saveSeen(); setTimeout(render, 0); return; }
+  const pill = t.closest('.pill');
+  if (pill) { const f = state.f[pill.dataset.key]; f.source = pill.dataset.src || null; f.limit = PAGE_SIZE; renderColumn(pill.dataset.key); return; }
+  const topic = t.closest('.topic');
+  if (topic) { const k = topic.dataset.key; setTopic(k, state.f[k].topic === topic.dataset.topic ? null : topic.dataset.topic); return; }
+  const allT = t.closest('[data-alltopics]');
+  if (allT) { const f = state.f[allT.dataset.alltopics]; f.allTopics = !f.allTopics; renderColumn(allT.dataset.alltopics); return; }
+  const reset = t.closest('[data-reset]');
+  if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); renderColumn('cyber'); renderColumn('geo'); return; }
+  const more = t.closest('[data-more]');
+  if (more) { state.f[more.dataset.more].limit += 50; renderColumn(more.dataset.more); return; }
+  const open = t.closest('[data-open]');
+  if (open) { const a = state.items.find(x => x.link === open.dataset.open); if (a) openArticle(a); }
+});
+$('urgent').onclick = () => {
+  const has = state.items.some(a => a.category === 'cyber' && a._topics.includes('exploited') && within(a, 864e5));
+  if (has) setTopic('cyber', 'exploited'); else $('col-cyber').scrollIntoView({ behavior: 'smooth' });
+};
+$('tileExploited').onclick = () => setTopic('cyber', 'exploited');
+$('tileVictims').onclick = () => setTopic('cyber', 'impact');
+$('markRead').onclick = () => { state.items.forEach(a => state.seen.add(a.link)); saveSeen(); render(); showToast('All caught up', 'Every story is marked as read.'); };
+$('checkNow').onclick = () => check();
+$('showSources').onclick = openSources;
+for (const key of ['cyber', 'geo']) {
+  $(key + 'Region').innerHTML = '<option value="">All regions</option>' + SF.REGIONS.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join('');
+  $(key + 'Region').onchange = e => { const f = state.f[key]; f.region = e.target.value; f.limit = PAGE_SIZE; renderColumn(key); };
+}
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) { state.unseenWhileHidden = 0; document.title = BASE_TITLE; check(); }
 });
 
-// ---------- FILTER CONTROLS ----------
-function setQuery(key, value) {
-  const f = state.f[key];
-  f.query = value; f.tokens = SF.parseQuery(value); f.limit = 200;
-  $(key + 'Search').value = value;
-  $(key + 'SearchBox').classList.toggle('has', !!value);
-}
-for (const key of ['cyber', 'geo']) {
-  $(key + 'Region').innerHTML = '<option value="">All regions</option>' + SF.REGIONS.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join('');
-  $(key + 'Region').onchange = e => { state.f[key].region = e.target.value; state.f[key].limit = 200; renderColumn(key, true); };
-  let timer;
-  $(key + 'Search').addEventListener('input', e => {
-    const value = e.target.value;
-    $(key + 'SearchBox').classList.toggle('has', !!value);
-    clearTimeout(timer);
-    timer = setTimeout(() => { setQuery(key, value); renderColumn(key, true); }, 150);
-  });
-  $(key + 'Search').addEventListener('keydown', e => { if (e.key === 'Escape' && e.target.value) { e.stopPropagation(); setQuery(key, ''); renderColumn(key, true); } });
-}
-
 // ---------- START ----------
-updateNotifIcon();
+updateThemeButton(); updateNotifIcon(); render();
 check();
 setInterval(() => { if (Date.now() >= state.nextCheck) check(); }, 5000);
 setInterval(updateLive, 1000);
-setInterval(render, 60000);   // keeps "x minutes ago" accurate
+setInterval(render, 60000);   // keeps times and the greeting current
 </script>
 </body>
 </html>
