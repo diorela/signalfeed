@@ -1,0 +1,61 @@
+name: Update headlines
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes (GitHub may run it a little late)
+  workflow_dispatch:         # lets you run it by hand from the Actions tab
+  push:
+    branches: [main]         # publish right away when you change the page
+
+# Minimum access: read this repo's files, publish to its own Pages site.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read all news sources
+        run: node scripts/fetch-feeds.mjs
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  # GitHub pauses scheduled jobs in public repos after 60 days without commits.
+  # Once a month this adds an empty commit so the feed never stops.
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep scheduled job active
+        run: |
+          last=$(git log -1 --format=%ct)
+          age_days=$(( ( $(date +%s) - last ) / 86400 ))
+          if [ "$age_days" -ge 45 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --allow-empty -m "keepalive: keep the scheduled headline job active"
+            git push
+          fi
