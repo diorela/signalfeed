@@ -334,7 +334,6 @@
         <label class="fsel"><span>Region</span><select id="cyberRegion" data-key="cyber" data-f="region"></select></label>
       </div>
       <div class="resultline" id="cyberResult" hidden></div>
-      <div id="cyberLead"></div>
       <div class="stories" id="cyberList"></div>
     </section>
 
@@ -349,7 +348,6 @@
         <label class="fsel"><span>Region</span><select id="geoRegion" data-key="geo" data-f="region"></select></label>
       </div>
       <div class="resultline" id="geoResult" hidden></div>
-      <div id="geoLead"></div>
       <div class="stories" id="geoList"></div>
     </section>
   </div>
@@ -578,23 +576,13 @@ function renderColumn(key, toTop = false) {
   result.hidden = !filtering;
   result.innerHTML = filtering ? `<span>${items.length} of ${all.length} stories${state.tokens.length ? ` matching “${esc(state.query)}”` : ''}</span><button data-reset="${key}">Clear filters</button>` : '';
 
-  const lead = pickLead(key, items, filtering);
-  $(key + 'Lead').innerHTML = lead ? `
-    <article class="lead" data-open="${esc(lead.link)}">
-      <div class="badges"><span class="kicker mono">${filtering ? 'TOP RESULT' : 'LEAD STORY'}</span>${isNew(lead) ? '<span class="newb">NEW</span>' : ''}${tagsFor(lead, 3)}</div>
-      <h3 class="display"><button type="button" data-open="${esc(lead.link)}">${SF.highlight(lead.title, state.tokens, esc)}</button></h3>
-      ${lead.description ? `<p>${SF.highlight(lead.description, state.tokens, esc)}</p>` : ''}
-      <div class="foot">${badge(lead.source, 'sm')}<span>${esc(lead.source)} · ${esc(ago(lead.date))}</span>
-        <a href="${esc(safeUrl(lead.link))}" target="_blank" rel="noopener noreferrer" data-read="${esc(lead.link)}">Read article →</a></div>
-    </article>` : '';
-
-  const rest = items.filter(a => a !== lead);
+  const rest = items;
   const shown = rest.slice(0, f.limit);
   const list = $(key + 'List');
   const y = window.scrollY;
   const emptyText = state.error ? state.error : !state.generatedAt ? 'Loading…'
     : filtering ? 'No stories match. Try fewer keywords, another topic or all regions.' : 'No stories in this column yet.';
-  list.innerHTML = !lead ? `<div class="empty">${esc(emptyText)}</div>` : shown.map(a => `
+  list.innerHTML = !items.length ? `<div class="empty">${esc(emptyText)}</div>` : shown.map(a => `
     <article class="story${isNew(a) ? ' unread' : ''}" data-open="${esc(a.link)}">
       ${badge(a.source)}
       <div class="s-body">
