@@ -7,7 +7,9 @@ import { mkdir, writeFile } from 'node:fs/promises';
 // ---------- SOURCES ----------
 // type: 'rss' = the site's own news feed, 'claroty' = read the research page,
 // 'bleeping-home' = backup reading of BleepingComputer's "latest articles" list.
-const SECURITY_WORDS = /\b(cve|vulnerab|exploit|patch|zero[- ]?day|0-day|malware|ransomware|breach|hack|phish|attack|backdoor|botnet|trojan|spyware|security|threat|apt|leak|stolen|compromis|cyber|rce|privilege|authenticat|ddos|extort)/i;
+// IT-Connect: keep a story only if its TITLE is clearly about a threat or flaw
+// (not admin guides or general Windows update notes that merely mention "security").
+const SECURITY_TITLE = /\b(cve-|vulnerab|exploit|zero[- ]?days?\b|0-day|malware|ransomware|breach|hack|phish|cyberattack|attack|backdoor|botnet|trojan|spyware|stealer|rce\b|ddos|extort|leak|compromis|threat actor|apt\d|flaw)/i;
 
 export const SOURCES = [
   // ---- Cybersecurity ----
@@ -22,13 +24,13 @@ export const SOURCES = [
     keep: it => !/^ISC Stormcast/i.test(it.title),                       // skip the daily podcast entries
     fix:  it => { it.link = it.link.replace('/diary/rss/', '/diary/'); } },
   { name: 'IT-Connect',        category: 'cyber', type: 'rss', url: 'https://www.it-connect.tech/feed/',
-    keep: it => SECURITY_WORDS.test(it.title + ' ' + it.description) },  // security stories only, no how-to guides
-  { name: 'Claroty Team82',    category: 'cyber', type: 'claroty', url: 'https://claroty.com/team82/research', days: 90 },
+    keep: it => SECURITY_TITLE.test(it.title) },                          // security stories only, no how-to guides
 
   // ---- Geopolitics ----
   { name: 'BBC World',      category: 'geo', type: 'rss', url: 'https://feeds.bbci.co.uk/news/world/rss.xml',
     keep: it => !/\/(sport|sounds|iplayer|videos)\//.test(it.link) },
-  { name: 'The Guardian',   category: 'geo', type: 'rss', url: 'https://www.theguardian.com/world/rss' },
+  { name: 'The Guardian',   category: 'geo', type: 'rss', url: 'https://www.theguardian.com/world/rss',
+    keep: it => /theguardian\.com\/(world|global-development)\//.test(it.link) }, // world news only, no UK/Australian domestic stories
   { name: 'Al Jazeera',     category: 'geo', type: 'rss', url: 'https://www.aljazeera.com/xml/rss/all.xml',
     keep: it => /aljazeera\.com\/(news|features|opinions|economy)\//.test(it.link) }, // no sport, no video clips
   { name: 'Foreign Policy', category: 'geo', type: 'rss', url: 'https://foreignpolicy.com/feed/' },
@@ -129,15 +131,19 @@ export function parseBleepingHome(html) {
   return items;
 }
 export function parseClarotyIndex(html) {
-  const links = html.match(/https:\/\/claroty\.com\/team82\/research\/[a-z0-9-]+/gi) || [];
-  return [...new Set(links)];
+  // The page may use full addresses or short ones like /team82/research/<name>.
+  const slugs = [...html.matchAll(/(?:https:\/\/(?:www\.)?claroty\.com)?\/team82\/research\/([a-z0-9][a-z0-9-]*)/gi)].map(m => m[1].toLowerCase());
+  return [...new Set(slugs)].map(s => `https://claroty.com/team82/research/${s}`);
 }
 export function parseClarotyArticle(html, link) {
   return {
     title: cleanText(meta(html, 'og:title')),
     link,
     description: cleanText(meta(html, 'og:description') || meta(html, 'description'), 320),
-    date: meta(html, 'article:published_time'),
+    date: meta(html, 'article:published_time')
+       || (html.match(/"datePublished"\s*:\s*"([^"]+)"/) || [])[1]
+       || (html.match(/<time[^>]+datetime=["']([^"']+)["']/i) || [])[1]
+       || '',
   };
 }
 
@@ -182,7 +188,12 @@ export async function main() {
   const now = Date.now();
   const previous = await loadPrevious();
   const byLink = new Map();
-  for (const it of previous.items || []) byLink.set(it.link, it);
+  for (const it of previous.items || []) {
+    // Re-apply today's filters to stories kept from earlier runs, so a tightened filter cleans up old ones too.
+    const rules = SOURCES.filter(s => s.name === it.source && s.keep);
+    if (rules.some(s => !s.keep(it))) continue;
+    byLink.set(it.link, it);
+  }
 
   const results = await Promise.allSettled(SOURCES.map(s => readSource(s, new Set(byLink.keys()))));
   const health = new Map(); // one line per source name

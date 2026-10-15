@@ -10,7 +10,7 @@ Live cybersecurity and geopolitics headlines, read directly from each publisher.
 
 | Cybersecurity | Geopolitics |
 |---|---|
-| The Hacker News, BleepingComputer (feed + home-page backup), Dark Reading, SecurityWeek, Krebs on Security, SANS ISC (no podcast entries), IT-Connect (security stories only), Claroty Team82 (research page, last 90 days) | BBC World, The Guardian, Al Jazeera (news only, no sport or video), Foreign Policy, France 24 |
+| The Hacker News, BleepingComputer (feed + home-page backup), Dark Reading, SecurityWeek, Krebs on Security, SANS ISC (no podcast entries), IT-Connect (security stories only) | BBC World, The Guardian, Al Jazeera (news only, no sport or video), Foreign Policy, France 24 |
 
 To add or remove a source, edit the `SOURCES` list at the top of `scripts/fetch-feeds.mjs`.
 

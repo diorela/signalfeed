@@ -5,7 +5,7 @@ on:
     - cron: '*/5 * * * *'   # every 5 minutes (GitHub may run it a little late)
   workflow_dispatch:         # lets you run it by hand from the Actions tab
   push:
-    branches: [main]         # publish right away when you change the page
+    branches: [Main, main]   # publish right away when you change the page
 
 # Minimum access: read this repo's files, publish to its own Pages site.
 permissions:
