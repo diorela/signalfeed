@@ -283,9 +283,6 @@
       <span class="eyebrow mono" id="dateLine"></span>
       <h1 class="display" id="greeting">Hello, Dior.</h1>
       <p id="heroLine">Loading today's briefing…</p>
-      <div class="hero-actions">
-        <button class="btn primary" id="urgent">Start with what's urgent <span aria-hidden="true">→</span></button>
-      </div>
     </div>
     <div class="tiles">
       <button class="tile ex" id="tileExploited" type="button">
@@ -525,10 +522,9 @@ function renderHero() {
   if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
   const lead = newCount ? `${newCount} new ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : "You're all caught up.";
   const urgent = exploited.length === 0 ? 'Nothing new is being actively exploited right now.'
-    : exploited.length === 1 ? 'One flaw is being exploited right now: start there.'
-    : `${exploited.length} flaws are being exploited right now: start there.`;
+    : exploited.length === 1 ? 'One flaw is being actively exploited right now.'
+    : `${exploited.length} flaws are being actively exploited right now.`;
   $('heroLine').textContent = `${lead} ${urgent}`;
-  $('urgent').innerHTML = exploited.length ? 'Start with what\'s urgent <span aria-hidden="true">→</span>' : 'Read the latest <span aria-hidden="true">→</span>';
 }
 
 // ---------- COLUMNS ----------
@@ -700,10 +696,6 @@ document.addEventListener('click', e => {
   const open = t.closest('[data-open]');
   if (open) { const a = state.items.find(x => x.link === open.dataset.open); if (a) openArticle(a); }
 });
-$('urgent').onclick = () => {
-  const has = state.items.some(a => a.category === 'cyber' && a._topics.includes('exploited') && within(a, 864e5));
-  if (has) setTopic('cyber', 'exploited'); else $('col-cyber').scrollIntoView({ behavior: 'smooth' });
-};
 $('tileExploited').onclick = () => setTopic('cyber', 'exploited');
 $('tileVictims').onclick = () => setTopic('cyber', 'impact');
 $('checkNow').onclick = () => check();
