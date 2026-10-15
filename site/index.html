@@ -56,6 +56,34 @@
   .badge-new { font-size: 9px; font-weight: 700; letter-spacing: .08em; color: #1c1c1c; background: #8fcfa8; border-radius: 3px; padding: 1px 6px; }
   .empty { padding: 30px 16px; text-align: center; color: #888880; font-size: 12px; line-height: 1.7; }
 
+  /* ---- filters ---- */
+  .cyber { --accent: #7ab8b8; --accent-bg: #1e3838; }
+  .geo   { --accent: #c4974a; --accent-bg: #2a1e08; }
+  .filters { display: flex; flex-direction: column; gap: 8px; margin-top: 11px; }
+  .searchrow { display: flex; gap: 6px; }
+  .search { flex: 1; position: relative; min-width: 0; }
+  .search input { width: 100%; background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 6px; padding: 7px 28px; color: #e4e0da; font: 12px 'JetBrains Mono', monospace; }
+  .search input::placeholder { color: #6e6b66; }
+  .search input:focus { outline: none; border-color: var(--accent); }
+  .search .icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: #888880; font-size: 13px; pointer-events: none; }
+  .search .clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888880; font-size: 15px; padding: 2px 6px; display: none; }
+  .search .clear:hover { color: #e4e0da; }
+  .search.has .clear { display: block; }
+  select.region { background: #1c1c1c; border: 1px solid #3a3a3a; border-radius: 6px; color: #c8c4be; font: 11px 'JetBrains Mono', monospace; padding: 0 8px; cursor: pointer; }
+  select.region:focus { outline: none; border-color: var(--accent); }
+  .topics { display: flex; flex-wrap: wrap; gap: 5px; }
+  .topic { font: 10px 'JetBrains Mono', monospace; border-radius: 12px; padding: 3px 10px; cursor: pointer; background: transparent; color: #a09c96; border: 1px dashed #464646; }
+  .topic:hover { color: #e4e0da; border-color: #6a6a6a; }
+  .topic .n { color: #6e6b66; margin-left: 5px; }
+  .topic.active { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent); }
+  .topic.active .n { color: var(--accent); }
+  .topic.zero:not(.active) { opacity: .4; }
+  .resultline { display: none; align-items: center; gap: 10px; font-size: 10px; color: #888880; }
+  .resultline.show { display: flex; }
+  .resultline button { background: none; border: none; color: var(--accent); font: inherit; text-decoration: underline; padding: 0; }
+  mark { background: rgba(217,179,106,.3); color: inherit; border-radius: 2px; padding: 0 1px; }
+  .more { display: block; margin: 10px auto 16px; }
+
   .cyber .bar { background: #7ab8b8; } .cyber h2, .cyber .src { color: #7ab8b8; }
   .geo .bar { background: #c4974a; }   .geo h2, .geo .src { color: #c4974a; }
   .cyber .pill.active { background: #1e3838; color: #7ab8b8; border-color: #7ab8b8; }
@@ -111,6 +139,16 @@
       <div class="col-head">
         <div class="col-title"><div class="bar"></div><h2 class="mono">Cybersecurity</h2><span class="count mono" id="cyberCount"></span><span class="newcount mono" id="cyberNew"></span></div>
         <div class="pills mono" id="cyberPills"></div>
+        <div class="filters">
+          <div class="searchrow">
+            <label class="search" id="cyberSearchBox"><span class="icon">⌕</span>
+              <input id="cyberSearch" data-key="cyber" type="text" autocomplete="off" placeholder="Keywords, e.g. french supermarket attack" aria-label="Search cybersecurity headlines">
+              <button class="clear" data-clear="cyber" aria-label="Clear search">×</button></label>
+            <select class="region" id="cyberRegion" data-key="cyber" aria-label="Region"></select>
+          </div>
+          <div class="topics" id="cyberTopics"></div>
+          <div class="resultline mono" id="cyberResult"></div>
+        </div>
       </div>
       <div class="list" id="cyberList"><div class="empty mono">Loading…</div></div>
     </section>
@@ -118,6 +156,16 @@
       <div class="col-head">
         <div class="col-title"><div class="bar"></div><h2 class="mono">Geopolitics</h2><span class="count mono" id="geoCount"></span><span class="newcount mono" id="geoNew"></span></div>
         <div class="pills mono" id="geoPills"></div>
+        <div class="filters">
+          <div class="searchrow">
+            <label class="search" id="geoSearchBox"><span class="icon">⌕</span>
+              <input id="geoSearch" data-key="geo" type="text" autocomplete="off" placeholder="Keywords, e.g. taiwan chips export" aria-label="Search geopolitics headlines">
+              <button class="clear" data-clear="geo" aria-label="Clear search">×</button></label>
+            <select class="region" id="geoRegion" data-key="geo" aria-label="Region"></select>
+          </div>
+          <div class="topics" id="geoTopics"></div>
+          <div class="resultline mono" id="geoResult"></div>
+        </div>
       </div>
       <div class="list" id="geoList"><div class="empty mono">Loading…</div></div>
     </section>
@@ -130,6 +178,7 @@
   <div class="modal" id="modal"></div>
 </div>
 
+<script src="filters.js"></script>
 <script>
 // ---------- CONFIG ----------
 const DATA_URL = 'data/headlines.json';
@@ -141,7 +190,10 @@ const SEEN_KEY = 'signalfeed_seen_v2';
 // ---------- STATE ----------
 const state = {
   items: [], sources: [], generatedAt: null,
-  cyberFilter: null, geoFilter: null,
+  f: {                                       // filters for each column
+    cyber: { source: null, topic: null, region: '', query: '', tokens: [], limit: 200 },
+    geo:   { source: null, topic: null, region: '', query: '', tokens: [], limit: 200 },
+  },
   seen: new Set(), firstVisit: false,
   lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
 };
@@ -185,7 +237,10 @@ async function check() {
     const data = await res.json();
     const before = new Set(state.items.map(a => a.link));
     const hadData = state.items.length > 0;
-    state.items = data.items || [];
+    state.items = (data.items || []).map(a => {
+      const c = SF.classify(a);                 // work out topics and regions once per load
+      return Object.assign(a, { _text: c.text + ' ' + SF.norm(a.source), _topics: c.topics, _regions: c.regions });
+    });
     state.sources = data.sources || [];
     state.generatedAt = data.generatedAt;
     state.error = '';
@@ -242,31 +297,49 @@ function updateLive() {
 }
 
 // ---------- RENDER ----------
-function renderColumn(key) {
+function renderColumn(key, toTop = false) {
+  const f = state.f[key];
   const all = state.items.filter(a => a.category === key).sort((a, b) => new Date(b.date) - new Date(a.date));
-  const filter = state[key + 'Filter'];
-  const items = filter ? all.filter(a => a.source === filter) : all;
   const sources = [...new Set(all.map(a => a.source))].sort();
+  if (f.source && !sources.includes(f.source)) f.source = null;
+  const bySource = f.source ? all.filter(a => a.source === f.source) : all;
+  // Everything except the topic, so each topic button can show how many stories it would give.
+  const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, f.tokens));
+  const items = f.topic ? pre.filter(a => a._topics.includes(f.topic)) : pre;
   const newCount = all.filter(isNew).length;
+  const filtering = !!(f.topic || f.region || f.tokens.length);
 
-  $(key + 'Count').textContent = items.length || '';
+  $(key + 'Count').textContent = bySource.length || '';
   $(key + 'New').textContent = `${newCount} new`;
   $(key + 'New').classList.toggle('show', newCount > 0);
   $(key + 'Pills').innerHTML = ['All', ...sources].map(s => {
-    const active = (s === 'All' && !filter) || s === filter;
+    const active = (s === 'All' && !f.source) || s === f.source;
     return `<span class="pill${active ? ' active' : ''}" data-key="${key}" data-src="${esc(s)}">${esc(s)}</span>`;
   }).join('');
+  $(key + 'Topics').innerHTML = SF.TOPICS[key].map(t => {
+    const n = pre.filter(a => a._topics.includes(t.id)).length;
+    return `<button class="topic${f.topic === t.id ? ' active' : ''}${n ? '' : ' zero'}" data-key="${key}" data-topic="${t.id}" title="${esc(t.hint)}">${esc(t.label)}<span class="n">${n}</span></button>`;
+  }).join('');
+  const result = $(key + 'Result');
+  result.classList.toggle('show', filtering);
+  result.innerHTML = filtering ? `<span>${items.length} of ${bySource.length} stories</span><button data-reset="${key}">Clear filters</button>` : '';
 
   const list = $(key + 'List');
-  const scroll = list.scrollTop;
-  list.innerHTML = items.length
-    ? items.map(a => `
+  const scroll = toTop ? 0 : list.scrollTop;
+  const shown = items.slice(0, f.limit);
+  const emptyText = state.error ? state.error
+    : !state.generatedAt ? 'Loading…'
+    : filtering ? 'No stories match these filters. Try fewer keywords or another topic.'
+    : 'No stories in this column yet.';
+  list.innerHTML = shown.length
+    ? shown.map(a => `
       <div class="item${isNew(a) ? ' new' : ''}" data-link="${esc(a.link)}">
-        <div class="item-title">${esc(a.title)}</div>
-        ${a.description ? `<div class="item-desc">${esc(a.description)}</div>` : ''}
+        <div class="item-title">${SF.highlight(a.title, f.tokens, esc)}</div>
+        ${a.description ? `<div class="item-desc">${SF.highlight(a.description, f.tokens, esc)}</div>` : ''}
         <div class="meta mono">${isNew(a) ? '<span class="badge-new">NEW</span>' : ''}<span class="src">${esc(a.source)}</span><span>${ago(a.date)}</span></div>
       </div>`).join('')
-    : `<div class="empty mono">${state.error ? esc(state.error) : state.generatedAt ? 'No stories in this column yet.' : 'Loading…'}</div>`;
+      + (items.length > shown.length ? `<button class="btn more mono" data-more="${key}">Show more (${items.length - shown.length} left)</button>` : '')
+    : `<div class="empty mono">${esc(emptyText)}</div>`;
   list.scrollTop = scroll;
 }
 function render() { renderColumn('cyber'); renderColumn('geo'); }
@@ -316,7 +389,15 @@ function updateNotifIcon() {
 // ---------- EVENTS ----------
 document.addEventListener('click', e => {
   const pill = e.target.closest('.pill');
-  if (pill) { const k = pill.dataset.key, s = pill.dataset.src; state[k + 'Filter'] = (s === 'All' || state[k + 'Filter'] === s) ? null : s; renderColumn(k); return; }
+  if (pill) { const k = pill.dataset.key, s = pill.dataset.src, f = state.f[k]; f.source = (s === 'All' || f.source === s) ? null : s; f.limit = 200; renderColumn(k, true); return; }
+  const topic = e.target.closest('.topic');
+  if (topic) { const k = topic.dataset.key, f = state.f[k]; f.topic = f.topic === topic.dataset.topic ? null : topic.dataset.topic; f.limit = 200; renderColumn(k, true); return; }
+  const reset = e.target.closest('[data-reset]');
+  if (reset) { const k = reset.dataset.reset; setQuery(k, ''); Object.assign(state.f[k], { topic: null, region: '' }); $(k + 'Region').value = ''; renderColumn(k, true); return; }
+  const clear = e.target.closest('[data-clear]');
+  if (clear) { e.preventDefault(); const k = clear.dataset.clear; setQuery(k, ''); renderColumn(k, true); $(k + 'Search').focus(); return; }
+  const more = e.target.closest('[data-more]');
+  if (more) { state.f[more.dataset.more].limit += 200; renderColumn(more.dataset.more); return; }
   const item = e.target.closest('.item');
   if (item) { const a = state.items.find(x => x.link === item.dataset.link); if (a) openArticle(a); return; }
   if (e.target === $('overlay') || e.target.closest('[data-close]')) closeModal();
@@ -332,6 +413,26 @@ document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) { state.unseenWhileHidden = 0; document.title = BASE_TITLE; check(); }
 });
+
+// ---------- FILTER CONTROLS ----------
+function setQuery(key, value) {
+  const f = state.f[key];
+  f.query = value; f.tokens = SF.parseQuery(value); f.limit = 200;
+  $(key + 'Search').value = value;
+  $(key + 'SearchBox').classList.toggle('has', !!value);
+}
+for (const key of ['cyber', 'geo']) {
+  $(key + 'Region').innerHTML = '<option value="">All regions</option>' + SF.REGIONS.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join('');
+  $(key + 'Region').onchange = e => { state.f[key].region = e.target.value; state.f[key].limit = 200; renderColumn(key, true); };
+  let timer;
+  $(key + 'Search').addEventListener('input', e => {
+    const value = e.target.value;
+    $(key + 'SearchBox').classList.toggle('has', !!value);
+    clearTimeout(timer);
+    timer = setTimeout(() => { setQuery(key, value); renderColumn(key, true); }, 150);
+  });
+  $(key + 'Search').addEventListener('keydown', e => { if (e.key === 'Escape' && e.target.value) { e.stopPropagation(); setQuery(key, ''); renderColumn(key, true); } });
+}
 
 // ---------- START ----------
 updateNotifIcon();

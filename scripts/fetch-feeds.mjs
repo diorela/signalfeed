@@ -38,8 +38,8 @@ export const SOURCES = [
     keep: it => !/\/sport\//.test(it.link) },
 ];
 
-const DAYS = { cyber: 14, geo: 7 };
-const MAX_PER_COLUMN = 300;
+const DAYS = { cyber: 21, geo: 21 };   // keep 3 weeks of news; older stories are deleted
+const MAX_PER_COLUMN = 2000;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const OUT_DIR = 'site/data';
 

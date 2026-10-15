@@ -4,7 +4,7 @@ Live cybersecurity and geopolitics headlines, read directly from each publisher.
 
 - `scripts/fetch-feeds.mjs` reads every source and writes `site/data/headlines.json`.
 - `.github/workflows/update-headlines.yml` runs it every 5 minutes and publishes `site/` to GitHub Pages.
-- `site/index.html` is the page. It checks for a fresh headlines file every minute.
+- `site/index.html` is the page. It checks for a fresh headlines file every minute. Stories are kept for 3 weeks, then deleted.
 
 ## Sources
 
