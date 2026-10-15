@@ -130,6 +130,7 @@
   .hero h1 { margin: 0; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
   .hero p { margin: 0; font-size: 18px; color: var(--ink-2); max-width: 540px; }
   .breaking { margin: 0 0 -8px; display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 8px 10px 8px 8px; border-radius: 12px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--brk) 35%, var(--border)); box-shadow: inset 4px 0 0 var(--brk); }
+  #notif.on { background: var(--new-bg); color: var(--new-ink); border-color: transparent; }
   .breaking[hidden] { display: none; }
   :root { --brk: #D92D20; } [data-theme="dark"] { --brk: #F97066; }
   .b-tag { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-left: 6px; padding: 6px 10px; border-radius: 8px; background: var(--brk); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
@@ -485,7 +486,7 @@ function announce(fresh) {
   if (document.hidden) {
     state.unseenWhileHidden += n;
     document.title = `(${state.unseenWhileHidden}) ${BASE_TITLE}`;
-    if ('Notification' in window && Notification.permission === 'granted') {
+    if (notifOn()) {
       const note = new Notification(n === 1 ? `SignalFeed · ${top.source}` : `SignalFeed · ${n} new stories`, { body: top.title, tag: 'signalfeed' });
       note.onclick = () => { window.focus(); note.close(); };
     }
@@ -696,16 +697,40 @@ $('theme').onclick = () => {
   try { localStorage.setItem('signalfeed_theme', next); } catch {}
   updateThemeButton();
 };
+const NOTIF_KEY = 'signalfeed_notify';
+function notifWanted() { try { return localStorage.getItem(NOTIF_KEY) !== 'off'; } catch { return true; } }
+function setNotifWanted(v) { try { localStorage.setItem(NOTIF_KEY, v ? 'on' : 'off'); } catch {} }
+function notifOn() { return 'Notification' in window && Notification.permission === 'granted' && notifWanted(); }
 function updateNotifIcon() {
-  if (!('Notification' in window)) { $('notif').style.display = 'none'; return; }
-  const on = Notification.permission === 'granted';
+  const btn = $('notif');
+  if (!('Notification' in window)) { btn.style.display = 'none'; return; }
+  const on = notifOn();
   $('notifIcon').innerHTML = on ? ICONS.bell : ICONS.bellOff;
-  const label = on ? 'Desktop notifications are on' : Notification.permission === 'denied' ? 'Notifications are blocked in your browser settings' : 'Turn on desktop notifications for new stories';
-  $('notif').setAttribute('aria-label', label); $('notif').title = label;
+  btn.classList.toggle('on', on);
+  const label = on ? 'Desktop alerts are on. Click to turn off'
+    : Notification.permission === 'denied' ? 'Desktop alerts are blocked by your browser. Click for how to allow them'
+    : 'Turn on desktop alerts for new stories';
+  btn.setAttribute('aria-label', label); btn.title = label; btn.setAttribute('aria-pressed', on);
 }
 $('notif').onclick = async () => {
-  if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
-  updateNotifIcon();
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'denied') {
+    showToast('Alerts are blocked by your browser', 'Click the icon left of the web address (the padlock or sliders), set Notifications to Allow, then reload the page.');
+    return;
+  }
+  if (notifOn()) { setNotifWanted(false); updateNotifIcon(); showToast('Desktop alerts off', 'You will still see new stories here when the page is open.'); return; }
+  let perm = Notification.permission;
+  if (perm === 'default') { try { perm = await Notification.requestPermission(); } catch { perm = Notification.permission; } }
+  if (perm === 'granted') {
+    setNotifWanted(true); updateNotifIcon();
+    showToast('Desktop alerts on', "You'll get a pop-up for new stories while SignalFeed is open in another tab or minimised.");
+    try { new Notification('SignalFeed alerts are on', { body: 'This is what a new-story alert looks like.', tag: 'signalfeed-test' }); } catch {}
+  } else if (perm === 'denied') {
+    updateNotifIcon();
+    showToast('Alerts are blocked by your browser', 'Click the icon left of the web address (the padlock or sliders), set Notifications to Allow, then reload the page.');
+  } else {
+    showToast('No answer from the browser', 'Your browser may have hidden the request: look for a small bell or blocked icon in the address bar and choose Allow.');
+  }
 };
 
 // ---------- SEARCH (applies to both columns) ----------
