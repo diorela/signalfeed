@@ -129,6 +129,23 @@
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; color: var(--muted); }
   .hero h1 { margin: 0; font-size: clamp(30px, 3.6vw, 40px); line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; }
   .hero p { margin: 0; font-size: 18px; color: var(--ink-2); max-width: 540px; }
+  .breaking { margin: 0 0 -8px; display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 8px 10px 8px 8px; border-radius: 12px; background: var(--surface); border: 1px solid color-mix(in srgb, var(--brk) 35%, var(--border)); box-shadow: inset 4px 0 0 var(--brk); }
+  .breaking[hidden] { display: none; }
+  :root { --brk: #D92D20; } [data-theme="dark"] { --brk: #F97066; }
+  .b-tag { flex: none; display: inline-flex; align-items: center; gap: 8px; margin-left: 6px; padding: 6px 10px; border-radius: 8px; background: var(--brk); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+  [data-theme="dark"] .b-tag { color: #1A0806; }
+  .b-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: bpulse 1.6s infinite; }
+  @keyframes bpulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  @media (prefers-reduced-motion: reduce) { .b-dot { animation: none; } }
+  .b-item { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; background: none; border: none; padding: 6px 4px; text-align: left; cursor: pointer; color: var(--ink); }
+  .b-item .b-meta { flex: none; font-size: 13px; color: var(--muted); }
+  .b-item .b-title { min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .b-item:hover .b-title { text-decoration: underline; text-underline-offset: 3px; }
+  .b-nav { flex: none; display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  .b-nav button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink-2); font-size: 16px; line-height: 1; }
+  .b-nav button:hover { border-color: var(--faint); }
+  .b-nav[hidden] { display: none; }
+  @media (max-width: 640px) { .breaking { flex-wrap: wrap; } .b-item { flex-basis: 100%; flex-direction: column; gap: 2px; order: 3; } .b-item .b-title { white-space: normal; } .b-nav { margin-left: auto; } }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
   .tiles { flex: 1 1 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
   .tile { border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; text-align: left; border: 1px solid transparent; background: var(--surface); }
@@ -278,6 +295,11 @@
 </header>
 
 <main class="wrap">
+  <section class="breaking" id="breaking" hidden aria-label="Breaking news">
+    <span class="b-tag"><span class="b-dot"></span>BREAKING</span>
+    <button class="b-item" id="bItem" type="button"></button>
+    <span class="b-nav" id="bNav"><button type="button" id="bPrev" aria-label="Previous breaking story">‹</button><span id="bPos"></span><button type="button" id="bNext" aria-label="Next breaking story">›</button></span>
+  </section>
   <section class="hero">
     <div class="hero-text">
       <span class="eyebrow mono" id="dateLine"></span>
@@ -593,8 +615,42 @@ function renderColumn(key, toTop = false) {
   if (toTop) $('col-' + key).scrollIntoView({ block: 'start', behavior: 'smooth' }); else window.scrollTo({ top: y });
 }
 
+// ---------- BREAKING ----------
+const BREAKING_WINDOW = 6 * 3600e3;
+const CYBER_BREAK = /zero[- ]?day|0-day|actively exploited|in the wild|emergency (patch|update|directive)|out[- ]of[- ]band|mass exploitation|\b(outage|shuts? down|shut down|grounded|halts?|disrupt\w*|nationwide|millions)\b/i;
+const GEO_BREAK = /\b(breaking|killed|kills|dead|deaths|explosions?|blasts?|missiles?|air ?strikes?|invad\w*|invasion|coup|ceasefire|truce|declares?|martial law|assassinat\w*|resigns?|ousted|earthquake|tsunami|hostages?|mobiliz\w*|nuclear)\b/i;
+function isBreaking(a) {
+  if (Date.now() - new Date(a.date) > BREAKING_WINDOW) return false;
+  if (a.category === 'cyber') return a._topics.includes('exploited') || CYBER_BREAK.test(a.title);
+  return GEO_BREAK.test(a.title) && (a._topics.includes('conflict') || a._topics.includes('terror') || a._topics.includes('humanitarian') || a._topics.includes('elections') || /breaking|coup|ceasefire|earthquake|tsunami/i.test(a.title));
+}
+const brk = { list: [], i: 0, paused: false, timer: null };
+function renderBreaking() {
+  const prev = brk.list[brk.i]?.link;
+  brk.list = state.items.filter(isBreaking).slice(0, 6);
+  const bar = $('breaking');
+  bar.hidden = !brk.list.length;
+  if (!brk.list.length) return;
+  const keep = brk.list.findIndex(a => a.link === prev);
+  brk.i = keep >= 0 ? keep : Math.min(brk.i, brk.list.length - 1);
+  showBreaking();
+}
+function showBreaking() {
+  const a = brk.list[brk.i]; if (!a) return;
+  $('bItem').dataset.open = a.link;
+  $('bItem').innerHTML = `<span class="b-meta">${esc(ago(a.date))} · ${esc(a.source)}</span><span class="b-title">${esc(a.title)}</span>`;
+  $('bNav').hidden = brk.list.length < 2;
+  $('bPos').textContent = `${brk.i + 1}/${brk.list.length}`;
+}
+function stepBreaking(d) { if (!brk.list.length) return; brk.i = (brk.i + d + brk.list.length) % brk.list.length; showBreaking(); }
+$('bPrev').onclick = e => { e.stopPropagation(); stepBreaking(-1); };
+$('bNext').onclick = e => { e.stopPropagation(); stepBreaking(1); };
+$('breaking').addEventListener('mouseenter', () => brk.paused = true);
+$('breaking').addEventListener('mouseleave', () => brk.paused = false);
+setInterval(() => { if (!brk.paused && !document.hidden) stepBreaking(1); }, 7000);
+
 function render() {
-  renderHero(); renderColumn('cyber'); renderColumn('geo');
+  renderBreaking(); renderHero(); renderColumn('cyber'); renderColumn('geo');
   const ok = state.sources.filter(s => s.ok).length;
   $('footLine').textContent = state.sources.length ? `${ok} of ${state.sources.length} sources read ${ago(state.generatedAt)} · stories kept for 3 weeks` : 'Stories kept for 3 weeks';
 }
