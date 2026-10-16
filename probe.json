@@ -1,571 +1,245 @@
 {
- "cisa kev gh mirror": {
-  "status": 200,
-  "bytes": 1789360,
-  "head": "{\n    \"title\": \"CISA Catalog of Known Exploited Vulnerabilities\",\n    \"catalogVersion\": \"2026.10.15\",\n    \"dateReleased\": \"2026-10-15T17:00:11.2795Z\",\n    \"count\": 1746,\n    \"vulnerabilities\": [\n        {\n            \"cveID\": \"CVE-2026-21589\",\n            \"vendorProject\": \"Atlassian\",\n            \"p",
-  "type": "object",
-  "keys": [
-   "title",
-   "catalogVersion",
-   "dateReleased",
-   "count",
-   "vulnerabilities"
+ "status": 200,
+ "generatedAt": "2026-10-16T09:08:23.792Z",
+ "errors": {},
+ "rwMonths": 27,
+ "first": "2024-08",
+ "last": "2026-10",
+ "complete": false,
+ "lastMonths": [
+  [
+   "2026-07",
+   962,
+   263,
+   333,
+   5,
+   9
   ],
-  "count": 1746,
-  "sample": [
-   {
-    "cveID": "CVE-2026-21589",
-    "vendorProject": "Atlassian",
-    "product": "Multiple Products",
-    "vulnerabilityName": "Atlassian Multiple Products Files or Directories Accessible to External Parties Vulnerability",
-    "dateAdded": "2026-10-15",
-    "shortDescription": "Multiple Atlassian products (Bitbucket Data Center ,Confluence Data Center, Jira Service Management Data Center, Jira Software Data Center, Bamboo Data Center, Crowd Data Center, Crucible and Fisheye) contain a files or directories accessible to external parties vulnerability which could allow an unauthenticated attacker to access specific files within the web application root directory in affected versions.",
-    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-    "dueDate": "2026-10-18",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "Yes",
-    "notes": "https://confluence.atlassian.com/security/cve-2026-21589-arbitrary-file-access-vulnerability-impacts-multiple-products-1870495748.html?ref=labs.watchtowr.com ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-21589",
-    "cwes": [
-     "CWE-552"
-    ]
+  [
+   "2026-08",
+   1060,
+   285,
+   368,
+   8,
+   10
+  ],
+  [
+   "2026-09",
+   821,
+   183,
+   271,
+   6,
+   2
+  ],
+  [
+   "2026-10",
+   469,
+   90,
+   142,
+   7,
+   2
+  ]
+ ],
+ "topSectorsGlobal": {
+  "Manufacturing": 137,
+  "Technology": 97,
+  "Not stated": 92,
+  "Professional Services": 91,
+  "Healthcare": 78,
+  "Other": 73,
+  "Retail & E-Commerce": 49,
+  "Financial Services": 43,
+  "Education": 36,
+  "Transportation": 29,
+  "Government & Defense": 28,
+  "Agriculture and Food Production": 26,
+  "Energy & Utilities": 23,
+  "Hospitality": 19
+ },
+ "topGroups": {
+  "thegentlemen": 106,
+  "qilin": 74,
+  "Storm": 37,
+  "krybit": 34,
+  "safepay": 32,
+  "AuditTeam": 30,
+  "incransom": 28,
+  "akira": 28,
+  "emperador": 23,
+  "N0n": 18,
+  "SilentRansomGroup": 18,
+  "Panzer": 18,
+  "metaencryptor": 17,
+  "direwolf": 17,
+  "Vexy Ransomware": 16
+ },
+ "kevCount": 1746,
+ "kevLatest": [
+  {
+   "d": "2026-10-15",
+   "c": "CVE-2026-21589",
+   "v": "Atlassian",
+   "n": "Multiple Products",
+   "p": "Cloud, servers & business apps",
+   "w": "Files: path traversal & upload",
+   "r": 0
+  },
+  {
+   "d": "2026-10-14",
+   "c": "CVE-2026-105134",
+   "v": "Ahsay",
+   "n": "AhsayCBS",
+   "p": "Other",
+   "w": "Code & command injection",
+   "r": 0
+  },
+  {
+   "d": "2026-10-14",
+   "c": "CVE-2026-76519",
+   "v": "Cisco",
+   "n": "Secure Email Gateway",
+   "p": "Network & edge devices",
+   "w": "Files: path traversal & upload",
+   "r": 0
+  },
+  {
+   "d": "2026-10-14",
+   "c": "CVE-2026-105133",
+   "v": "Ahsay",
+   "n": "AhsayCBS",
+   "p": "Other",
+   "w": "Login & access bypass",
+   "r": 0
+  },
+  {
+   "d": "2026-10-14",
+   "c": "CVE-2026-0322",
+   "v": "Palo Alto Networks",
+   "n": "PAN-OS",
+   "p": "Network & edge devices",
+   "w": "Code & command injection",
+   "r": 0
+  }
+ ],
+ "kevTypes": [
+  [
+   "Cloud, servers & business apps",
+   38
+  ],
+  [
+   "Other",
+   104
+  ],
+  [
+   "Network & edge devices",
+   66
+  ],
+  [
+   "Operating systems & phones",
+   33
+  ],
+  [
+   "Office & documents",
+   12
+  ],
+  [
+   "Browsers",
+   7
+  ],
+  [
+   "IoT, cameras & industrial",
+   2
+  ]
+ ],
+ "kevWeak": [
+  [
+   "Files: path traversal & upload",
+   27
+  ],
+  [
+   "Code & command injection",
+   65
+  ],
+  [
+   "Login & access bypass",
+   68
+  ],
+  [
+   "Other",
+   39
+  ],
+  [
+   "Memory corruption",
+   42
+  ],
+  [
+   "Web attacks (XSS, SSRF, CSRF, SQL)",
+   21
+  ]
+ ],
+ "coverage": {
+  "topics": [
+   "phishing",
+   "ransomware",
+   "ai",
+   "supply",
+   "nation",
+   "exploited",
+   "vulns",
+   "impact",
+   "infra"
+  ],
+  "weeks": {
+   "2026-09-21": {
+    "total": 1,
+    "phishing": 0,
+    "ransomware": 1,
+    "ai": 0,
+    "supply": 0,
+    "nation": 0,
+    "exploited": 0,
+    "vulns": 0,
+    "impact": 1,
+    "infra": 1
    },
-   {
-    "cveID": "CVE-2026-105134",
-    "vendorProject": "Ahsay",
-    "product": "AhsayCBS",
-    "vulnerabilityName": "Ahsay AhsayCBS Command Injection Vulnerability",
-    "dateAdded": "2026-10-14",
-    "shortDescription": "Ahsay AhsayCBS contains a command injection vulnerability that could allow a remote attacker to execute operating system commands via manipulation of the random parameter in the Replication Receiver component’s /rps/api/json/UpdateReceivers.do endpoint. This vulnerability can be chained with CVE-2026-105133.",
-    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-    "dueDate": "2026-10-17",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "Yes",
-    "notes": "https://www.ahsay.com/en/company/announcements/patch-cve-105133-105134-update ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-105134",
-    "cwes": [
-     "CWE-77",
-     "CWE-78"
-    ]
-   }
-  ],
-  "last": [
-   {
-    "cveID": "CVE-2020-29583",
-    "vendorProject": "Zyxel",
-    "product": "Multiple Products",
-    "vulnerabilityName": "Zyxel Multiple Products Use of Hard-Coded Credentials Vulnerability",
-    "dateAdded": "2021-11-03",
-    "shortDescription": "Zyxel firewalls (ATP, USG, VM) and AP Controllers (NXC2500 and NXC5500) contain a use of hard-coded credentials vulnerability in an undocumented account (\"zyfwp\") with an unchangeable password.",
-    "requiredAction": "Apply updates per vendor instructions.",
-    "dueDate": "2022-05-03",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "No",
-    "notes": "https://nvd.nist.gov/vuln/detail/CVE-2020-29583",
-    "cwes": [
-     "CWE-522"
-    ]
-   }
-  ]
- },
- "rl data repo": {
-  "status": 404,
-  "bytes": 14,
-  "head": "404: Not Found"
- },
- "cf radar noauth": {
-  "status": 400,
-  "bytes": 141,
-  "head": "{\"success\":false,\"errors\":[{\"code\":9106,\"message\":\"Missing X-Auth-Key, X-Auth-Email or Authorization headers\"}],\"messages\":[],\"result\":null}\n",
-  "type": "object",
-  "keys": [
-   "success",
-   "errors",
-   "messages",
-   "result"
-  ]
- },
- "ransomwatch posts": {
-  "status": 200,
-  "bytes": 2286958,
-  "head": "[\n    {\n        \"post_title\": \"Windemuller\",\n        \"group_name\": \"lorenz\",\n        \"discovered\": \"2020-01-12 00:00:00.000000\"\n    },\n    {\n        \"post_title\": \"Leaks Company Birch Communications inc.\",\n        \"group_name\": \"ragnarlocker\",\n        \"discovered\": \"2020-06-10 00:00:00.000000\"\n    }",
-  "type": "array",
-  "keys": null,
-  "count": 16072,
-  "sample": [
-   {
-    "post_title": "Windemuller",
-    "group_name": "lorenz",
-    "discovered": "2020-01-12 00:00:00.000000"
+   "2026-09-28": {
+    "total": 18,
+    "phishing": 2,
+    "ransomware": 4,
+    "ai": 6,
+    "supply": 0,
+    "nation": 2,
+    "exploited": 1,
+    "vulns": 5,
+    "impact": 2,
+    "infra": 1
    },
-   {
-    "post_title": "Leaks Company Birch Communications inc.",
-    "group_name": "ragnarlocker",
-    "discovered": "2020-06-10 00:00:00.000000"
-   }
-  ],
-  "last": [
-   {
-    "post_title": "NF Stroth & Associates",
-    "group_name": "play",
-    "discovered": "2025-06-16 20:30:52.596196"
-   }
-  ]
- },
- "cisa kev": {
-  "status": 200,
-  "bytes": 1789360,
-  "head": "{\n    \"title\": \"CISA Catalog of Known Exploited Vulnerabilities\",\n    \"catalogVersion\": \"2026.10.15\",\n    \"dateReleased\": \"2026-10-15T17:00:11.2795Z\",\n    \"count\": 1746,\n    \"vulnerabilities\": [\n        {\n            \"cveID\": \"CVE-2026-21589\",\n            \"vendorProject\": \"Atlassian\",\n            \"p",
-  "type": "object",
-  "keys": [
-   "title",
-   "catalogVersion",
-   "dateReleased",
-   "count",
-   "vulnerabilities"
-  ],
-  "count": 1746,
-  "sample": [
-   {
-    "cveID": "CVE-2026-21589",
-    "vendorProject": "Atlassian",
-    "product": "Multiple Products",
-    "vulnerabilityName": "Atlassian Multiple Products Files or Directories Accessible to External Parties Vulnerability",
-    "dateAdded": "2026-10-15",
-    "shortDescription": "Multiple Atlassian products (Bitbucket Data Center ,Confluence Data Center, Jira Service Management Data Center, Jira Software Data Center, Bamboo Data Center, Crowd Data Center, Crucible and Fisheye) contain a files or directories accessible to external parties vulnerability which could allow an unauthenticated attacker to access specific files within the web application root directory in affected versions.",
-    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-    "dueDate": "2026-10-18",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "Yes",
-    "notes": "https://confluence.atlassian.com/security/cve-2026-21589-arbitrary-file-access-vulnerability-impacts-multiple-products-1870495748.html?ref=labs.watchtowr.com ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-21589",
-    "cwes": [
-     "CWE-552"
-    ]
+   "2026-10-05": {
+    "total": 42,
+    "phishing": 3,
+    "ransomware": 5,
+    "ai": 15,
+    "supply": 3,
+    "nation": 5,
+    "exploited": 2,
+    "vulns": 11,
+    "impact": 9,
+    "infra": 4
    },
-   {
-    "cveID": "CVE-2026-105134",
-    "vendorProject": "Ahsay",
-    "product": "AhsayCBS",
-    "vulnerabilityName": "Ahsay AhsayCBS Command Injection Vulnerability",
-    "dateAdded": "2026-10-14",
-    "shortDescription": "Ahsay AhsayCBS contains a command injection vulnerability that could allow a remote attacker to execute operating system commands via manipulation of the random parameter in the Replication Receiver component’s /rps/api/json/UpdateReceivers.do endpoint. This vulnerability can be chained with CVE-2026-105133.",
-    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
-    "dueDate": "2026-10-17",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "Yes",
-    "notes": "https://www.ahsay.com/en/company/announcements/patch-cve-105133-105134-update ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-105134",
-    "cwes": [
-     "CWE-77",
-     "CWE-78"
-    ]
+   "2026-10-12": {
+    "total": 129,
+    "phishing": 18,
+    "ransomware": 4,
+    "ai": 28,
+    "supply": 11,
+    "nation": 6,
+    "exploited": 24,
+    "vulns": 65,
+    "impact": 22,
+    "infra": 12
    }
-  ],
-  "last": [
-   {
-    "cveID": "CVE-2020-29583",
-    "vendorProject": "Zyxel",
-    "product": "Multiple Products",
-    "vulnerabilityName": "Zyxel Multiple Products Use of Hard-Coded Credentials Vulnerability",
-    "dateAdded": "2021-11-03",
-    "shortDescription": "Zyxel firewalls (ATP, USG, VM) and AP Controllers (NXC2500 and NXC5500) contain a use of hard-coded credentials vulnerability in an undocumented account (\"zyfwp\") with an unchangeable password.",
-    "requiredAction": "Apply updates per vendor instructions.",
-    "dueDate": "2022-05-03",
-    "knownRansomwareCampaignUse": "Unknown",
-    "forensicTriage": "No",
-    "notes": "https://nvd.nist.gov/vuln/detail/CVE-2020-29583",
-    "cwes": [
-     "CWE-522"
-    ]
-   }
-  ]
+  },
+  "since": "2026-09-21"
  },
- "oecd aim": {
-  "status": 404,
-  "bytes": 96746,
-  "head": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head>\n    <!-- Global site tag (gtag.js) - Google Analytics -->\n    <script async=\"\" src=\"https://www.googletagmanager.com/gtag/js?id=G-71P6TXBD3E\"></script>\n    <script>\n      window.dataLayer = window.dataLayer || []\n      function gtag() {\n        dataLay"
- },
- "rl v2 info": {
-  "status": 200,
-  "bytes": 31,
-  "head": "{\"groups\":409,\"victims\":32798}\n",
-  "type": "object",
-  "keys": [
-   "groups",
-   "victims"
-  ]
- },
- "rl v2 recent": {
-  "status": 200,
-  "bytes": 73631,
-  "head": "[{\"activity\":\"Not Found\",\"attackdate\":\"2026-10-16T01:23:25.695217+00:00\",\"claim_url\":\"http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion\",\"country\":\"US\",\"data_size\":null,\"description\":\"fintech payments \\u00b7 US | [PENDING EXPOSURE]\",\"discovered\":\"2026-10-16T01:23:41.272921+00:00\"",
-  "type": "array",
-  "keys": null,
-  "count": 100,
-  "sample": [
-   {
-    "activity": "Not Found",
-    "attackdate": "2026-10-16T01:23:25.695217+00:00",
-    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion",
-    "country": "US",
-    "data_size": null,
-    "description": "fintech payments · US | [PENDING EXPOSURE]",
-    "discovered": "2026-10-16T01:23:41.272921+00:00",
-    "domain": "",
-    "group": "N0n",
-    "press": null,
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/cd9319ce146401b8763e0b86ae1f7407.png",
-    "url": "https://www.ransomware.live/id/Q29tcGFueSAjNzVATjBu",
-    "victim": "Company #75"
-   },
-   {
-    "activity": "Not Found",
-    "attackdate": "2026-10-16T01:22:51.267437+00:00",
-    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion",
-    "country": "US",
-    "data_size": null,
-    "description": "media technology / broadcast playout · United States | [PENDING EXPOSURE]",
-    "discovered": "2026-10-16T01:23:06.889496+00:00",
-    "domain": "",
-    "group": "N0n",
-    "press": null,
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/cd9319ce146401b8763e0b86ae1f7407.png",
-    "url": "https://www.ransomware.live/id/Q29tcGFueSAjNzRATjBu",
-    "victim": "Company #74"
-   }
-  ],
-  "last": [
-   {
-    "activity": "Manufacturing",
-    "attackdate": "2026-10-13T00:00:00+00:00",
-    "claim_url": "http://maa2yprc5pldyr5hjn246hw7i66wdhglnostqgqkcbuh4vyyeos4xxyd.onion/index.html?new_gtrmxcqweplznsavhu",
-    "country": "IN",
-    "data_size": null,
-    "description": "Today Durga Bearings, we're proud to be the leading supplier of top-quality bearings in the country. With a wide range of products from world-renowned brands like NSK-RHP, INA,FAG, THK, BMD, GRW and many more we ensure our customers have access to over 150,000 types of bearings.",
-    "discovered": "2026-10-13T14:57:30.066827+00:00",
-    "domain": "www.durgabrgs.com",
-    "group": "Orova",
-    "press": null,
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/e4eb18e4cd8a322c00152ace1b8004ff.png",
-    "url": "https://www.ransomware.live/id/RHVyZ2EgQmVhcmluZ3NAT3JvdmE=",
-    "victim": "Durga Bearings"
-   }
-  ]
- },
- "rl v2 country SG": {
-  "status": 200,
-  "bytes": 122755,
-  "head": "[{\"activity\":\"Professional Services\",\"country\":\"SG\",\"data_size\":null,\"description\":\"N/A\",\"discovered\":\"2026-10-14T15:31:05.498186+00:00\",\"group_name\":\"qilin\",\"post_title\":\"MOA Architecture\",\"post_url\":\"http://ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd.onion/site/blog?uuid=14137818-4d18",
-  "type": "array",
-  "keys": null,
-  "count": 197,
-  "sample": [
-   {
-    "activity": "Professional Services",
-    "country": "SG",
-    "data_size": null,
-    "description": "N/A",
-    "discovered": "2026-10-14T15:31:05.498186+00:00",
-    "group_name": "qilin",
-    "post_title": "MOA Architecture",
-    "post_url": "http://ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd.onion/site/blog?uuid=14137818-4d18-4e68-9e9b-8855af8cfbbd",
-    "published": "2026-10-14T15:30:48.004132+00:00",
-    "ransom": null,
-    "website": "www.moaarch.com"
-   },
-   {
-    "activity": "Technology",
-    "country": "SG",
-    "data_size": null,
-    "description": "As one of the pioneers specializing in marine radio communications and navigational equipment, Codar Pte Ltd provides a one-stop solution with seamless services and supply of marine electronics products and spares to our customers in the region.",
-    "discovered": "2026-10-13T14:56:57.293985+00:00",
-    "group_name": "Orova",
-    "post_title": "Codar (Pte) Ltd",
-    "post_url": "http://maa2yprc5pldyr5hjn246hw7i66wdhglnostqgqkcbuh4vyyeos4xxyd.onion/index.html?new_jkwpnvzxqmtresdcul",
-    "published": "2026-10-13T00:00:00+00:00",
-    "ransom": null,
-    "website": "www.codar.com.sg"
-   }
-  ],
-  "last": [
-   {
-    "activity": "Technology",
-    "country": "SG",
-    "data_size": null,
-    "description": "",
-    "discovered": "2017-05-12T00:00:00+00:00",
-    "group_name": "wannacry",
-    "post_title": "MediaOnline",
-    "post_url": "",
-    "published": "2017-05-12T00:00:00+00:00",
-    "ransom": null,
-    "website": ""
-   }
-  ]
- },
- "rl v2 month": {
-  "status": 200,
-  "bytes": 758449,
-  "head": "[{\"activity\":\"Technology\",\"attackdate\":\"2026-10-04 00:00:00.000000\",\"claim_url\":\"\",\"country\":\"US\",\"data_size\":null,\"description\":\"Trump mobile was informed they had been breached, they then replied with \\\"We have no team to handle this\\\" and that anyone who hacks them are a terrorist. Well unfortuna",
-  "type": "array",
-  "keys": null,
-  "count": 821,
-  "sample": [
-   {
-    "activity": "Technology",
-    "attackdate": "2026-10-04 00:00:00.000000",
-    "claim_url": "",
-    "country": "US",
-    "data_size": null,
-    "description": "Trump mobile was informed they had been breached, they then replied with \"We have no team to handle this\" and that anyone who hacks them are a terrorist. Well unfortunately for them, all 3615 customers and their PII, alongside telecom details are now up for grabs. Feel free to take a gander at it yourself, don't be shy, we (and them) certainly aren't stopping you.",
-    "discovered": "2026-10-05T08:04:48.407649+00:00",
-    "domain": "trumpmobile.com",
-    "group": "BYOD",
-    "press": {
-     "link": "https://www.ransomware.live/id/dHJ1bXBtb2JpbGUuY29tQDIwMjYtMTAtMDQ=",
-     "source": "https://san.com/cc/trump-mobiles-latest-problem-hackers-just-released-customer-information/",
-     "summary": "Trump Mobile, une société de téléphonie mobile liée à la famille de Donald Trump, a été victime d'une cyberattaque par un groupe de ransomware nouvellement établi, BYOD. Cette attaque a entraîné l'exposition des données personnelles de 3 615 clients, incluant des noms, adresses e-mail, numéros de téléphone, adresses résidentielles et détails de commandes. Le groupe BYOD a divulgué ces données sur son site de fuite sur le dark web. L'accès a été obtenu après qu'un employé de la société Liberty Mobile, basée en Floride, ait été infecté par un logiciel malveillant. Trump Mobile a été critiquée pour sa gestion de l'incident, répondant par une déclaration peu professionnelle."
-    },
-    "ransom": null,
-    "screenshot": "",
-    "url": "https://www.ransomware.live/id/VHJ1bXAgTW9iaWxlIFdpcmVsZXNzIChUZWxlY29tKUBCWU9E",
-    "victim": "Trump Mobile Wireless (Telecom)"
-   },
-   {
-    "activity": "Technology",
-    "attackdate": "2026-10-04 00:00:00.000000",
-    "claim_url": "",
-    "country": "US",
-    "data_size": null,
-    "description": "Revenue: 4K Users\n\nTrump Mobile is an American mobile virtual network operator (MVNO) that uses a licensed brand from the Trump Organization and was launched by Donald Trump Jr. and Eric Trump. THEY GOT FKED LOL. ONLY 4K USERS? LOL Includes eSIM QR codes and user PII.",
-    "discovered": "2026-09-23T15:21:01.778316+00:00",
-    "domain": "trumpmobile.com",
-    "group": "EndZone",
-    "press": {
-     "link": "https://www.ransomware.live/id/dHJ1bXBtb2JpbGUuY29tQDIwMjYtMTAtMDQ=",
-     "source": "https://san.com/cc/trump-mobiles-latest-problem-hackers-just-released-customer-information/",
-     "summary": "Trump Mobile, une société de téléphonie mobile liée à la famille de Donald Trump, a été victime d'une cyberattaque par un groupe de ransomware nouvellement établi, BYOD. Cette attaque a entraîné l'exposition des données personnelles de 3 615 clients, incluant des noms, adresses e-mail, numéros de téléphone, adresses résidentielles et détails de commandes. Le groupe BYOD a divulgué ces données sur son site de fuite sur le dark web. L'accès a été obtenu après qu'un employé de la société Liberty Mobile, basée en Floride, ait été infecté par un logiciel malveillant. Trump Mobile a été critiquée pour sa gestion de l'incident, répondant par une déclaration peu professionnelle."
-    },
-    "ransom": null,
-    "screenshot": "",
-    "url": "https://www.ransomware.live/id/VHJ1bXAgTW9iaWxlQEVuZFpvbmU=",
-    "victim": "Trump Mobile"
-   }
-  ],
-  "last": [
-   {
-    "activity": "Education",
-    "attackdate": "2023-09-14 00:00:00.000000",
-    "claim_url": "http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onion/detail/cagswhuu8hnoy061j9aeb00nu5z5od",
-    "country": "AU",
-    "data_size": null,
-    "description": "St James’ Anglican School provides a holistic education for students from Kindergarten to Year 12, focusing on unlocking individual potential and fostering excellence across various disciplines. The school offers a diverse curriculum that includes",
-    "discovered": "2026-09-28T18:49:38.475443+00:00",
-    "domain": "stjames.wa.edu.au",
-    "group": "threeam",
-    "press": {
-     "link": "https://www.ransomware.live/id/c3RqYW1lcy53YS5lZHUuYXVAMjAyMy0wOS0xNA==",
-     "source": "https://stjames.wa.edu.au/incident-updates/",
-     "summary": "L'école anglicane St James a identifié un incident de cybersécurité impliquant un accès non autorisé à ses systèmes informatiques. L'école a sécurisé ses systèmes, mené un audit de cybersécurité et a informé les familles que des informations personnelles de la communauté scolaire étaient concernées. L'incident a été signalé au Centre australien de cybersécurité (ACSC) et au Commissaire australien à l'information."
-    },
-    "ransom": null,
-    "screenshot": "",
-    "url": "https://www.ransomware.live/id/c3RqYW1lcy53YS5lZHUuYXVAdGhyZWVhbQ==",
-    "victim": "stjames.wa.edu.au"
-   }
-  ]
- },
- "rl v2 sectors": {
-  "status": 200,
-  "bytes": 2297799,
-  "head": "[{\"activity\":\"Healthcare\",\"attackdate\":\"2026-10-16T00:22:35.221004+00:00\",\"claim_url\":\"http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-evospine\",\"country\":\"\",\"data_size\":null,\"description\":\"Medical device manufacturing (US) \\u00b7 Texas, USA | FDA quality system records of a ",
-  "type": "array",
-  "keys": null,
-  "count": 2793,
-  "sample": [
-   {
-    "activity": "Healthcare",
-    "attackdate": "2026-10-16T00:22:35.221004+00:00",
-    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-evospine",
-    "country": "",
-    "data_size": null,
-    "description": "Medical device manufacturing (US) · Texas, USA | FDA quality system records of a Texas spinal implant manufacturer: CAPAs, device history records for implant lots, management reviews, design drawings and audit files; The complete inventory database of the business, 317 tables, with hospital and surgical-center customers, purchase orders and implant lot shipping records; Finance records: purchase orders, tax forms and payroll timesheets; Hospital product packets for spinal fusion systems and staff mailbox exports | [NOT PAID — EXPOSED]",
-    "discovered": "2026-10-16T00:22:58.465900+00:00",
-    "domain": "",
-    "group": "N0n",
-    "press": null,
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/53ffa3f593d6e1ac2f8883b0910bf2e2.png",
-    "url": "https://www.ransomware.live/id/RXZvbHV0aW9uIFNwaW5lIC8gQWxsIExhYnNATjBu",
-    "victim": "Evolution Spine / All Labs"
-   },
-   {
-    "activity": "Healthcare",
-    "attackdate": "2026-10-15T14:27:00+00:00",
-    "claim_url": "http://lockbitapt67g6rwzjbcxnww5efpg4qok6vpfeth7wx3okj52ks4wtad.onion/post/8d34b608644114d6e45dd1b947435179",
-    "country": "US",
-    "data_size": null,
-    "description": "Kidz R Kool Pediatric Dentistry is a dental practice located in Peoria, AZ, specializing in pediatri...",
-    "discovered": "2026-10-15T16:09:28.727968+00:00",
-    "domain": "kidzrkooldental.com",
-    "group": "lockbit5",
-    "press": null,
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/562aa7f6ddc48fa889623399e26597b9.png",
-    "url": "https://www.ransomware.live/id/a2lkenJrb29sZGVudGFsLmNvbUBsb2NrYml0NQ==",
-    "victim": "kidzrkooldental.com"
-   }
-  ],
-  "last": [
-   {
-    "activity": "Healthcare",
-    "attackdate": "2015-01-01T00:00:00+00:00",
-    "claim_url": "",
-    "country": "US",
-    "data_size": null,
-    "description": "",
-    "discovered": "2015-01-01T00:00:00+00:00",
-    "domain": "",
-    "group": "cryptolocker",
-    "press": null,
-    "ransom": null,
-    "screenshot": "",
-    "url": "https://www.ransomware.live/id/S2Vsc2V5LVNleWJvbGQgQ2xpbmljQGNyeXB0b2xvY2tlcg==",
-    "victim": "Kelsey-Seybold Clinic"
-   }
-  ]
- },
- "rl v2 allcyberattacks": {
-  "status": 200,
-  "bytes": 5083386,
-  "head": "[{\"added\":\"\",\"claim_gang\":\"akira\",\"claim_url\":\"https://www.ransomware.live/id/QXF1YWxlY3RyYSBIb2xkaW5nc0Bha2lyYQ==\",\"country\":\"CU\",\"date\":\"2023-12-07\",\"description\":\"\",\"domain\":\"aqualectra.com\",\"has_infostealer_info\":true,\"infostealer_data\":{\"employees\":2,\"employees_url\":3,\"infostealer_stats\":{},\"la",
-  "type": "array",
-  "keys": null,
-  "count": 4246,
-  "sample": [
-   {
-    "added": "",
-    "claim_gang": "akira",
-    "claim_url": "https://www.ransomware.live/id/QXF1YWxlY3RyYSBIb2xkaW5nc0Bha2lyYQ==",
-    "country": "CU",
-    "date": "2023-12-07",
-    "description": "",
-    "domain": "aqualectra.com",
-    "has_infostealer_info": true,
-    "infostealer_data": {
-     "employees": 2,
-     "employees_url": 3,
-     "infostealer_stats": {},
-     "last_employee_compromised": null,
-     "last_user_compromised": null,
-     "thirdparties": 3,
-     "update": "2024-02-25T12:06:12",
-     "users": 198,
-     "users_url": 12
-    },
-    "link": "https://www.ransomware.live/id/YXF1YWxlY3RyYS5jb21AMjAyMy0xMi0wNw==",
-    "summary": "L'entreprise de distribution d'eau et d'électricité Aqualectra à Curaçao a subi une cyberattaque qui l'a contrainte à déconnecter temporairement toutes ses connexions en ligne, affectant ses systèmes internes et son service client. Aqualectra a agi rapidement pour contrer l'attaque et a effectué des analyses approfondies pour éviter des dommages permanents. Les services sont désormais pleinement rétablis et les récentes coupures de courant sur l'île ne sont pas liées à cette cyberattaque.",
-    "title": "Aqualectra herstelt na cyberaanval - Curacao.nu",
-    "url": "https://curacao.nu/aqualectra-herstelt-na-cyberaanval/",
-    "victim": "Aqualectra"
-   },
-   {
-    "added": "",
-    "claim_gang": "akira",
-    "claim_url": "https://www.ransomware.live/id/Tmlzc2FuIEF1c3RyYWxpYUBha2lyYQ==",
-    "country": "AU",
-    "date": "2023-12-06",
-    "description": "",
-    "domain": "nissan.com.au",
-    "has_infostealer_info": true,
-    "infostealer_data": {
-     "employees": 0,
-     "employees_url": 0,
-     "infostealer_stats": {},
-     "last_employee_compromised": null,
-     "last_user_compromised": null,
-     "thirdparties": 0,
-     "update": "2024-02-25T12:06:39",
-     "users": 60,
-     "users_url": 12
-    },
-    "link": "https://www.ransomware.live/id/bmlzc2FuLmNvbS5hdUAyMDIzLTEyLTA2",
-    "summary": "Le constructeur automobile japonais Nissan enquête sur une cyberattaque qui a ciblé ses systèmes en Australie et en Nouvelle-Zélande, et qui pourrait avoir permis aux pirates d'accéder à des informations personnelles. Nissan Océanie a informé ses clients d'une potentielle violation de données et les a mis en garde contre le risque d'escroqueries à venir. L'entreprise travaille avec son équipe mondiale de réponse aux incidents pour évaluer l'impact de l'attaque et s'efforce de restaurer les systèmes affectés, tout en précisant que le réseau de concessionnaires n'est pas impacté.",
-    "title": "Nissan is investigating cyberattack and potential data breach",
-    "url": "https://www.bleepingcomputer.com/news/security/nissan-is-investigating-cyberattack-and-potential-data-breach/",
-    "victim": "Nissan Oceania"
-   }
-  ],
-  "last": [
-   {
-    "added": "2026-10-16",
-    "claim_gang": false,
-    "claim_url": false,
-    "country": "US",
-    "date": "2026-10-15",
-    "description": "",
-    "domain": "heberut.gov",
-    "has_infostealer_info": false,
-    "link": "https://www.ransomware.live/id/aGViZXJ1dC5nb3ZAMjAyNi0xMC0xNQ==",
-    "summary": "Une cyberattaque a compromis le réseau du gouvernement local de Heber City, Utah. L'incident a été rapidement contenu par l'équipe informatique de la ville, et les systèmes ont été rétablis. Aucun service essentiel n'a été suspendu. Le FBI mène actuellement une enquête forensique. La ville n'a pas identifié de rançongiciel ni de groupe responsable, et il reste inconnu si des informations municipales ont été accédées ou supprimées.",
-    "title": "Cyberattack breaches Heber City government network in Utah",
-    "url": "https://dysruptionhub.com/heber-city-utah-cyberattack/",
-    "victim": "Heber City"
-   }
-  ]
- },
- "rl v1 month": {
-  "status": 200,
-  "bytes": 689692,
-  "head": "[{\"activity\":\"Healthcare\",\"country\":\"US\",\"data_size\":null,\"description\":\"Healthcare - Endocrinology (US) \\u00b7 Houston, Texas | 14,441 patient document scans from a Houston endocrinology practice: lab results, medical summaries, diagnoses, insurance records, day sheets; Protected health information",
-  "type": "array",
-  "keys": null,
-  "count": 847,
-  "sample": [
-   {
-    "activity": "Healthcare",
-    "country": "US",
-    "data_size": null,
-    "description": "Healthcare - Endocrinology (US) · Houston, Texas | 14,441 patient document scans from a Houston endocrinology practice: lab results, medical summaries, diagnoses, insurance records, day sheets; Protected health information of thousands of patients including SSNs, dates of birth, and clinical data; Billing and claims records with financial data | [ACTIVE: deadline 2026-10-04 12:00 UTC]",
-    "discovered": "2026-09-30T22:53:00.862321+00:00",
-    "group_name": "N0n",
-    "post_title": "Houston Thyroid & Endocrine Specialists",
-    "post_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-htes",
-    "published": "2026-09-30T22:52:46.877549+00:00",
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/f86697c644ca35be816fe74c8b56ffa3.png",
-    "website": ""
-   },
-   {
-    "activity": "Technology",
-    "country": "US",
-    "data_size": null,
-    "description": "Software company serving the long-term stay accommodation industry, including corporate housing and serviced apartments",
-    "discovered": "2026-09-30T22:34:21.282691+00:00",
-    "group_name": "pear",
-    "post_title": "Software Answers, a Banyan Software Company",
-    "post_url": "http://pearsmob5sn44ismokiusuld34pnfwi6ctgin3qbvonpoob4lh3rmtqd.onion/Companies/softwareanswers",
-    "published": "2026-09-14T00:00:00+00:00",
-    "ransom": null,
-    "screenshot": "",
-    "website": "softwareanswers.com"
-   }
-  ],
-  "last": [
-   {
-    "activity": "Technology",
-    "country": "PE",
-    "data_size": null,
-    "description": "[AI generated] Italtel Peru is a subsidiary of Italtel, an Italian telecommunications technology company. Operating in Peru, it provides ICT solutions including network infrastructure, system integration, and telecommunications services. The company serves enterprise and public sector clients, offering digital transformation, unified communications, and managed services. It operates within the telecommunications and information technology industry in the Peruvian market.",
-    "discovered": "2026-09-01T02:24:48.790434+00:00",
-    "group_name": "everest",
-    "post_title": "Italtel Peru",
-    "post_url": "http://everestndkvzcibcje2cqxhre2hmmybl3rn2gwzwsblz7gx6uryn5rad.onion/news/italtel-peru",
-    "published": "2026-09-01T01:24:25.353489+00:00",
-    "ransom": null,
-    "screenshot": "https://images.ransomware.live/victims/c49bf55965e17e3b37363b1ec1b1dea0.png",
-    "website": ""
-   }
-  ]
- }
+ "sizeKB": 336
 }
