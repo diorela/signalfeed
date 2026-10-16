@@ -171,7 +171,19 @@
   .ticker-items .sep { color: var(--ticker-muted); flex: none; align-self: center; }
 
   /* ---------- COLUMNS ---------- */
-  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr)); gap: 28px; align-items: start; }
+  .cols { display: block; }
+  .col[hidden] { display: none; }
+  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; margin: 0 0 16px; border-radius: 16px; background: var(--bg); box-shadow: 0 6px 12px -8px rgba(0,0,0,.12); border: 1px solid var(--border); }
+  .tab { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border-radius: 12px; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 16px; font-weight: 600; cursor: pointer; }
+  .tab:hover { color: var(--ink); }
+  .tab .ti { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--muted); }
+  .tab .ti svg { width: 16px; height: 16px; }
+  .tab .tn { font-size: 13px; font-weight: 500; color: var(--faint); }
+  .tab[aria-selected="true"] { background: var(--surface); color: var(--ink); border-color: var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .tab[aria-selected="true"] .ti { background: var(--tab-accent); color: var(--tab-on); }
+  .tab[aria-selected="true"] .tn { color: var(--muted); }
+  .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
+  .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
   .col { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 90px; }
   @media (max-width: 640px) { .col { padding: 16px; border-radius: 18px; } }
   @media (max-width: 640px) {
@@ -228,6 +240,18 @@
 
   .stories { display: flex; flex-direction: column; }
   .story { display: flex; gap: 14px; padding: 16px 6px; border-top: 1px solid var(--border); border-radius: 12px; cursor: pointer; }
+  @media (min-width: 1000px) {
+    .stories { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
+    .stories > .showmore, .stories > .empty { grid-column: 1 / -1; }
+  }
+  .col-head .col-icon, .col-head h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 640px) {
+    header { position: static; }
+    .tabs { --hdr-h: 0px; top: 0; border-radius: 0 0 14px 14px; margin-inline: -16px; padding: 8px 16px; border-width: 0 0 1px; }
+    #tabs-anchor { scroll-margin-top: 8px !important; }
+    .tab { height: 44px; font-size: 15px; gap: 8px; }
+    .tab .ti { width: 24px; height: 24px; }
+  }
   .story:hover { background: var(--surface-2); }
   .story.unread .s-title { font-weight: 600; }
   .s-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
@@ -322,8 +346,13 @@
   </section>
 
 
+  <div id="tabs-anchor" style="scroll-margin-top: calc(var(--hdr-h, 71px) + 8px)"></div>
+  <div class="tabs" role="tablist" aria-label="Choose a news section">
+    <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>Cybersecurity <span class="tn" id="tabN-cyber"></span></button>
+    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>Geopolitics <span class="tn" id="tabN-geo"></span></button>
+  </div>
   <div class="cols">
-    <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber">
+    <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber" role="tabpanel">
       <div class="col-head">
         <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>
         <div><h2 class="display" id="h-cyber">Cybersecurity</h2><span class="counts" id="cyberCounts"></span></div>
@@ -338,7 +367,7 @@
       <div class="stories" id="cyberList"></div>
     </section>
 
-    <section class="col geo" id="col-geo" aria-labelledby="h-geo">
+    <section class="col geo" id="col-geo" aria-labelledby="h-geo" role="tabpanel" hidden>
       <div class="col-head">
         <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>
         <div><h2 class="display" id="h-geo">Geopolitics</h2><span class="counts" id="geoCounts"></span></div>
@@ -561,6 +590,7 @@ function renderColumn(key, toTop = false) {
   const bySource = f.source ? all.filter(a => a.source === f.source) : all;
   const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, state.tokens));
   const items = f.topic ? pre.filter(a => a._topics.includes(f.topic)) : pre;
+  $('tabN-' + key).textContent = all.length ? (f.topic || f.region || f.source || state.tokens.length ? `${items.length}` : `${all.length}`) : '';
   const filtering = !!(f.topic || f.region || f.source || state.tokens.length);
   const newCount = all.filter(isNew).length;
 
@@ -604,7 +634,7 @@ function renderColumn(key, toTop = false) {
       </div>
     </article>`).join('')
     + (rest.length > shown.length ? `<button class="showmore" data-more="${key}">Show ${Math.min(50, rest.length - shown.length)} more <span style="color:var(--muted);font-weight:500">(${rest.length - shown.length} left)</span></button>` : '');
-  if (toTop) $('col-' + key).scrollIntoView({ block: 'start', behavior: 'smooth' }); else window.scrollTo({ top: y });
+  if (toTop) $('tabs-anchor').scrollIntoView({ block: 'start', behavior: 'smooth' }); else window.scrollTo({ top: y });
 }
 
 // ---------- BREAKING ----------
@@ -755,7 +785,26 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- CLICKS ----------
-function setTopic(key, topic) { const f = state.f[key]; f.topic = topic; f.limit = PAGE_SIZE; renderColumn(key, true); }
+const TAB_KEY = 'signalfeed_tab';
+let currentTab = (() => { try { return localStorage.getItem(TAB_KEY) === 'geo' ? 'geo' : 'cyber'; } catch { return 'cyber'; } })();
+function setTab(key, focus = false) {
+  currentTab = key;
+  for (const k of ['cyber', 'geo']) {
+    $('col-' + k).hidden = k !== key;
+    $('tab-' + k).setAttribute('aria-selected', k === key);
+    $('tab-' + k).tabIndex = k === key ? 0 : -1;
+  }
+  if (focus) $('tab-' + key).focus();
+  try { localStorage.setItem(TAB_KEY, key); } catch {}
+}
+for (const k of ['cyber', 'geo']) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
+document.querySelector('.tabs').addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); setTab(currentTab === 'cyber' ? 'geo' : 'cyber', true); }
+});
+setTab(currentTab);
+const syncHeader = () => document.documentElement.style.setProperty('--hdr-h', document.querySelector('header').offsetHeight + 'px');
+syncHeader(); window.addEventListener('resize', syncHeader);
+function setTopic(key, topic) { setTab(key); const f = state.f[key]; f.topic = topic; f.limit = PAGE_SIZE; renderColumn(key, true); }
 document.addEventListener('click', e => {
   const t = e.target;
   if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
