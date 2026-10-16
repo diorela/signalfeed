@@ -148,7 +148,7 @@
   .b-nav[hidden] { display: none; }
   @media (max-width: 640px) { .breaking { flex-wrap: wrap; } .b-item { flex-basis: 100%; flex-direction: column; gap: 2px; order: 3; } .b-item .b-title { white-space: normal; } .b-nav { margin-left: auto; } }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-  .tiles { flex: 1 1 400px; max-width: 520px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .tiles { flex: 1 1 560px; max-width: 760px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .tile { border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; text-align: left; border: 1px solid transparent; background: var(--surface); }
   button.tile:hover { border-color: var(--faint); }
   .tile .num { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
@@ -158,6 +158,14 @@
   .tile.ex { background: var(--tile-ex-bg); } .tile.ex .num { color: var(--tile-ex-num); } .tile.ex .sub { color: var(--tile-ex-sub); }
   .tile.vi { background: var(--tile-vi-bg); } .tile.vi .num { color: var(--tile-vi-num); } .tile.vi .sub { color: var(--tile-vi-sub); }
   .tile.rd { border-color: var(--border); }
+  .tile:disabled { cursor: default; }
+  .tile.tr { background: var(--new-bg); } .tile.tr .num { color: var(--new-ink); } .tile.tr .sub { color: var(--ink-2); }
+  @media (max-width: 640px) { .tiles { grid-template-columns: 1fr 1fr; } .tile.tr { grid-column: 1 / -1; } }
+  .tile .sub.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--ink-2); font-weight: 500; }
+  .tile.ex { --tile-ex-bg: color-mix(in srgb, var(--brk) 10%, var(--surface)); --tile-ex-num: var(--brk); }
+  .cov { display: flex; align-items: center; gap: 12px; padding: 12px 6px; border-top: 1px solid var(--border); color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.4; }
+  .cov:hover { background: var(--surface-2); }
+  .cov > span:nth-child(2) { flex: 1; } .cov b { font-weight: 600; }
   .progress { height: 8px; border-radius: 99px; background: var(--track); overflow: hidden; }
   .progress div { height: 100%; border-radius: 99px; background: var(--cyber); transition: width .4s; }
 
@@ -347,13 +355,18 @@
     <div class="tiles">
       <button class="tile ex" id="tileExploited" type="button">
         <span class="num display" id="exNum">–</span>
-        <span class="label" id="exLabel">Actively exploited</span>
+        <span class="label" id="exLabel">Breaking now</span>
         <span class="sub" id="exSub">in the last 24 hours</span>
       </button>
       <button class="tile vi" id="tileVictims" type="button">
         <span class="num display" id="viNum">–</span>
-        <span class="label" id="viLabel">Victims this week</span>
-        <span class="sub" id="viSub">companies &amp; governments hit</span>
+        <span class="label" id="viLabel">Biggest story</span>
+        <span class="sub clamp" id="viSub">companies &amp; governments hit</span>
+      </button>
+      <button class="tile tr" id="tileTrend" type="button">
+        <span class="num display" id="trNum">–</span>
+        <span class="label" id="trLabel">Trending</span>
+        <span class="sub" id="trSub"></span>
       </button>
     </div>
   </section>
@@ -439,8 +452,8 @@ const state = {
   items: [], sources: [], generatedAt: null,
   query: '', tokens: [],
   f: {
-    cyber: { source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
-    geo:   { source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
+    cyber: { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
+    geo:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
   },
   seen: new Set(), firstVisit: false,
   lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
@@ -556,16 +569,71 @@ function updateLive() {
 }
 
 // ---------- HERO ----------
-const HERO = {
-  cyber: { name: 'cybersecurity', noun: 'cyber',
-    t1: { topic: 'exploited', label: 'Actively exploited', ms: 864e5, when: 'last 24h', none: 'nothing new in the last 24 hours' },
-    t2: { topic: 'impact', label: 'Victims this week', ms: 7 * 864e5, sub: 'companies & governments hit · tap to see', none: 'no new victims reported this week' },
-    line: n => n === 0 ? 'Nothing new is being actively exploited right now.' : n === 1 ? 'One flaw is being actively exploited right now.' : `${n} flaws are being actively exploited right now.` },
-  geo: { name: 'geopolitics', noun: 'world',
-    t1: { topic: 'conflict', label: 'Conflict updates', ms: 864e5, when: 'last 24h', none: 'no new conflict reports in the last 24 hours' },
-    t2: { topic: 'diplomacy', label: 'Diplomacy this week', ms: 7 * 864e5, sub: 'talks, summits & deals · tap to see', none: 'no diplomacy news this week' },
-    line: n => n === 0 ? 'No new conflict reports in the last 24 hours.' : n === 1 ? 'One new conflict report in the last 24 hours.' : `${n} conflict reports in the last 24 hours.` },
-};
+const HERO = { cyber: { name: 'cybersecurity', noun: 'cyber' }, geo: { name: 'geopolitics', noun: 'world' } };
+const BIG_WINDOW = 48 * 3600e3;
+const CLUSTER_STOP = new Set(('the a an of on in and or for to by with at from is are was were about into its it as be news says said say after over new how what why amid could would will can may us report reports reported calls call live latest update updates than more has have had not who his her their they this that these been first two one three year years day days week weeks back off out up down against under amid via just now still also get gets make makes made take takes set sets while where when which there here our your all any most many some other such only').split(' '));
+function titleTokens(a) {
+  if (a._tok) return a._tok;
+  const t = new Set();
+  for (const w of SF.norm(a.title).split(/[^a-z0-9]+/)) if (w.length >= 3 && !CLUSTER_STOP.has(w)) t.add(SF.stem(w));
+  return (a._tok = t);
+}
+function biggestStory(key) {
+  const pool = state.items.filter(a => a.category === key && Date.now() - new Date(a.date) <= BIG_WINDOW);
+  if (pool.length < 2) return null;
+  const df = new Map();
+  for (const a of pool) for (const w of titleTokens(a)) df.set(w, (df.get(w) || 0) + 1);
+  const maxDf = Math.max(3, pool.length * 0.25);
+  const sig = a => [...titleTokens(a)].filter(w => df.get(w) <= maxDf);
+  const sigs = new Map(pool.map(a => [a, new Set(sig(a))]));
+  const similar = (x, y) => {
+    const X = sigs.get(x), Y = sigs.get(y); if (X.size < 2 || Y.size < 2) return false;
+    let n = 0; for (const w of X) if (Y.has(w)) n++;
+    return n >= 2 && n / Math.min(X.size, Y.size) >= 0.4;
+  };
+  let best = null;
+  for (const seed of pool) {
+    const group = [seed, ...pool.filter(o => o !== seed && similar(seed, o))];
+    const outlets = new Set(group.map(a => a.source)).size;
+    if (outlets < 2) continue;
+    const score = [outlets, group.length, +new Date(seed.date)];
+    if (!best || score[0] > best.score[0] || (score[0] === best.score[0] && (score[1] > best.score[1] || (score[1] === best.score[1] && score[2] > best.score[2])))) best = { seed, group, outlets, score };
+  }
+  if (!best) return null;
+  best.group.sort((x, y) => new Date(y.date) - new Date(x.date));
+  return best;
+}
+function openCoverage(big) {
+  const seen = new Set(), rows = [];
+  for (const a of big.group) { if (seen.has(a.source)) continue; seen.add(a.source); rows.push(a); }
+  openModal(`
+    <div class="row"><span class="kicker mono" style="background:var(--ink);color:var(--surface);border-radius:6px;padding:3px 8px;font-size:11px">BIGGEST STORY</span><span>Covered by ${big.outlets} outlets · last 48 hours</span></div>
+    <h3 class="display">${esc(big.seed.title)}</h3>
+    ${big.seed.description ? `<p>${esc(big.seed.description)}</p>` : ''}
+    <div class="srchead mono">HOW EACH OUTLET REPORTED IT</div>
+    ${rows.map(a => `<a class="cov" href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener noreferrer" data-read="${esc(a.link)}">${badge(a.source, 'sm')}<span><b>${esc(a.source)}</b> · ${esc(ago(a.date))}<br>${esc(a.title)}</span><span aria-hidden="true">→</span></a>`).join('')}
+    <div class="modal-actions"><button class="btn" data-close style="flex:1;justify-content:center">Close</button></div>`);
+}
+let currentBig = null, currentTrend = null;
+function trendingTopic(key) {
+  const DAY = 864e5, now = Date.now();
+  const pool = state.items.filter(a => a.category === key);
+  if (!pool.length) return null;
+  const oldest = Math.min(...pool.map(a => +new Date(a.date)));
+  const histDays = Math.min(20, (now - DAY - oldest) / DAY);
+  let best = null;
+  for (const t of SF.TOPICS[key]) {
+    const withT = pool.filter(a => a._topics.includes(t.id));
+    const today = withT.filter(a => now - new Date(a.date) <= DAY).length;
+    if (today < 3) continue;
+    const before = withT.filter(a => { const age = now - new Date(a.date); return age > DAY && age <= DAY * (1 + histDays); }).length;
+    const avg = histDays >= 1 ? before / histDays : null;
+    const ratio = avg === null ? null : today / Math.max(avg, 0.5);
+    const score = ratio === null ? today : ratio;
+    if (!best || score > best.score) best = { topic: t, today, avg, ratio, score };
+  }
+  return best;
+}
 function renderHero() {
   const now = new Date(), h = now.getHours();
   $('greeting').textContent = `${h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'}.`;
@@ -574,21 +642,29 @@ function renderHero() {
   const tab = typeof currentTab === 'string' ? currentTab : 'cyber';
   const T = HERO[tab];
   const pool = state.items.filter(a => a.category === tab);
-  const t1 = pool.filter(a => a._topics.includes(T.t1.topic) && within(a, T.t1.ms));
-  const t2 = pool.filter(a => a._topics.includes(T.t2.topic) && within(a, T.t2.ms));
+  const breaking = pool.filter(isBreaking);
   const newCount = pool.filter(isNew).length;
+  currentBig = state.generatedAt ? biggestStory(tab) : null;
 
-  $('exLabel').textContent = T.t1.label; $('viLabel').textContent = T.t2.label;
-  $('exNum').textContent = state.generatedAt ? t1.length : '–';
-  $('exSub').textContent = t1.length ? [...new Set(t1.map(a => a.source))].slice(0, 3).join(' · ') + ' · ' + T.t1.when : T.t1.none;
-  $('viNum').textContent = state.generatedAt ? t2.length : '–';
-  $('viSub').textContent = t2.length ? T.t2.sub : T.t2.none;
-  $('tileExploited').setAttribute('aria-label', `${t1.length} ${T.t1.label}, show these stories`);
-  $('tileVictims').setAttribute('aria-label', `${t2.length} ${T.t2.label}, show these stories`);
+  $('exNum').textContent = state.generatedAt ? breaking.length : '–';
+  $('exSub').textContent = breaking.length ? `urgent ${breaking.length === 1 ? 'story' : 'stories'} · last 6 hours · tap to see` : 'nothing urgent in the last 6 hours';
+  $('tileExploited').disabled = !breaking.length;
+  $('tileExploited').setAttribute('aria-label', `${breaking.length} breaking ${breaking.length === 1 ? 'story' : 'stories'} in the last 6 hours${breaking.length ? ', show them' : ''}`);
+  currentTrend = state.generatedAt ? trendingTopic(tab) : null;
+  const tr = currentTrend;
+  $('trNum').innerHTML = !tr ? '–' : tr.ratio !== null ? `↑${tr.ratio >= 10 ? Math.round(tr.ratio) : tr.ratio.toFixed(1)}<small>×</small>` : `${tr.today}<small> today</small>`;
+  $('trSub').innerHTML = !tr ? (state.generatedAt ? 'no topic is picking up today' : '')
+    : `<b style="color:var(--ink)">${esc(tr.topic.label)}</b> · ` + (tr.ratio !== null ? `${tr.today} stories in 24h, usually ${tr.avg < 1 ? 'under 1' : Math.round(tr.avg)} a day` : 'the most covered topic in the last 24h');
+  $('tileTrend').disabled = !tr;
+  $('tileTrend').setAttribute('aria-label', tr ? `Trending: ${tr.topic.label}, ${tr.today} stories in the last 24 hours. Show them` : 'Nothing trending');
+  $('viNum').innerHTML = !state.generatedAt ? '–' : currentBig ? `${currentBig.outlets}<small> outlets</small>` : '–';
+  $('viSub').textContent = currentBig ? currentBig.seed.title : 'no story covered by several outlets in the last 48 hours';
+  $('tileVictims').disabled = !currentBig;
+  $('tileVictims').setAttribute('aria-label', currentBig ? `Biggest story, covered by ${currentBig.outlets} outlets: ${currentBig.seed.title}. Show coverage` : 'No biggest story yet');
 
   if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
   const lead = newCount ? `${newCount} new ${T.noun} ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : `You're all caught up on ${T.name}.`;
-  const urgent = T.line(t1.length);
+  const urgent = breaking.length === 0 ? 'Nothing breaking in the last 6 hours.' : breaking.length === 1 ? 'One breaking story in the last 6 hours.' : `${breaking.length} breaking stories in the last 6 hours.`;
   $('heroLine').textContent = `${lead} ${urgent}`;
 }
 
@@ -610,9 +686,9 @@ function renderColumn(key, toTop = false) {
   const sources = [...new Set(all.map(a => a.source))].sort();
   if (f.source && !sources.includes(f.source)) f.source = null;
   const bySource = f.source ? all.filter(a => a.source === f.source) : all;
-  const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, state.tokens));
+  const pre = bySource.filter(a => (!f.breaking || isBreaking(a)) && (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, state.tokens));
   const items = f.topic ? pre.filter(a => a._topics.includes(f.topic)) : pre;
-  const filtering = !!(f.topic || f.region || f.source || state.tokens.length);
+  const filtering = !!(f.breaking || f.topic || f.region || f.source || state.tokens.length);
   const newCount = all.filter(isNew).length;
 
   $('tabN-' + key).innerHTML = !all.length ? 'Loading…' : filtering ? `${items.length} of ${all.length} match` : `${all.length} stories${newCount ? ` <b>${newCount} new</b>` : ''}`;
@@ -628,7 +704,7 @@ function renderColumn(key, toTop = false) {
 
   const result = $(key + 'Result');
   result.hidden = !filtering;
-  result.innerHTML = filtering ? `<span>${items.length} of ${all.length} stories${state.tokens.length ? ` matching “${esc(state.query)}”` : ''}</span><button data-reset="${key}">Clear filters</button>` : '';
+  result.innerHTML = filtering ? `<span>${f.breaking ? '<b style="color:var(--brk)">Breaking only</b> · ' : ''}${items.length} of ${all.length} stories${state.tokens.length ? ` matching “${esc(state.query)}”` : ''}</span><button data-reset="${key}">Clear filters</button>` : '';
 
   const lead = pickLead(key, items, filtering);
   $(key + 'Lead').innerHTML = lead ? `
@@ -833,14 +909,15 @@ document.addEventListener('click', e => {
   if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
   if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; state.seen.add(l); saveSeen(); setTimeout(render, 0); return; }
   const reset = t.closest('[data-reset]');
-  if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); renderColumn('cyber'); renderColumn('geo'); return; }
+  if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { breaking: false, topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); renderColumn('cyber'); renderColumn('geo'); return; }
   const more = t.closest('[data-more]');
   if (more) { state.f[more.dataset.more].limit += 50; renderColumn(more.dataset.more); return; }
   const open = t.closest('[data-open]');
   if (open) { const a = state.items.find(x => x.link === open.dataset.open); if (a) openArticle(a); }
 });
-$('tileExploited').onclick = () => setTopic(currentTab, HERO[currentTab].t1.topic);
-$('tileVictims').onclick = () => setTopic(currentTab, HERO[currentTab].t2.topic);
+$('tileExploited').onclick = () => { const f = state.f[currentTab]; Object.assign(f, { breaking: true, topic: null, region: '', source: null, limit: PAGE_SIZE }); setQuery(''); renderColumn(currentTab, true); };
+$('tileVictims').onclick = () => { if (currentBig) openCoverage(currentBig); };
+$('tileTrend').onclick = () => { if (currentTrend) { state.f[currentTab].breaking = false; setTopic(currentTab, currentTrend.topic.id); } };
 $('checkNow').onclick = () => check();
 $('showSources').onclick = openSources;
 for (const key of ['cyber', 'geo']) {
