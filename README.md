@@ -4,6 +4,7 @@ Live cybersecurity, geopolitics and economy & finance headlines, read directly f
 
 - `scripts/fetch-feeds.mjs` reads every source and writes `site/data/headlines.json`.
 - `.github/workflows/update-headlines.yml` runs it every 5 minutes and publishes `site/` to GitHub Pages.
+- `scripts/fetch-stats.mjs` builds `site/data/stats.json` for the Cyber Stats section: ransomware victims by region (ransomware.live), exploited vulnerabilities (CISA KEV) and attack types in the news. It refreshes the outside data about twice a day.
 - `site/index.html` is the page. It checks for a fresh headlines file every minute. Stories are kept for 3 weeks, then deleted.
 
 ## Sources

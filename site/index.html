@@ -20,8 +20,8 @@
   :root, [data-theme="light"] {
     --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #F7F9FC; --border: #E3E7F0; --border-2: #DDE2EC;
     --ink: #10142A; --ink-2: #3B4258; --muted: #5A6178; --faint: #8A90A3;
-    --cyber: #2851E8; --on-cyber: #FFFFFF; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF; --fin: #0E8A6A; --fin-ink: #0A6650; --on-fin: #FFFFFF;
-    --lead-cyber: #EEF3FF; --lead-geo: #FFF1EA; --lead-fin: #E7F6F0; --lead-chip: #FFFFFF;
+    --cyber: #2851E8; --on-cyber: #FFFFFF; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF; --fin: #0E8A6A; --fin-ink: #0A6650; --on-fin: #FFFFFF; --stats: #5B4BDB; --stats-ink: #4535B8; --on-stats: #FFFFFF;
+    --lead-cyber: #EEF3FF; --lead-geo: #FFF1EA; --lead-fin: #E7F6F0; --lead-stats: #EFEDFD; --lead-chip: #FFFFFF;
     --ticker-bg: #10142A; --ticker-ink: #FFFFFF; --ticker-muted: #9AA6C9; --ticker-tag-bg: #B9F18C; --ticker-tag-ink: #10142A;
     --new-bg: #E3F7EA; --new-ink: #146C3A; --live-bg: #E8F8EE; --live-ink: #146C3A; --live-dot: #1FA855;
     --warn-bg: #FFF4D6; --warn-ink: #7A4B00; --err-bg: #FFE9E7; --err-ink: #A8261A;
@@ -34,8 +34,8 @@
   [data-theme="dark"] {
     --bg: #0B0F17; --surface: #131A26; --surface-2: #0F1520; --border: #1E2738; --border-2: #263045;
     --ink: #EEF2F8; --ink-2: #C3CBDB; --muted: #9BA6BC; --faint: #7C879D;
-    --cyber: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17; --fin: #60A5FA; --fin-ink: #93C5FD; --on-fin: #0B0F17;
-    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-fin: #0F1A2B; --lead-chip: #0B0F17;
+    --cyber: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17; --fin: #60A5FA; --fin-ink: #93C5FD; --on-fin: #0B0F17; --stats: #A78BFA; --stats-ink: #C4B5FD; --on-stats: #0B0F17;
+    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-fin: #0F1A2B; --lead-stats: #1A1630; --lead-chip: #0B0F17;
     --ticker-bg: #1A2333; --ticker-ink: #EEF2F8; --ticker-muted: #9BA6BC; --ticker-tag-bg: #34D399; --ticker-tag-ink: #0B0F17;
     --new-bg: #11281F; --new-ink: #6EE7B7; --live-bg: #11281F; --live-ink: #6EE7B7; --live-dot: #34D399;
     --warn-bg: #2A220C; --warn-ink: #FCD267; --err-bg: #3A1C16; --err-ink: #FF9B80;
@@ -181,7 +181,7 @@
   /* ---------- COLUMNS ---------- */
   .cols { display: block; }
   .col[hidden] { display: none; }
-  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
+  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
   .tab { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 18px; border-radius: 18px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; }
   .tab:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tab-accent) 60%, transparent); border-color: color-mix(in srgb, var(--tab-accent) 45%, var(--border)); }
   .tab .ti { flex: none; width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
@@ -199,6 +199,64 @@
   .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
   .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
   .tab.fin { --tab-accent: var(--fin); --tab-on: var(--on-fin); }
+  .tab.stats { --tab-accent: var(--stats); --tab-on: var(--on-stats); }
+  .col.stats { --accent: var(--stats); --on-accent: var(--on-stats); --lead: var(--lead-stats); --accent-ink: var(--stats-ink); }
+  body.on-stats .tiles, body.on-stats #breaking { display: none !important; }
+  .st-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+  .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+  .seg button { height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 500; cursor: pointer; }
+  .seg button:hover { color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.08), inset 0 0 0 1px var(--border); }
+  .st-note { font-size: 13px; color: var(--muted); }
+  .st-card { border: 1px solid var(--border); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: var(--surface); }
+  .st-head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; }
+  .st-head h3 { margin: 0; font-size: 18px; font-weight: 600; }
+  .st-head p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+  .st-head .chip { font-size: 12px; font-weight: 500; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+  .st-kpi { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
+  .st-kpi .big { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .st-kpi .what { font-size: 14px; color: var(--ink-2); }
+  .st-kpi .delta { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+  .st-kpi .delta.up { background: var(--err-bg); color: var(--err-ink); } .st-kpi .delta.down { background: var(--new-bg); color: var(--new-ink); }
+  .chart { position: relative; height: 210px; margin: 6px 0 0 40px; }
+  .chart .grid { position: absolute; left: 0; right: 0; border-top: 1px solid var(--border); }
+  .chart .grid span { position: absolute; right: calc(100% + 8px); top: -8px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart .bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 2px; }
+  .chart .slot { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; outline: none; cursor: default; }
+  .chart .bar { width: min(24px, 70%); background: var(--accent); border-radius: 4px 4px 0 0; min-height: 1px; }
+  .chart .slot.partial .bar { background: color-mix(in srgb, var(--accent) 38%, var(--surface)); }
+  .chart .slot:hover .bar, .chart .slot:focus-visible .bar { filter: brightness(1.12); box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
+  .chart .val { position: absolute; font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+  .chart .xl { position: absolute; top: calc(100% + 6px); font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .chart-pad { height: 22px; }
+  .tip { position: fixed; z-index: 60; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 13px; line-height: 1.4; padding: 8px 10px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.18); max-width: 240px; }
+  .tip[hidden] { display: none; }
+  .st-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .st-cols h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .hbar { display: grid; grid-template-columns: minmax(90px, 40%) 1fr; align-items: center; gap: 4px 10px; font-size: 13px; padding: 3px 0; }
+  .hbar .lbl { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hbar .trk { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .hbar .fill { height: 12px; border-radius: 0 4px 4px 0; background: var(--accent); min-width: 2px; }
+  .hbar .num { font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+  .st-latest { display: flex; flex-direction: column; }
+  .st-latest a { display: flex; gap: 10px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--border); color: var(--ink); text-decoration: none; font-size: 13px; }
+  .st-latest a:hover { color: var(--accent-ink); }
+  .st-latest .cve { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .heat { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 13px; }
+  .heat th { font-weight: 500; color: var(--muted); font-size: 12px; text-align: center; padding: 2px 4px; white-space: nowrap; }
+  .heat th.rowh { text-align: left; color: var(--ink-2); font-size: 13px; }
+  .heat td { text-align: center; border-radius: 4px; padding: 7px 4px; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .heat-wrap { overflow-x: auto; }
+  .tbl-toggle { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--accent-ink); font-size: 13px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  .st-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .st-table th, .st-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); }
+  .st-table td:last-child, .st-table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .reports { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+  .reports h4 { margin: 0 0 6px; font-size: 12px; letter-spacing: .06em; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .reports a { display: block; padding: 6px 0; color: var(--ink); text-decoration: none; font-size: 14px; border-top: 1px solid var(--border); }
+  .reports a small { display: block; color: var(--muted); font-size: 12px; }
+  .reports a:hover { color: var(--accent-ink); }
+  @media (max-width: 640px) { .chart .xl.odd { display: none; } .st-card { padding: 14px; } .chart { margin-left: 34px; height: 180px; } .seg button { padding: 0 10px; font-size: 13px; } .st-kpi .big { font-size: 36px; } }
   .cols .col { border-top: 4px solid var(--accent); }
   .cols .col-head { display: none; }
   .col-head .counts { display: none; }
@@ -383,6 +441,7 @@
     <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span><span class="tt"><span class="tl"><span class="full">Cybersecurity</span><span class="short">Cyber</span></span><span class="tn" id="tabN-cyber"></span></span></button>
     <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl"><span class="full">Geopolitics</span><span class="short">World</span></span><span class="tn" id="tabN-geo"></span></span></button>
     <button class="tab fin" role="tab" id="tab-fin" data-tab="fin" aria-controls="col-fin" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path><path d="M15 7h6v6"></path></svg></span><span class="tt"><span class="tl"><span class="full">Economy &amp; Finance</span><span class="short">Finance</span></span><span class="tn" id="tabN-fin"></span></span></button>
+    <button class="tab stats" role="tab" id="tab-stats" data-tab="stats" aria-controls="col-stats" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M21 20H3"></path></svg></span><span class="tt"><span class="tl"><span class="full">Cyber Stats</span><span class="short">Stats</span></span><span class="tn" id="tabN-stats">Updated twice a day</span></span></button>
   </div>
   <div class="cols">
     <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber" role="tabpanel">
@@ -429,6 +488,20 @@
       <div id="finLead"></div>
       <div class="stories" id="finList"></div>
     </section>
+
+    <section class="col stats" id="col-stats" aria-labelledby="h-stats" role="tabpanel" hidden>
+      <h2 class="display" id="h-stats" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Cyber Stats</h2>
+      <div class="st-controls">
+        <div class="seg" id="stRegion" role="group" aria-label="Region">
+          <button data-region="global" aria-pressed="true">Global</button><button data-region="europe" aria-pressed="false">Europe</button><button data-region="usa" aria-pressed="false">USA</button><button data-region="singapore" aria-pressed="false">Singapore</button><button data-region="china" aria-pressed="false">China</button>
+        </div>
+        <div class="seg" id="stPeriod" role="group" aria-label="Period">
+          <button data-period="week" aria-pressed="true">Weekly</button><button data-period="month" aria-pressed="false">Monthly</button><button data-period="year" aria-pressed="false">Yearly</button>
+        </div>
+      </div>
+      <div id="stBody"><div class="empty">Loading statistics…</div></div>
+    </section>
+
   </div>
 
   <footer class="site">
@@ -436,6 +509,7 @@
     <span>SignalFeed · your cyber &amp; world briefing</span>
   </footer>
 </main>
+<div class="tip" id="tip" role="tooltip" hidden></div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="overlay" id="overlay"><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Details"></div></div>
@@ -486,6 +560,7 @@ const state = {
 const $ = id => document.getElementById(id);
 const BASE_TITLE = document.title;
 const SECTIONS = ['cyber', 'geo', 'fin'];
+const TABS = [...SECTIONS, 'stats'];
 const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo, ...SF.TOPICS.fin].find(t => t.id === id);
 const regionLabel = id => (SF.REGIONS.find(r => r.id === id) || {}).label || '';
 
@@ -666,6 +741,7 @@ function renderHero() {
   $('dateLine').textContent = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`.toUpperCase();
 
   const tab = typeof currentTab === 'string' ? currentTab : 'cyber';
+  if (tab === 'stats') { $('heroLine').textContent = statsSummary(); return; }
   const T = HERO[tab];
   const pool = state.items.filter(a => a.category === tab);
   const breaking = pool.filter(isBreaking);
@@ -912,22 +988,257 @@ document.addEventListener('keydown', e => {
 });
 
 // ---------- CLICKS ----------
+// ---------- CYBER STATS ----------
+const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', table: {} };
+try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region) ST.region = v.region; if (v.period) ST.period = v.period; } catch {}
+const ST_REGION = { global: 'worldwide', europe: 'in Europe', usa: 'in the USA', singapore: 'in Singapore', china: 'in China' };
+const DAY_MS = 864e5;
+const fmtN = n => n == null ? '–' : n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en-GB');
+const isoDay = d => d.toISOString().slice(0, 10);
+const mondayUTC = d => { const x = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())); x.setUTCDate(x.getUTCDate() - ((x.getUTCDay() + 6) % 7)); return x; };
+const dfmt = (d, o) => d.toLocaleDateString('en-GB', { timeZone: 'UTC', ...o });
+
+async function loadStats(force) {
+  if (ST.loading) return;
+  if (!force && ST.data && Date.now() - ST.loadedAt < 30 * 60e3) { renderStats(); return; }
+  ST.loading = true; renderStats();
+  try {
+    const r = await fetch('data/stats.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    ST.data = await r.json(); ST.loadedAt = Date.now(); ST.error = '';
+  } catch { ST.error = 'Statistics aren’t available yet. They’re collected about twice a day, so please check back a little later.'; }
+  ST.loading = false; renderStats();
+  if (currentTab === 'stats') renderHero();
+}
+
+function stPeriods(kind) {
+  const now = new Date(), out = [];
+  if (kind === 'week') {
+    const m0 = mondayUTC(now);
+    for (let i = 12; i >= 0; i--) {
+      const from = new Date(+m0 - i * 7 * DAY_MS), to = new Date(+from + 7 * DAY_MS), end = new Date(+to - DAY_MS);
+      out.push({ from, to, partial: i === 0, label: dfmt(from, { day: 'numeric', month: 'short' }),
+        long: `${dfmt(from, { day: 'numeric', month: 'short' })} – ${dfmt(end, { day: 'numeric', month: 'short', year: 'numeric' })}` });
+    }
+  } else if (kind === 'month') {
+    for (let i = 12; i >= 0; i--) {
+      const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)), to = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1));
+      out.push({ from, to, partial: i === 0, ym: from.toISOString().slice(0, 7),
+        label: dfmt(from, { month: 'short' }) + (from.getUTCMonth() === 0 || i === 12 ? ` ’${String(from.getUTCFullYear()).slice(2)}` : ''),
+        long: dfmt(from, { month: 'long', year: 'numeric' }) });
+    }
+  } else {
+    for (let y = 2022; y <= now.getUTCFullYear(); y++)
+      out.push({ from: new Date(Date.UTC(y, 0, 1)), to: new Date(Date.UTC(y + 1, 0, 1)), partial: y === now.getUTCFullYear(), year: y, label: String(y), long: String(y) });
+  }
+  return out;
+}
+const PERIOD_WORD = { week: ['week', 'weeks', 'Weekly'], month: ['month', 'months', 'Monthly'], year: ['year', 'years', 'Yearly'] };
+
+// Ransomware value for one period and region (null = no data for that period yet).
+function rwValue(rw, p, region) {
+  if (ST.period === 'week') {
+    let n = 0, any = false;
+    for (let d = new Date(p.from); d < p.to; d = new Date(+d + DAY_MS)) { const day = rw.daily[isoDay(d)]; if (day) { any = true; n += day[region] || 0; } }
+    const ym = isoDay(p.from).slice(0, 7);
+    return any || rw.months[ym] ? n : null;
+  }
+  if (ST.period === 'month') return rw.months[p.ym]?.[region]?.n ?? null;
+  let n = 0, have = 0;
+  for (let m = 1; m <= 12; m++) { const v = rw.months[`${p.year}-${String(m).padStart(2, '0')}`]?.[region]; if (v) { n += v.n; have++; } }
+  const months = p.partial ? new Date().getUTCMonth() + 1 : 12;
+  return have >= months ? n : null;   // a year still being collected shows as 'no data yet'
+}
+function rwWindow() {   // months used for the sector / group breakdown
+  const now = new Date(), n = ST.period === 'week' ? 3 : ST.period === 'month' ? 12 : now.getUTCMonth() + 1;
+  return Array.from({ length: n }, (_, i) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1)).toISOString().slice(0, 7));
+}
+function windowLabel() {
+  return ST.period === 'week' ? 'last 3 months' : ST.period === 'month' ? 'last 12 months' : `${new Date().getUTCFullYear()} so far`;
+}
+function kevWindowStart() {
+  const now = new Date();
+  if (ST.period === 'week') return isoDay(new Date(+mondayUTC(now) - 12 * 7 * DAY_MS));
+  if (ST.period === 'month') return isoDay(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 12, 1)));
+  return `${now.getUTCFullYear()}-01-01`;
+}
+
+function niceMax(v) {
+  if (v <= 0) return 4;
+  const p = Math.pow(10, Math.floor(Math.log10(v))), f = v / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
+}
+function chartHTML(id, per, vals, unit) {
+  const max = Math.max(4, niceMax(Math.max(0, ...vals.filter(v => v != null))));
+  const last = vals.length - 2;                 // last complete period
+  const peak = vals.indexOf(Math.max(...vals.filter(v => v != null)));
+  const grid = [0, 0.5, 1].map(f => `<div class="grid" style="bottom:${f * 100}%"><span>${fmtN(Math.round(max * f))}</span></div>`).join('');
+  const bars = per.map((p, i) => {
+    const v = vals[i];
+    const h = !v ? 0 : Math.max(0.5, (v / max) * 100);
+    const tip = `${p.long}: ${v == null ? 'no data yet' : `${v.toLocaleString('en-GB')} ${unit}`}${p.partial ? ' (so far)' : ''}`;
+    const showVal = v != null && (i === last || i === peak || p.partial);
+    return `<div class="slot${p.partial ? ' partial' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}">
+      ${showVal ? `<span class="val" style="bottom:calc(${h}% + 4px)">${fmtN(v)}${p.partial ? '*' : ''}</span>` : ''}
+      <div class="bar" style="height:${h}%"></div>
+      <span class="xl${i % 2 && per.length > 8 ? ' odd' : ''}">${esc(p.label)}</span></div>`;
+  }).join('');
+  const rows = per.map((p, i) => `<tr><td>${esc(p.long)}${p.partial ? ' (so far)' : ''}</td><td>${vals[i] == null ? '–' : vals[i].toLocaleString('en-GB')}</td></tr>`).join('');
+  return `<div class="chart" role="img" aria-label="${esc(unit)} per ${PERIOD_WORD[ST.period][0]}">${grid}<div class="bars">${bars}</div></div><div class="chart-pad"></div>
+    <div class="st-note">* the current ${PERIOD_WORD[ST.period][0]} so far (lighter bar).</div>
+    <button class="tbl-toggle" data-table="${id}">${ST.table[id] ? 'Hide table' : 'Show as table'}</button>
+    ${ST.table[id] ? `<table class="st-table"><thead><tr><th>Period</th><th>${esc(unit[0].toUpperCase() + unit.slice(1))}</th></tr></thead><tbody>${rows}</tbody></table>` : ''}`;
+}
+function hbars(entries, limit = 8) {
+  entries = entries.filter(([, n]) => n > 0).slice(0, limit);
+  if (!entries.length) return '<div class="st-note">No data for this period.</div>';
+  const max = entries[0][1];
+  return entries.map(([k, n]) => `<div class="hbar"><span class="lbl" title="${esc(k)}">${esc(k)}</span><span class="trk"><span class="fill" style="width:${Math.max(2, n / max * 85)}%"></span><span class="num">${n.toLocaleString('en-GB')}</span></span></div>`).join('');
+}
+function kpi(per, vals, unit) {
+  const i = vals.length - 2, cur = vals[i], prev = vals[i - 1], now = vals[vals.length - 1];
+  const word = PERIOD_WORD[ST.period][0];
+  let delta = '';
+  if (cur != null && prev) {
+    const pct = Math.round((cur - prev) / prev * 100);
+    delta = `<span class="delta ${pct > 0 ? 'up' : pct < 0 ? 'down' : ''}">${pct > 0 ? '↑' : pct < 0 ? '↓' : '→'} ${Math.abs(pct)}% vs previous ${word}</span>`;
+  }
+  return `<div class="st-kpi"><span class="big">${fmtN(cur)}</span><span class="what">${unit} in ${esc(per[i].long)}</span>${delta}
+    ${now != null ? `<span class="st-note">This ${word} so far: ${now.toLocaleString('en-GB')}</span>` : ''}</div>`;
+}
+
+function renderStats() {
+  const body = $('stBody'); if (!body) return;
+  for (const b of document.querySelectorAll('#stRegion button')) b.setAttribute('aria-pressed', b.dataset.region === ST.region);
+  for (const b of document.querySelectorAll('#stPeriod button')) b.setAttribute('aria-pressed', b.dataset.period === ST.period);
+  if (!ST.data) { body.innerHTML = `<div class="empty">${esc(ST.loading ? 'Loading statistics…' : ST.error || 'Loading statistics…')}</div>`; return; }
+  const D = ST.data, per = stPeriods(ST.period), parts = [];
+  const regionWord = ST_REGION[ST.region];
+
+  // 1. Ransomware
+  const rw = D.ransomware;
+  if (rw && rw.months) {
+    const vals = per.map(p => rwValue(rw, p, ST.region));
+    const sectors = {}, groups = {};
+    for (const ym of rwWindow()) {
+      const r = rw.months[ym]?.[ST.region]; if (!r) continue;
+      for (const [k, n] of Object.entries(r.sectors)) if (k !== 'Not stated') sectors[k] = (sectors[k] || 0) + n;
+      for (const [k, n] of Object.entries(r.groups)) if (k !== 'Not stated') groups[k] = (groups[k] || 0) + n;
+    }
+    const sorted = o => Object.entries(o).sort((a, b) => b[1] - a[1]);
+    const total = Object.keys(rw.months).length, need = stPeriods('year').length * 12 - (11 - new Date().getUTCMonth());
+    parts.push(`<article class="st-card">
+      <div class="st-head"><div><h3>Ransomware victims ${esc(regionWord)}</h3><p>Organisations named on ransomware gangs’ leak sites, counted when first posted · source: ransomware.live</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])}</span></div>
+      ${kpi(per, vals, 'victims')}
+      ${chartHTML('rw', per, vals, 'victims')}
+      <div class="st-cols"><div><h4>Most hit sectors · ${windowLabel()}</h4>${hbars(sorted(sectors))}</div><div><h4>Most active ransomware groups · ${windowLabel()}</h4>${hbars(sorted(groups))}</div></div>
+      <div class="st-note">Not every attack is posted on a leak site, and some victims pay before they are named, so read this as a trend, not a full count.${ST.region === 'china' || ST.region === 'singapore' ? ' Few organisations from this country appear on leak sites, so numbers are small and jump around.' : ''}${!rw.complete ? ` History is still being collected (${total} months so far); older years fill in over the next few updates.` : ''}</div>
+    </article>`);
+  } else parts.push(`<article class="st-card"><div class="st-head"><h3>Ransomware victims</h3></div><div class="st-note">Not available yet${D.errors?.ransomware ? ': the source could not be reached on the last try' : ''}.</div></article>`);
+
+  // 2. Exploited vulnerabilities
+  const kev = D.kev;
+  if (kev && kev.items) {
+    const vals = per.map(p => { const a = isoDay(p.from), b = isoDay(p.to); return kev.items.filter(x => x.d >= a && x.d < b).length; });
+    const start = kevWindowStart(), win = kev.items.filter(x => x.d >= start);
+    const count = key => { const o = {}; for (const x of win) o[x[key]] = (o[x[key]] || 0) + 1; return Object.entries(o).sort((a, b) => (a[0] === 'Other') - (b[0] === 'Other') || b[1] - a[1]); };
+    const rans = win.filter(x => x.r).length;
+    parts.push(`<article class="st-card">
+      <div class="st-head"><div><h3>Exploited vulnerabilities</h3><p>Flaws confirmed as used in real attacks, by date added · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' (no country breakdown)' : ''}</span></div>
+      ${kpi(per, vals, 'flaws added')}
+      ${chartHTML('kev', per, vals, 'flaws added')}
+      <div class="st-cols"><div><h4>By type of product · ${windowLabel()}</h4>${hbars(count('p'))}</div><div><h4>By type of weakness · ${windowLabel()}</h4>${hbars(count('w'))}</div></div>
+      <div class="st-note">${rans} of the ${win.length} flaws added in this period are known to be used by ransomware gangs. Product and weakness types are sorted automatically from CISA’s descriptions, so a few may be misfiled.</div>
+      <div class="st-latest"><h4 style="margin:4px 0 4px;font-size:13px;color:var(--ink-2)">Latest additions</h4>${kev.items.slice(0, 6).map(x => `<a href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(x.c)}" target="_blank" rel="noopener noreferrer"><span class="cve">${esc(x.c)}</span><span>${esc(x.v)} ${esc(x.n)} · <span style="color:var(--muted)">${esc(x.p)}</span></span><span style="margin-left:auto;color:var(--muted);white-space:nowrap">${esc(dfmt(new Date(x.d), { day: 'numeric', month: 'short' }))}</span></a>`).join('')}</div>
+    </article>`);
+  }
+
+  // 3. Attack types in the news
+  const cov = D.coverage;
+  if (cov && cov.weeks && Object.keys(cov.weeks).length) {
+    const keyOf = wk => ST.period === 'week' ? wk : ST.period === 'month' ? wk.slice(0, 7) : wk.slice(0, 4);
+    const cols = {};
+    for (const [wk, c] of Object.entries(cov.weeks)) { const k = keyOf(wk); cols[k] ||= {}; for (const [t, n] of Object.entries(c)) cols[k][t] = (cols[k][t] || 0) + n; }
+    const keys = Object.keys(cols).sort().slice(-8);
+    const head = k => ST.period === 'week' ? dfmt(new Date(k), { day: 'numeric', month: 'short' }) : ST.period === 'month' ? dfmt(new Date(k + '-01'), { month: 'short', year: '2-digit' }) : k;
+    const max = Math.max(1, ...keys.flatMap(k => cov.topics.map(t => cols[k][t] || 0)));
+    const label = id => (SF.TOPICS.cyber.find(t => t.id === id) || { label: id }).label;
+    const rows = cov.topics.map(t => `<tr><th class="rowh" scope="row">${esc(label(t))}</th>${keys.map(k => {
+      const n = cols[k][t] || 0, pct = Math.round(6 + 70 * n / max);
+      return `<td style="background:color-mix(in srgb, var(--accent) ${n ? pct : 0}%, var(--surface-2));${pct > 55 && n ? 'color:var(--on-accent)' : ''}" title="${esc(label(t))} · ${esc(head(k))}: ${n} of ${cols[k].total || 0} stories">${n}</td>`;
+    }).join('')}</tr>`).join('');
+    parts.push(`<article class="st-card">
+      <div class="st-head"><div><h3>Attack types in the news</h3><p>How many SignalFeed cyber headlines mention each attack type · darker = more stories</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])} · all regions</span></div>
+      <div class="heat-wrap"><table class="heat"><thead><tr><th></th>${keys.map(k => `<th scope="col">${esc(head(k))}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="st-note">This measures news coverage, not attacks: it shows what is being talked about. Counting started on ${esc(dfmt(new Date(cov.since), { day: 'numeric', month: 'long', year: 'numeric' }))}, so the history grows week by week.</div>
+    </article>`);
+  }
+
+  // 4. Reports library
+  const R = (title, url, note) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${esc(title)}<small>${esc(note)}</small></a>`;
+  parts.push(`<article class="st-card">
+    <div class="st-head"><div><h3>Official reports</h3><p>Free yearly and quarterly reports with attack numbers by type, for deeper reading</p></div></div>
+    <div class="reports">
+      <div><h4>EUROPE</h4>${R('ENISA Threat Landscape', 'https://www.enisa.europa.eu/publications/enisa-threat-landscape-2025', 'EU agency · yearly · ransomware, DDoS, phishing, state actors')}${R('UK NCSC', 'https://www.ncsc.gov.uk/', 'UK cyber centre · annual review')}</div>
+      <div><h4>USA</h4>${R('FBI IC3 Internet Crime Report', 'https://www.ic3.gov/', 'yearly · complaints and losses by crime type')}${R('CISA exploited vulnerabilities', 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog', 'live list behind the chart above')}</div>
+      <div><h4>SINGAPORE</h4>${R('CSA Singapore Cyber Landscape', 'https://www.csa.gov.sg/', 'yearly · phishing, ransomware, infected systems')}</div>
+      <div><h4>CHINA</h4>${R('CNCERT/CC', 'https://www.cert.org.cn/', 'national CERT · yearly and periodic reports, mostly in Chinese')}</div>
+      <div><h4>GLOBAL</h4>${R('Check Point Research', 'https://blog.checkpoint.com/research/', 'monthly · weekly attacks per organisation by region')}${R('APWG Phishing Activity Trends', 'https://docs.apwg.org/reports/apwg_trends_report_q2_2026.pdf', 'quarterly · phishing counts per month')}${R('Verizon Data Breach Investigations Report', 'https://www.verizon.com/business/resources/reports/dbir/', 'yearly · breaches by attack type and region')}${R('Cloudflare Radar', 'https://radar.cloudflare.com/', 'live DDoS and attack traffic by country')}${R('ransomware.live', 'https://www.ransomware.live/', 'source of the ransomware chart')}${R('OECD AI Incidents Monitor', 'https://oecd.ai/en/incidents', 'AI-related incidents by country and month')}</div>
+    </div></article>`);
+
+  body.innerHTML = `<div style="display:flex;flex-direction:column;gap:18px">${parts.join('')}</div>
+    <div class="st-note" style="margin-top:12px">Statistics updated ${esc(ago(D.ransomware?.updatedAt || D.generatedAt))}.</div>`;
+}
+
+function statsSummary() {
+  const D = ST.data;
+  if (!D) return 'Ransomware and exploited-vulnerability statistics, updated about twice a day.';
+  const out = [];
+  if (D.ransomware?.daily) {
+    const m0 = mondayUTC(new Date()), from = new Date(+m0 - 7 * DAY_MS);
+    let n = 0; for (let d = from; d < m0; d = new Date(+d + DAY_MS)) n += D.ransomware.daily[isoDay(d)]?.global || 0;
+    out.push(`Ransomware gangs named ${n.toLocaleString('en-GB')} victims worldwide last week.`);
+  }
+  if (D.kev?.items) {
+    const since = isoDay(new Date(Date.now() - 30 * DAY_MS));
+    out.push(`${D.kev.items.filter(x => x.d >= since).length} newly exploited flaws were added to CISA’s list in the last 30 days.`);
+  }
+  return out.join(' ') || 'Cyber statistics, updated about twice a day.';
+}
+
+for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; saveStatsPrefs(); renderStats(); };
+for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; saveStatsPrefs(); renderStats(); };
+function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period })); } catch {} }
+document.addEventListener('click', e => { const t = e.target.closest?.('[data-table]'); if (t) { ST.table[t.dataset.table] = !ST.table[t.dataset.table]; renderStats(); } });
+function showTip(el) {
+  const tip = $('tip'); if (!el?.dataset?.tip) { tip.hidden = true; return; }
+  tip.textContent = el.dataset.tip; tip.hidden = false;
+  const r = el.getBoundingClientRect(), w = tip.offsetWidth;
+  tip.style.left = Math.min(window.innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2)) + 'px';
+  tip.style.top = Math.max(8, r.top - tip.offsetHeight - 8) + 'px';
+}
+document.addEventListener('mouseover', e => showTip(e.target.closest?.('.slot')));
+document.addEventListener('focusin', e => showTip(e.target.closest?.('.slot')));
+document.addEventListener('scroll', () => { $('tip').hidden = true; }, { passive: true });
+
 const TAB_KEY = 'signalfeed_tab';
-let currentTab = (() => { try { const v = localStorage.getItem(TAB_KEY); return SECTIONS.includes(v) ? v : 'cyber'; } catch { return 'cyber'; } })();
+let currentTab = (() => { try { const v = localStorage.getItem(TAB_KEY); return TABS.includes(v) ? v : 'cyber'; } catch { return 'cyber'; } })();
 function setTab(key, focus = false) {
   currentTab = key;
-  for (const k of SECTIONS) {
+  for (const k of TABS) {
     $('col-' + k).hidden = k !== key;
     $('tab-' + k).setAttribute('aria-selected', k === key);
     $('tab-' + k).tabIndex = k === key ? 0 : -1;
   }
   if (focus) $('tab-' + key).focus();
   try { localStorage.setItem(TAB_KEY, key); } catch {}
+  document.body.classList.toggle('on-stats', key === 'stats');
+  if (key === 'stats') loadStats();
   renderHero(); renderBreaking();
 }
-for (const k of SECTIONS) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
+for (const k of TABS) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
 document.querySelector('.tabs').addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const i = SECTIONS.indexOf(currentTab), n = SECTIONS.length; setTab(SECTIONS[(i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n], true); }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const i = TABS.indexOf(currentTab), n = TABS.length; setTab(TABS[(i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n], true); }
 });
 setTab(currentTab);
 const syncHeader = () => document.documentElement.style.setProperty('--hdr-h', document.querySelector('header').offsetHeight + 'px');
@@ -965,6 +1276,7 @@ check();
 setInterval(() => { if (Date.now() >= state.nextCheck) check(); }, 5000);
 setInterval(updateLive, 1000);
 setInterval(render, 60000);   // keeps times and the greeting current
+setInterval(() => { if (currentTab === 'stats') loadStats(); }, 5 * 60e3);
 </script>
 </body>
 </html>
