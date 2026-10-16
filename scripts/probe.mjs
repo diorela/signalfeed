@@ -1,40 +1,29 @@
-import { parseFeed } from './fetch-feeds.mjs';
 import { writeFile } from 'node:fs/promises';
 const C = {
-  'FT home': 'https://www.ft.com/rss/home',
-  'FT world': 'https://www.ft.com/world?format=rss',
-  'FT global economy': 'https://www.ft.com/global-economy?format=rss',
-  'FT markets': 'https://www.ft.com/markets?format=rss',
-  'Economist finance': 'https://www.economist.com/finance-and-economics/rss.xml',
-  'Economist business': 'https://www.economist.com/business/rss.xml',
-  'Economist leaders': 'https://www.economist.com/leaders/rss.xml',
-  'Economist briefing': 'https://www.economist.com/briefing/rss.xml',
-  'BBC Business': 'https://feeds.bbci.co.uk/news/business/rss.xml',
-  'Guardian business': 'https://www.theguardian.com/business/rss',
-  'Guardian economics': 'https://www.theguardian.com/business/economics/rss',
-  'CNBC economy': 'https://www.cnbc.com/id/20910258/device/rss/rss.html',
-  'CNBC finance': 'https://www.cnbc.com/id/10000664/device/rss/rss.html',
-  'MarketWatch': 'https://feeds.content.dowjones.io/public/rss/mw_topstories',
-  'ECB': 'https://www.ecb.europa.eu/rss/press.html',
-  'Federal Reserve': 'https://www.federalreserve.gov/feeds/press_all.xml',
-  'IMF': 'https://www.imf.org/en/News/rss?language=eng',
-  'France 24 business': 'https://www.france24.com/en/business/rss',
-  'DW business': 'https://rss.dw.com/rdf/rss-en-bus',
-  'Nikkei Asia': 'https://asia.nikkei.com/rss/feed/nar',
-  'Yahoo Finance': 'https://finance.yahoo.com/news/rssindex',
-  'Al Jazeera economy': 'https://www.aljazeera.com/xml/rss/all.xml',
+  'rl v2 recent': 'https://api.ransomware.live/v2/recentvictims',
+  'rl v2 month': 'https://api.ransomware.live/v2/victims/2026/09',
+  'rl v2 country SG': 'https://api.ransomware.live/v2/countryvictims/SG',
+  'rl v2 info': 'https://api.ransomware.live/v2/info',
+  'rl v2 sectors': 'https://api.ransomware.live/v2/sectorvictims/Healthcare',
+  'rl v1 month': 'https://api.ransomware.live/victims/2026/09',
+  'rl v2 allcyberattacks': 'https://api.ransomware.live/v2/allcyberattacks',
+  'rl data repo': 'https://raw.githubusercontent.com/JMousqueton/ransomware.live/main/db/victims.json',
+  'ransomwatch posts': 'https://raw.githubusercontent.com/joshhighet/ransomwatch/main/posts.json',
+  'cisa kev': 'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
+  'cisa kev gh mirror': 'https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json',
+  'oecd aim': 'https://oecd.ai/api/incidents?page=1',
+  'cf radar noauth': 'https://api.cloudflare.com/client/v4/radar/attacks/layer3/summary/protocol',
 };
 const out = {};
 await Promise.all(Object.entries(C).map(async ([name, url]) => {
   try {
-    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)', 'Accept': 'application/rss+xml, application/xml, text/xml, */*' }, signal: AbortSignal.timeout(20000) });
+    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)', 'Accept': 'application/json,*/*' }, signal: AbortSignal.timeout(60000) });
     const txt = await r.text();
-    let items = parseFeed(txt);
-    if (name === 'Al Jazeera economy') items = items.filter(i => /\/economy\//.test(i.link));
-    const dates = items.map(i => +new Date(i.date)).filter(Boolean);
-    out[name] = { status: r.status, count: items.length, newestHoursAgo: dates.length ? +((Date.now() - Math.max(...dates)) / 36e5).toFixed(1) : null,
-      withDesc: items.filter(i => i.description).length,
-      sample: items.slice(0, 3).map(i => ({ t: i.title, l: i.link, d: i.description.slice(0, 140), date: i.date })) };
+    let info = { status: r.status, bytes: txt.length, head: txt.slice(0, 300) };
+    try { const j = JSON.parse(txt); const arr = Array.isArray(j) ? j : (j.vulnerabilities || j.victims || j.data || null);
+      info.type = Array.isArray(j) ? 'array' : 'object'; info.keys = Array.isArray(j) ? null : Object.keys(j).slice(0, 15);
+      if (Array.isArray(arr)) { info.count = arr.length; info.sample = arr.slice(0, 2); info.last = arr.slice(-1); } } catch {}
+    out[name] = info;
   } catch (e) { out[name] = { error: String(e.message || e) }; }
 }));
 await writeFile('probe.json', JSON.stringify(out, null, 1));
