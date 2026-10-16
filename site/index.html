@@ -173,17 +173,26 @@
   /* ---------- COLUMNS ---------- */
   .cols { display: block; }
   .col[hidden] { display: none; }
-  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; margin: 0 0 16px; border-radius: 16px; background: var(--bg); box-shadow: 0 6px 12px -8px rgba(0,0,0,.12); border: 1px solid var(--border); }
-  .tab { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border-radius: 12px; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 16px; font-weight: 600; cursor: pointer; }
-  .tab:hover { color: var(--ink); }
-  .tab .ti { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--muted); }
-  .tab .ti svg { width: 16px; height: 16px; }
-  .tab .tn { font-size: 13px; font-weight: 500; color: var(--faint); }
-  .tab[aria-selected="true"] { background: var(--surface); color: var(--ink); border-color: var(--border); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  .tab[aria-selected="true"] .ti { background: var(--tab-accent); color: var(--tab-on); }
-  .tab[aria-selected="true"] .tn { color: var(--muted); }
+  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
+  .tab { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 18px; border-radius: 18px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; }
+  .tab:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tab-accent) 60%, transparent); border-color: color-mix(in srgb, var(--tab-accent) 45%, var(--border)); }
+  .tab .ti { flex: none; width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
+  .tab .ti svg { width: 24px; height: 24px; }
+  .tab .tt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .tab .tl { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.15; }
+  .tab .tn { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tab .tn b { font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
+  .tab[aria-selected="true"] { background: var(--tab-accent); color: var(--tab-on); border-color: transparent; box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--tab-accent) 80%, transparent); }
+  .tab[aria-selected="true"] .ti { background: color-mix(in srgb, var(--tab-on) 18%, transparent); color: var(--tab-on); }
+  .tab[aria-selected="true"] .tn { color: color-mix(in srgb, var(--tab-on) 82%, transparent); }
+  .tab[aria-selected="true"] .tn b { background: var(--tab-on); color: var(--tab-accent); }
+  .tab[aria-selected="true"]::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--tab-accent); transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
   .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
   .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
+  .cols .col { border-top: 4px solid var(--accent); }
+  .cols .col-head { display: none; }
+  .col-head .counts { display: none; }
+  @media (prefers-reduced-motion: reduce) { .tab { transition: none; } .tab:hover { transform: none; } }
   .col { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 90px; }
   @media (max-width: 640px) { .col { padding: 16px; border-radius: 18px; } }
   @media (max-width: 640px) {
@@ -247,10 +256,14 @@
   .col-head .col-icon, .col-head h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   @media (max-width: 640px) {
     header { position: static; }
-    .tabs { --hdr-h: 0px; top: 0; border-radius: 0 0 14px 14px; margin-inline: -16px; padding: 8px 16px; border-width: 0 0 1px; }
+    .tabs { top: 0; gap: 8px; margin-inline: -16px; padding: 8px 16px; }
     #tabs-anchor { scroll-margin-top: 8px !important; }
-    .tab { height: 44px; font-size: 15px; gap: 8px; }
-    .tab .ti { width: 24px; height: 24px; }
+    .tab { min-height: 60px; padding: 8px 10px; gap: 10px; border-radius: 14px; }
+    .tab .ti { width: 34px; height: 34px; border-radius: 10px; }
+    .tab .ti svg { width: 18px; height: 18px; }
+    .tab .tl { font-size: 15px; }
+    .tab .tn { font-size: 12px; gap: 4px; }
+    .tab .tn b { font-size: 11px; padding: 1px 6px; }
   }
   .story:hover { background: var(--surface-2); }
   .story.unread .s-title { font-weight: 600; }
@@ -348,8 +361,8 @@
 
   <div id="tabs-anchor" style="scroll-margin-top: calc(var(--hdr-h, 71px) + 8px)"></div>
   <div class="tabs" role="tablist" aria-label="Choose a news section">
-    <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span>Cybersecurity <span class="tn" id="tabN-cyber"></span></button>
-    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>Geopolitics <span class="tn" id="tabN-geo"></span></button>
+    <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span><span class="tt"><span class="tl">Cybersecurity</span><span class="tn" id="tabN-cyber"></span></span></button>
+    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl">Geopolitics</span><span class="tn" id="tabN-geo"></span></span></button>
   </div>
   <div class="cols">
     <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber" role="tabpanel">
@@ -589,10 +602,10 @@ function renderColumn(key, toTop = false) {
   const bySource = f.source ? all.filter(a => a.source === f.source) : all;
   const pre = bySource.filter(a => (!f.region || a._regions.includes(f.region)) && SF.matchQuery(a._text, state.tokens));
   const items = f.topic ? pre.filter(a => a._topics.includes(f.topic)) : pre;
-  $('tabN-' + key).textContent = all.length ? (f.topic || f.region || f.source || state.tokens.length ? `${items.length}` : `${all.length}`) : '';
   const filtering = !!(f.topic || f.region || f.source || state.tokens.length);
   const newCount = all.filter(isNew).length;
 
+  $('tabN-' + key).innerHTML = !all.length ? 'Loading…' : filtering ? `${items.length} of ${all.length} match` : `${all.length} stories${newCount ? ` <b>${newCount} new</b>` : ''}`;
   $(key + 'Counts').innerHTML = all.length ? `${all.length} stories${newCount ? ` · <b>${newCount} new</b>` : ''}` : '';
   const opt = (v, label, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(label)}</option>`;
   $(key + 'Topic').innerHTML = opt('', 'All topics', !f.topic) + TOPIC_ORDER[key]
