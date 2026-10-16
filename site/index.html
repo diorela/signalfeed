@@ -182,11 +182,10 @@
   .tab .tl { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.15; }
   .tab .tn { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .tab .tn b { font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
-  .tab[aria-selected="true"] { background: var(--tab-accent); color: var(--tab-on); border-color: transparent; box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--tab-accent) 80%, transparent); }
-  .tab[aria-selected="true"] .ti { background: color-mix(in srgb, var(--tab-on) 18%, transparent); color: var(--tab-on); }
-  .tab[aria-selected="true"] .tn { color: color-mix(in srgb, var(--tab-on) 82%, transparent); }
-  .tab[aria-selected="true"] .tn b { background: var(--tab-on); color: var(--tab-accent); }
-  .tab[aria-selected="true"]::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--tab-accent); transform: translateX(-50%) rotate(45deg); border-radius: 3px; }
+  .tab[aria-selected="true"] { background: var(--surface); color: var(--ink); border: 2px solid var(--tab-accent); padding: 11px 17px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--tab-accent) 12%, transparent); }
+  .tab[aria-selected="true"] .ti { background: var(--tab-accent); color: var(--tab-on); }
+  .tab[aria-selected="true"] .tl { color: var(--ink); }
+  .tab[aria-selected="false"] .tl { color: var(--ink-2); }
   .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
   .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
   .cols .col { border-top: 4px solid var(--accent); }
@@ -259,6 +258,7 @@
     .tabs { top: 0; gap: 8px; margin-inline: -16px; padding: 8px 16px; }
     #tabs-anchor { scroll-margin-top: 8px !important; }
     .tab { min-height: 60px; padding: 8px 10px; gap: 10px; border-radius: 14px; }
+    .tab[aria-selected="true"] { padding: 7px 9px; }
     .tab .ti { width: 34px; height: 34px; border-radius: 10px; }
     .tab .ti svg { width: 18px; height: 18px; }
     .tab .tl { font-size: 15px; }
