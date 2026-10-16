@@ -1,1 +1,177 @@
-{"gen":"2026-10-16T09:27:23.090Z","errors":{},"months":58,"complete":true,"missing":[],"kev":1746,"kevUpdated":"2026-10-16T09:18:03.071Z"}
+{
+ "total": 4246,
+ "keys": {
+  "added": 4246,
+  "claim_gang": 4246,
+  "claim_url": 4246,
+  "country": 4246,
+  "date": 4246,
+  "description": 4246,
+  "domain": 4246,
+  "has_infostealer_info": 4246,
+  "infostealer_data": 2277,
+  "link": 4246,
+  "summary": 4246,
+  "title": 4246,
+  "url": 4246,
+  "victim": 4246,
+  "pdf_url": 17
+ },
+ "byYear": {
+  "2021": 7,
+  "2022": 25,
+  "2023": 879,
+  "2024": 1153,
+  "2025": 1270,
+  "2026": 912
+ },
+ "topCountries": [
+  [
+   "US",
+   1960
+  ],
+  [
+   "DE",
+   316
+  ],
+  [
+   "FR",
+   260
+  ],
+  [
+   "CA",
+   147
+  ],
+  [
+   "JP",
+   141
+  ],
+  [
+   "GB",
+   131
+  ],
+  [
+   "AU",
+   114
+  ],
+  [
+   "IT",
+   101
+  ],
+  [
+   "CH",
+   100
+  ],
+  [
+   "TW",
+   100
+  ],
+  [
+   "BR",
+   91
+  ],
+  [
+   "IN",
+   67
+  ],
+  [
+   "NL",
+   49
+  ],
+  [
+   "ES",
+   44
+  ],
+  [
+   "BE",
+   42
+  ]
+ ],
+ "byGang": {
+  "has gang": 1378,
+  "no gang": 2868
+ },
+ "recent": [
+  {
+   "date": "2026-09-02",
+   "country": "CO",
+   "gang": false,
+   "title": "Ciberataque Afecta Servicios De La Liga Nacional Contra El Cáncer - La Red 106.1 FM",
+   "summary": "La Liga Nacional contra el Cáncer a communiqué que son victime d'un incident de cybersécurité qui a affecté temporairement les services de son Département de Radiothérapie. L'institution a confirmé que l'incident fait l'",
+   "url": "https://www.lared1061.com/posts/ciberataque-afecta-servicios-de-la-liga-nacional-contra-el-cancer"
+  },
+  {
+   "date": "2026-09-02",
+   "country": "FR",
+   "gang": false,
+   "title": "Plusieurs sites internet gouvernementaux liés au ministère de la Transition écologique inaccessibles",
+   "summary": "Plusieurs sites internet gouvernementaux liés au ministère de la Transition écologique sont inaccessibles suite à une cyberattaque revendiquée par un utilisateur anonyme sur un forum criminel. L'Agence nationale de la sé",
+   "url": "https://www.france24.com/fr/info-en-continu/20260902-plusieurs-sites-internet-gouvernementaux-liés-au-ministère-de-la-transition-écologique-inaccessibles"
+  },
+  {
+   "date": "2026-09-02",
+   "country": "TW",
+   "gang": false,
+   "title": "光電廠杭特遭網路攻擊",
+   "summary": "Le fabricant de composants optoélectroniques Hangte a publié une alerte de cybersécurité indiquant que ses systèmes d'information ont été attaqués. L'entreprise a mis en place des mécanismes de défense et évalue que l'im",
+   "url": "https://www.ithome.com.tw/news/178600"
+  },
+  {
+   "date": "2026-09-03",
+   "country": "SW",
+   "gang": false,
+   "title": "IT online store Dustin takes systems offline after a breach",
+   "summary": "Dustin, un revendeur informatique suédois opérant également dans la région du Benelux via Centralpoint, a dû mettre hors ligne une partie de son environnement informatique suite à un grave incident de sécurité. Des indiv",
+   "url": "https://www.techzine.eu/news/security/144042/it-online-store-dustin-takes-systems-offline-after-a-breach/"
+  },
+  {
+   "date": "2026-09-03",
+   "country": "JP",
+   "gang": false,
+   "title": "鳥取県 放射線監視システムにサイバー攻撃 情報流出なし | NHKニュース",
+   "summary": "Le système de collecte de données de rayonnement, utilisé autour de centrales nucléaires comme celle de Shimane, a été victime d'une cyberattaque. Les autorités ont confirmé que les serveurs de sauvegarde n'ont pas été a",
+   "url": "https://news.web.nhk/newsweb/na/nb-4040024179"
+  },
+  {
+   "date": "2026-09-02",
+   "country": "US",
+   "gang": false,
+   "title": "Luminis Health taps legal counsel amid cybersecurity investigation",
+   "summary": "Luminis Health a fait appel à des conseillers juridiques en raison d'un incident de cybersécurité en cours qui affecte les plateformes web du système hospitalier.",
+   "url": "https://www.capitalgazette.com/2026/09/02/luminis-health-hospital-cybersecurity-investigation/"
+  },
+  {
+   "date": "2026-09-03",
+   "country": "LV",
+   "gang": false,
+   "title": "\"Cert.lv\" atklāj, kā notika kiberuzbrukums PTAC sistēmai",
+   "summary": "Le Centre de protection des droits des consommateurs (PTAC) a été victime d'une cyberattaque qui a permis à un attaquant d'accéder à des données via une vulnérabilité dans la partie publique de son système de statistique",
+   "url": "https://nra.lv/latvija/529162-cert-lv-informacija-par-kiberuzbrukumu-ptac.htm"
+  },
+  {
+   "date": "2026-09-03",
+   "country": "TU",
+   "gang": false,
+   "title": "Özel Adatıp Hastanesi güçlü siber güvenlik altyapısıyla verilerini korudu",
+   "summary": "L'hôpital privé Adatıp a été ciblé par une tentative de cyberattaque dans le cadre d'une vague d'attaques visant les établissements de santé en Turquie. Grâce à sa solide infrastructure informatique et à ses systèmes de ",
+   "url": "https://www.halk54.com/ozel-adatip-hastanesi-guclu-siber-guvenlik-altyapisiyla-verilerini-korudu/amp"
+  }
+ ],
+ "others": {
+  "eurepoc": {
+   "status": 200,
+   "bytes": 267927,
+   "head": "<!DOCTYPE html>\n<html lang=\"en-GB\">\n\n<head>\n\t\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1\">\n\t<link rel=\"profile\" href=\"http://gmpg.org/xfn/11\">\n\t\t<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-"
+  },
+  "hackmageddon": {
+   "status": 403,
+   "bytes": 75193,
+   "head": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta http-equiv=\"cache-control\" content=\"no-store,max-age=0\" />\n    <meta name=\"robots\" content=\"noindex\" />\n    <title>403 - Forbidden</title>\n    <li"
+  },
+  "rl_v2_press": {
+   "status": 200,
+   "bytes": 29264,
+   "head": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<!--\n██████╗  █████╗ ███╗   ██╗███████╗ ██████╗ ███╗   ███╗██╗    ██╗ █████╗ ██████╗ ███████╗   ██╗     ██╗██╗   ██╗███████╗\n██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔═══██╗████╗ ████║██║    ██║██╔══██╗██╔══██╗██╔════╝   ██║     ██║██║   ██║██╔════╝\n██████╔╝███████"
+  }
+ }
+}
