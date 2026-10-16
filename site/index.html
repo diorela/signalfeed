@@ -328,7 +328,7 @@
   <section class="hero">
     <div class="hero-text">
       <span class="eyebrow mono" id="dateLine"></span>
-      <h1 class="display" id="greeting">Hello, Dior.</h1>
+      <h1 class="display" id="greeting">Hello.</h1>
       <p id="heroLine">Loading today's briefing…</p>
     </div>
     <div class="tiles">
@@ -402,7 +402,6 @@ const NEW_WINDOW_MS = 24 * 3600 * 1000;    // only stories from the last 24h can
 const PAGE_SIZE = 25;
 const TOPICS_SHOWN = 5;
 const SEEN_KEY = 'signalfeed_seen_v2';
-const NAME = 'Dior';
 
 // Colour for each topic, and a badge for each source.
 const TOPIC_COLOR = {
@@ -546,7 +545,7 @@ function updateLive() {
 // ---------- HERO ----------
 function renderHero() {
   const now = new Date(), h = now.getHours();
-  $('greeting').textContent = `${h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'}, ${NAME}.`;
+  $('greeting').textContent = `${h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'}.`;
   $('dateLine').textContent = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`.toUpperCase();
 
   const cyber = state.items.filter(a => a.category === 'cyber');
