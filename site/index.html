@@ -203,6 +203,10 @@
   .col.stats { --accent: var(--stats); --on-accent: var(--on-stats); --lead: var(--lead-stats); --accent-ink: var(--stats-ink); }
   body.on-stats .tiles, body.on-stats #breaking { display: none !important; }
   .st-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+  .st-threat { flex: 1 1 260px; max-width: 380px; }
+  .st-threat select { height: 46px; }
+  .st-go { align-self: flex-start; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .st-go:hover { border-color: var(--accent); color: var(--accent-ink); }
   .seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
   .seg button { height: 36px; padding: 0 14px; border-radius: 9px; border: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 500; cursor: pointer; }
   .seg button:hover { color: var(--ink); }
@@ -498,6 +502,7 @@
         <div class="seg" id="stPeriod" role="group" aria-label="Period">
           <button data-period="week" aria-pressed="true">Weekly</button><button data-period="month" aria-pressed="false">Monthly</button><button data-period="year" aria-pressed="false">Yearly</button>
         </div>
+        <label class="fsel st-threat"><span>Threat type</span><select id="stThreat"></select></label>
       </div>
       <div id="stBody"><div class="empty">Loading statistics…</div></div>
     </section>
@@ -989,8 +994,8 @@ document.addEventListener('keydown', e => {
 
 // ---------- CLICKS ----------
 // ---------- CYBER STATS ----------
-const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', table: {} };
-try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region) ST.region = v.region; if (v.period) ST.period = v.period; } catch {}
+const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', threat: 'all', table: {} };
+try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region) ST.region = v.region; if (v.period) ST.period = v.period; if (v.threat) ST.threat = v.threat; } catch {}
 const ST_REGION = { global: 'worldwide', europe: 'in Europe', usa: 'in the USA', singapore: 'in Singapore', china: 'in China' };
 const DAY_MS = 864e5;
 const fmtN = n => n == null ? '–' : n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en-GB');
@@ -1072,7 +1077,7 @@ function chartHTML(id, per, vals, unit) {
   const max = Math.max(4, niceMax(Math.max(0, ...vals.filter(v => v != null))));
   const last = vals.length - 2;                 // last complete period
   const peak = vals.indexOf(Math.max(...vals.filter(v => v != null)));
-  const grid = [0, 0.5, 1].map(f => `<div class="grid" style="bottom:${f * 100}%"><span>${fmtN(Math.round(max * f))}</span></div>`).join('');
+  const grid = [0, 0.5, 1].filter(f => Number.isInteger(max * f)).map(f => `<div class="grid" style="bottom:${f * 100}%"><span>${fmtN(max * f)}</span></div>`).join('');
   const bars = per.map((p, i) => {
     const v = vals[i];
     const h = !v ? 0 : Math.max(0.5, (v / max) * 100);
@@ -1107,17 +1112,47 @@ function kpi(per, vals, unit) {
     ${now != null ? `<span class="st-note">This ${word} so far: ${now.toLocaleString('en-GB')}</span>` : ''}</div>`;
 }
 
+const COVERAGE_LABEL = id => (SF.TOPICS.cyber.find(t => t.id === id) || { label: id }).label;
+function threatOptions(D) {
+  const o = (v, l) => `<option value="${esc(v)}"${ST.threat === v ? ' selected' : ''}>${esc(l)}</option>`;
+  let html = o('all', 'All threat types');
+  html += `<optgroup label="Ransomware">${o('rw', 'Ransomware attacks (victims)')}</optgroup>`;
+  if (D.kev?.items) {
+    const types = key => [...new Set(D.kev.items.map(x => x[key]))].filter(t => t !== 'Other').sort();
+    html += `<optgroup label="Exploited vulnerabilities">${o('kev', 'All exploited vulnerabilities')}${types('p').map(t => o('kev:p:' + t, t)).join('')}</optgroup>`;
+    html += `<optgroup label="Exploited vulnerabilities · by weakness">${types('w').map(t => o('kev:w:' + t, t)).join('')}</optgroup>`;
+  }
+  if (D.coverage?.topics) html += `<optgroup label="In the news (headline counts)">${D.coverage.topics.filter(t => t !== 'ransomware').map(t => o('news:' + t, COVERAGE_LABEL(t))).join('')}</optgroup>`;
+  return html;
+}
+function threatLabel() {
+  const t = ST.threat;
+  if (t === 'rw') return 'Ransomware attacks';
+  if (t === 'kev') return 'All exploited vulnerabilities';
+  if (t.startsWith('kev:')) return t.split(':').slice(2).join(':');
+  if (t.startsWith('news:')) return COVERAGE_LABEL(t.slice(5));
+  return 'All threat types';
+}
+
 function renderStats() {
   const body = $('stBody'); if (!body) return;
   for (const b of document.querySelectorAll('#stRegion button')) b.setAttribute('aria-pressed', b.dataset.region === ST.region);
   for (const b of document.querySelectorAll('#stPeriod button')) b.setAttribute('aria-pressed', b.dataset.period === ST.period);
   if (!ST.data) { body.innerHTML = `<div class="empty">${esc(ST.loading ? 'Loading statistics…' : ST.error || 'Loading statistics…')}</div>`; return; }
   const D = ST.data, per = stPeriods(ST.period), parts = [];
+  const menu = $('stThreat');
+  menu.innerHTML = threatOptions(D);
+  if (menu.value !== ST.threat) { ST.threat = 'all'; menu.value = 'all'; }
+  menu.parentElement.classList.toggle('on', ST.threat !== 'all');
+  const T = ST.threat;
+  const show = { rw: T === 'all' || T === 'rw', kev: T === 'all' || T.startsWith('kev'), cov: T === 'all' || T.startsWith('news:') };
+  const kevKey = T.startsWith('kev:') ? T.split(':')[1] : null, kevVal = kevKey ? T.split(':').slice(2).join(':') : null;
   const regionWord = ST_REGION[ST.region];
 
   // 1. Ransomware
   const rw = D.ransomware;
-  if (rw && rw.months) {
+  if (!show.rw) { /* hidden by the threat-type filter */ }
+  else if (rw && rw.months) {
     const vals = per.map(p => rwValue(rw, p, ST.region));
     const sectors = {}, groups = {};
     for (const ym of rwWindow()) {
@@ -1142,24 +1177,41 @@ function renderStats() {
 
   // 2. Exploited vulnerabilities
   const kev = D.kev;
-  if (kev && kev.items) {
-    const vals = per.map(p => { const a = isoDay(p.from), b = isoDay(p.to); return kev.items.filter(x => x.d >= a && x.d < b).length; });
-    const start = kevWindowStart(), win = kev.items.filter(x => x.d >= start);
+  if (show.kev && kev && kev.items) {
+    const items = kevKey ? kev.items.filter(x => x[kevKey] === kevVal) : kev.items;
+    const vals = per.map(p => { const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b).length; });
+    const start = kevWindowStart(), win = items.filter(x => x.d >= start);
     const count = key => { const o = {}; for (const x of win) o[x[key]] = (o[x[key]] || 0) + 1; return Object.entries(o).sort((a, b) => (a[0] === 'Other') - (b[0] === 'Other') || b[1] - a[1]); };
     const rans = win.filter(x => x.r).length;
     parts.push(`<article class="st-card">
-      <div class="st-head"><div><h3>Exploited vulnerabilities</h3><p>Flaws confirmed as used in real attacks, by date added · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' (no country breakdown)' : ''}</span></div>
+      <div class="st-head"><div><h3>Exploited vulnerabilities${kevVal ? ` · ${esc(kevVal)}` : ''}</h3><p>Flaws confirmed as used in real attacks, by date added · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' (no country breakdown)' : ''}</span></div>
       ${kpi(per, vals, 'flaws added')}
       ${chartHTML('kev', per, vals, 'flaws added')}
-      <div class="st-cols"><div><h4>By type of product · ${windowLabel()}</h4>${hbars(count('p'), 10)}</div><div><h4>By type of weakness · ${windowLabel()}</h4>${hbars(count('w'))}</div></div>
+      <div class="st-cols"><div><h4>${kevKey === 'p' ? 'Most affected vendors' : 'By type of product'} · ${windowLabel()}</h4>${kevKey === 'p' ? hbars(count('v'), 10) : hbars(count('p'), 10)}</div><div><h4>By type of weakness · ${windowLabel()}</h4>${hbars(count('w'))}</div></div>
       <div class="st-note">${rans} of the ${win.length} flaws added in this period are known to be used by ransomware gangs. Product and weakness types are sorted automatically from CISA’s descriptions, so a few may be misfiled.</div>
-      <div class="st-latest"><h4 style="margin:4px 0 4px;font-size:13px;color:var(--ink-2)">Latest additions</h4>${kev.items.slice(0, 6).map(x => `<a href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(x.c)}" target="_blank" rel="noopener noreferrer"><span class="cve">${esc(x.c)}</span><span>${esc(x.v)} ${esc(x.n)} · <span style="color:var(--muted)">${esc(x.p)}</span></span><span style="margin-left:auto;color:var(--muted);white-space:nowrap">${esc(dfmt(new Date(x.d), { day: 'numeric', month: 'short' }))}</span></a>`).join('')}</div>
+      <div class="st-latest"><h4 style="margin:4px 0 4px;font-size:13px;color:var(--ink-2)">Latest additions</h4>${items.slice(0, 6).map(x => `<a href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(x.c)}" target="_blank" rel="noopener noreferrer"><span class="cve">${esc(x.c)}</span><span>${esc(x.v)} ${esc(x.n)} · <span style="color:var(--muted)">${esc(x.p)}</span></span><span style="margin-left:auto;color:var(--muted);white-space:nowrap">${esc(dfmt(new Date(x.d), { day: 'numeric', month: 'short' }))}</span></a>`).join('')}</div>
     </article>`);
   }
 
   // 3. Attack types in the news
   const cov = D.coverage;
-  if (cov && cov.weeks && Object.keys(cov.weeks).length) {
+  if (show.cov && T.startsWith('news:') && cov?.weeks) {
+    const topic = T.slice(5), since = new Date(cov.since + 'T00:00:00Z');
+    const vals = per.map(p => {
+      if (p.to <= since) return null;
+      let n = 0; for (const [wk, c] of Object.entries(cov.weeks)) { const d = new Date(wk + 'T00:00:00Z'); if (d >= p.from && d < p.to) n += c[topic] || 0; }
+      return n;
+    });
+    const share = (() => { let a = 0, b = 0; for (const c of Object.values(cov.weeks)) { a += c[topic] || 0; b += c.total || 0; } return b ? Math.round(a / b * 100) : 0; })();
+    parts.push(`<article class="st-card">
+      <div class="st-head"><div><h3>${esc(COVERAGE_LABEL(topic))} in the news</h3><p>Number of SignalFeed cyber headlines about this threat type</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])} · all regions</span></div>
+      ${kpi(per, vals, 'stories')}
+      ${chartHTML('cov', per, vals, 'stories')}
+      <div class="st-note">${share}% of all cyber headlines since ${esc(dfmt(since, { day: 'numeric', month: 'long' }))} were about this. This measures news coverage, not the number of attacks; no free source counts these attacks regularly. Counting started on ${esc(dfmt(since, { day: 'numeric', month: 'long', year: 'numeric' }))}, so earlier periods show as “no data”.</div>
+      <button class="st-go" data-gotopic="${esc(topic)}">Read these stories →</button>
+    </article>`);
+  }
+  if (show.cov && T === 'all' && cov && cov.weeks && Object.keys(cov.weeks).length) {
     const keyOf = wk => ST.period === 'week' ? wk : ST.period === 'month' ? wk.slice(0, 7) : wk.slice(0, 4);
     const cols = {};
     for (const [wk, c] of Object.entries(cov.weeks)) { const k = keyOf(wk); cols[k] ||= {}; for (const [t, n] of Object.entries(c)) cols[k][t] = (cols[k][t] || 0) + n; }
@@ -1179,6 +1231,7 @@ function renderStats() {
   }
 
   // 4. Reports library
+  if (T === 'all') {
   const R = (title, url, note) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${esc(title)}<small>${esc(note)}</small></a>`;
   parts.push(`<article class="st-card">
     <div class="st-head"><div><h3>Official reports</h3><p>Free yearly and quarterly reports with attack numbers by type, for deeper reading</p></div></div>
@@ -1189,6 +1242,7 @@ function renderStats() {
       <div><h4>CHINA</h4>${R('CNCERT/CC', 'https://www.cert.org.cn/', 'national CERT · yearly and periodic reports, mostly in Chinese')}</div>
       <div><h4>GLOBAL</h4>${R('Check Point Research', 'https://blog.checkpoint.com/research/', 'monthly · weekly attacks per organisation by region')}${R('APWG Phishing Activity Trends', 'https://docs.apwg.org/reports/apwg_trends_report_q2_2026.pdf', 'quarterly · phishing counts per month')}${R('Verizon Data Breach Investigations Report', 'https://www.verizon.com/business/resources/reports/dbir/', 'yearly · breaches by attack type and region')}${R('Cloudflare Radar', 'https://radar.cloudflare.com/', 'live DDoS and attack traffic by country')}${R('ransomware.live', 'https://www.ransomware.live/', 'source of the ransomware chart')}${R('OECD AI Incidents Monitor', 'https://oecd.ai/en/incidents', 'AI-related incidents by country and month')}</div>
     </div></article>`);
+  }
 
   body.innerHTML = `<div style="display:flex;flex-direction:column;gap:18px">${parts.join('')}</div>
     <div class="st-note" style="margin-top:12px">Statistics updated ${esc(ago(D.ransomware?.updatedAt || D.generatedAt))}.</div>`;
@@ -1212,7 +1266,9 @@ function statsSummary() {
 
 for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; saveStatsPrefs(); renderStats(); };
 for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; saveStatsPrefs(); renderStats(); };
-function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period })); } catch {} }
+$('stThreat').onchange = e => { ST.threat = e.target.value; saveStatsPrefs(); renderStats(); };
+document.addEventListener('click', e => { const g = e.target.closest?.('[data-gotopic]'); if (g) { setTab('cyber'); setTopic('cyber', g.dataset.gotopic); } });
+function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat })); } catch {} }
 document.addEventListener('click', e => { const t = e.target.closest?.('[data-table]'); if (t) { ST.table[t.dataset.table] = !ST.table[t.dataset.table]; renderStats(); } });
 function showTip(el) {
   const tip = $('tip'); if (!el?.dataset?.tip) { tip.hidden = true; return; }
