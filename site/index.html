@@ -717,7 +717,7 @@ function renderColumn(key, toTop = false) {
   const filtering = !!(f.breaking || f.topic || f.region || f.source || state.tokens.length);
   const newCount = all.filter(isNew).length;
 
-  $('tabN-' + key).innerHTML = !all.length ? 'Loading…' : filtering ? `${items.length} of ${all.length} match` : `${all.length} stories${newCount ? ` <b>${newCount} new</b>` : ''}`;
+  $('tabN-' + key).innerHTML = !all.length ? 'Loading…' : filtering ? `${items.length} of ${all.length} selected` : `${all.length} stories${newCount ? ` <b>${newCount} new</b>` : ''}`;
   $(key + 'Counts').innerHTML = all.length ? `${all.length} stories${newCount ? ` · <b>${newCount} new</b>` : ''}` : '';
   const opt = (v, label, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(label)}</option>`;
   $(key + 'Topic').innerHTML = opt('', 'All topics', !f.topic) + TOPIC_ORDER[key]
