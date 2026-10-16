@@ -223,9 +223,9 @@
   .chart .grid span { position: absolute; right: calc(100% + 8px); top: -8px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .chart .bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 2px; }
   .chart .slot { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; position: relative; outline: none; cursor: default; }
-  .chart .bar { width: min(24px, 70%); background: var(--accent); border-radius: 4px 4px 0 0; min-height: 1px; }
-  .chart .slot.partial .bar { background: color-mix(in srgb, var(--accent) 38%, var(--surface)); }
-  .chart .slot:hover .bar, .chart .slot:focus-visible .bar { filter: brightness(1.12); box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
+  .chart .cbar { width: min(24px, 70%); background: var(--accent); border-radius: 4px 4px 0 0; }
+  .chart .slot.partial .cbar { background: color-mix(in srgb, var(--accent) 38%, var(--surface)); }
+  .chart .slot:hover .cbar, .chart .slot:focus-visible .cbar { filter: brightness(1.12); box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
   .chart .val { position: absolute; font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
   .chart .xl { position: absolute; top: calc(100% + 6px); font-size: 11px; color: var(--muted); white-space: nowrap; }
   .chart-pad { height: 22px; }
@@ -1080,7 +1080,7 @@ function chartHTML(id, per, vals, unit) {
     const showVal = v != null && (i === last || i === peak || p.partial);
     return `<div class="slot${p.partial ? ' partial' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}">
       ${showVal ? `<span class="val" style="bottom:calc(${h}% + 4px)">${fmtN(v)}${p.partial ? '*' : ''}</span>` : ''}
-      <div class="bar" style="height:${h}%"></div>
+      <div class="cbar" style="height:${h}%"></div>
       <span class="xl${i % 2 && per.length > 8 ? ' odd' : ''}">${esc(p.label)}</span></div>`;
   }).join('');
   const rows = per.map((p, i) => `<tr><td>${esc(p.long)}${p.partial ? ' (so far)' : ''}</td><td>${vals[i] == null ? '–' : vals[i].toLocaleString('en-GB')}</td></tr>`).join('');
@@ -1126,13 +1126,17 @@ function renderStats() {
       for (const [k, n] of Object.entries(r.groups)) if (k !== 'Not stated') groups[k] = (groups[k] || 0) + n;
     }
     const sorted = o => Object.entries(o).sort((a, b) => b[1] - a[1]);
+    // How many victims in the charted periods have no country recorded (they only count in Global).
+    let tot = 0, noC = 0;
+    for (const p of per) for (const [ym, m] of Object.entries(rw.months)) { const d = new Date(ym + '-01T00:00:00Z'); if (d >= p.from && d < p.to && m.global) { tot += m.global.n; noC += m.global.noCountry || 0; } }
+    const noCountryPct = tot ? Math.round(noC / tot * 100) : 0;
     const total = Object.keys(rw.months).length, need = stPeriods('year').length * 12 - (11 - new Date().getUTCMonth());
     parts.push(`<article class="st-card">
       <div class="st-head"><div><h3>Ransomware victims ${esc(regionWord)}</h3><p>Organisations named on ransomware gangs’ leak sites, counted when first posted · source: ransomware.live</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])}</span></div>
       ${kpi(per, vals, 'victims')}
       ${chartHTML('rw', per, vals, 'victims')}
       <div class="st-cols"><div><h4>Most hit sectors · ${windowLabel()}</h4>${hbars(sorted(sectors))}</div><div><h4>Most active ransomware groups · ${windowLabel()}</h4>${hbars(sorted(groups))}</div></div>
-      <div class="st-note">Not every attack is posted on a leak site, and some victims pay before they are named, so read this as a trend, not a full count.${ST.region === 'china' || ST.region === 'singapore' ? ' Few organisations from this country appear on leak sites, so numbers are small and jump around.' : ''}${!rw.complete ? ` History is still being collected (${total} months so far); older years fill in over the next few updates.` : ''}</div>
+      <div class="st-note">Not every attack is posted on a leak site, and some victims pay before they are named, so read this as a trend, not a full count.${noCountryPct >= 10 && ST.region !== 'global' ? ` In this time range ${noCountryPct}% of victims have no country recorded, so the ${esc(ST.region === 'usa' ? 'USA' : ST.region[0].toUpperCase() + ST.region.slice(1))} numbers are too low, especially for 2022–2023.` : ''}${ST.region === 'china' || ST.region === 'singapore' ? ' Few organisations from this country appear on leak sites, so numbers are small and jump around.' : ''}${!rw.complete ? ` History is still being collected (${total} months so far); older years fill in over the next few updates.` : ''}</div>
     </article>`);
   } else parts.push(`<article class="st-card"><div class="st-head"><h3>Ransomware victims</h3></div><div class="st-note">Not available yet${D.errors?.ransomware ? ': the source could not be reached on the last try' : ''}.</div></article>`);
 

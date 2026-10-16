@@ -16,7 +16,8 @@ const OUT_DIR = 'site/data';
 const OUT = `${OUT_DIR}/stats.json`;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const REFRESH_HOURS = 12;              // outside sources: refresh about twice a day
-const KEV_VERSION = 2;                 // bump when the product/weakness sorting changes, to re-sort right away
+const KEV_VERSION = 2;
+const RW_VERSION = 2;                  // bump when the monthly ransomware summary changes; months are re-read gradually                 // bump when the product/weakness sorting changes, to re-sort right away
 const FIRST_MONTH = '2022-01';         // ransomware history starts here
 const BACKFILL_PER_RUN = 24;           // fetch at most this many old months per run (be polite)
 const RECENT_MONTHS = 3;               // always re-read the current month and the 2 before it
@@ -64,12 +65,14 @@ const cleanLabel = s => {
 // ---------- 1. RANSOMWARE ----------
 function summariseMonth(victims) {
   const regions = Object.fromEntries(REGIONS.map(r => [r, { n: 0, sectors: {}, groups: {} }]));
+  regions.global.noCountry = 0;   // victims with no country recorded (they count only in Global)
   const daily = {};
   for (const v of victims) {
     const when = new Date(v.discovered || v.published || v.attackdate);
     if (isNaN(when)) continue;
     const day = when.toISOString().slice(0, 10);
     const reg = regionOf(v.country);
+    if (!String(v.country || '').trim()) regions.global.noCountry++;
     const sector = cleanLabel(v.activity);
     const group = cleanLabel(v.group || v.group_name);
     daily[day] ||= Object.fromEntries(REGIONS.map(r => [r, 0]));
@@ -88,7 +91,7 @@ async function updateRansomware(prev) {
   const daily = { ...(prev.daily || {}) };
   const all = monthsBetween(FIRST_MONTH, ymOf(new Date()));
   const recent = new Set(all.slice(-RECENT_MONTHS));
-  const todo = [...all.filter(m => recent.has(m)), ...all.filter(m => !recent.has(m) && !months[m]).reverse().slice(0, BACKFILL_PER_RUN)];
+  const todo = [...all.filter(m => recent.has(m)), ...all.filter(m => !recent.has(m) && months[m]?.v !== RW_VERSION).reverse().slice(0, BACKFILL_PER_RUN)];
   let fetched = 0, failed = 0;
   for (const ym of todo) {
     const [y, m] = ym.split('-');
@@ -96,7 +99,7 @@ async function updateRansomware(prev) {
       const list = await getJSON(`https://api.ransomware.live/v2/victims/${y}/${m}`);
       if (!Array.isArray(list)) throw new Error('unexpected reply');
       const s = summariseMonth(list);
-      months[ym] = { ...s.regions, fetchedAt: new Date().toISOString() };
+      months[ym] = { ...s.regions, v: RW_VERSION, fetchedAt: new Date().toISOString() };
       for (const day of Object.keys(daily)) if (day.startsWith(ym)) delete daily[day];
       for (const [day, c] of Object.entries(s.daily)) if (day.startsWith(ym)) daily[day] = c;
       fetched++;
@@ -106,7 +109,7 @@ async function updateRansomware(prev) {
   console.log(`Ransomware: ${fetched} months read, ${failed} failed, ${Object.keys(months).length} months stored.`);
   if (!fetched && failed) throw new Error('ransomware.live not reachable');
   return { source: 'ransomware.live', months, daily: Object.fromEntries(Object.entries(daily).sort()), updatedAt: new Date().toISOString(),
-    complete: all.every(m => months[m]) };
+    complete: all.every(m => months[m]?.v === RW_VERSION) };
 }
 
 // ---------- 2. EXPLOITED VULNERABILITIES (CISA KEV) ----------
