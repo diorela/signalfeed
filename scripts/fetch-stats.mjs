@@ -16,8 +16,9 @@ const OUT_DIR = 'site/data';
 const OUT = `${OUT_DIR}/stats.json`;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const REFRESH_HOURS = 12;              // outside sources: refresh about twice a day
-const KEV_VERSION = 2;
-const RW_VERSION = 2;                  // bump when the monthly ransomware summary changes; months are re-read gradually                 // bump when the product/weakness sorting changes, to re-sort right away
+const KEV_VERSION = 2;                 // bump when the product/weakness sorting changes, to re-sort right away
+const RW_VERSION = 2;                  // bump when the monthly ransomware summary changes; months are re-read gradually
+const ATTACKS_VERSION = 1;             // bump when the attack-type sorting changes
 const FIRST_MONTH = '2022-01';         // ransomware history starts here
 const BACKFILL_PER_RUN = 24;           // fetch at most this many old months per run (be polite)
 const RECENT_MONTHS = 3;               // always re-read the current month and the 2 before it
@@ -115,6 +116,39 @@ async function updateRansomware(prev) {
     complete: all.every(m => months[m]?.v === RW_VERSION), missing: all.filter(m => !months[m]?.global) };
 }
 
+// ---------- 1b. PUBLICLY REPORTED CYBERATTACKS ----------
+// ransomware.live keeps a list of cyberattacks reported in the press (any kind, not only ransomware),
+// with the victim's country. Summaries are often in French, so the type rules match English and French.
+const ATTACK_TYPES = [
+  ['Ransomware', /ransom|ran[cç]on|lockbit|akira|qilin|blackcat|play ransomware|encrypt|chiffr/i],
+  ['DDoS & website takedowns', /ddos|d[ée]ni de service|denial[- ]of[- ]service|noname057|hacktivis|website.{0,30}(down|offline)|sites?.{0,40}inaccessible/i],
+  ['Espionage & state-backed', /espionn|espionage|\bapt ?\d|state[- ]sponsored|[ée]tatique|nation[- ]state|chinese hackers|russian hackers|north korea|cor[ée]e du nord|salt typhoon|volt typhoon/i],
+  ['Phishing & fraud', /phishing|hame[cç]onnage|fraud|scam|arnaque|business email|usurpation|social engineering|ing[ée]nierie sociale/i],
+  ['Data theft & leaks', /fuite|leak|breach|exfiltr|vol de donn[ée]es|data theft|stolen data|donn[ée]es (personnelles|clients|sensibles)|dump|compromised data|acc[eè]s non autoris[ée]/i],
+  ['Service disruption', /perturb|panne|outage|disrupt|indisponib|inaccessible|interrupt|hors service|paralys|shut down|offline|affect[ée]\w* (temporairement )?(les |ses )?(services|syst[eè]mes|op[ée]rations)|systems? (were |was )?(hit|affected)/i],
+];
+export const classifyAttack = a => {
+  if (a.claim_gang) return 'Ransomware';           // claimed by a ransomware gang
+  const text = `${a.title || ''} ${a.summary || ''} ${a.description || ''}`;
+  return ATTACK_TYPES.find(([, re]) => re.test(text))?.[0] || 'Not specified';
+};
+async function updateAttacks() {
+  const list = await getJSON('https://api.ransomware.live/v2/allcyberattacks', 120000);
+  if (!Array.isArray(list)) throw new Error('unexpected reply');
+  const recentCut = new Date(Date.now() - 120 * 864e5).toISOString().slice(0, 10);
+  const items = [];
+  for (const a of list) {
+    const d = String(a.date || a.added || '').slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || d < '2023-01-01') continue;
+    const it = { d, cc: String(a.country || '').toUpperCase(), t: classifyAttack(a) };
+    if (d >= recentCut) { it.v = String(a.victim || a.domain || '').slice(0, 80); it.h = String(a.title || '').slice(0, 160); it.u = a.url || a.link || ''; }
+    items.push(it);
+  }
+  items.sort((a, b) => b.d.localeCompare(a.d));
+  console.log(`Reported attacks: ${items.length} since 2023.`);
+  return { source: 'ransomware.live (press-reported cyberattacks)', version: ATTACKS_VERSION, items, updatedAt: new Date().toISOString() };
+}
+
 // ---------- 2. EXPLOITED VULNERABILITIES (CISA KEV) ----------
 const PRODUCT_TYPES = [   // first match wins, so the more specific groups come first
   ['AI & developer tools', /langflow|litellm|mlflow|ray-project|marimo|\bn8n\b|jfrog|artifactory|teamcity|jenkins|gitlab|gitea|gogs|\bgit\b|github action|nx console|tanstack|\bvite|prettier|eslint|react native|trivy|kestra|ollama|openai/i],
@@ -182,12 +216,16 @@ async function updateCoverage(prev) {
 // ---------- MAIN ----------
 async function main() {
   const prev = await loadPrevious();
-  const out = { generatedAt: new Date().toISOString(), ransomware: prev.ransomware || null, kev: prev.kev || null, coverage: prev.coverage || null, errors: {} };
+  const out = { generatedAt: new Date().toISOString(), ransomware: prev.ransomware || null, attacks: prev.attacks || null, kev: prev.kev || null, coverage: prev.coverage || null, errors: {} };
 
   const rwDue = hoursSince(prev.ransomware?.updatedAt) >= REFRESH_HOURS || !prev.ransomware?.complete;
   if (rwDue) {
     try { out.ransomware = await updateRansomware(prev.ransomware || {}); }
     catch (e) { out.errors.ransomware = String(e.message || e); console.log('Ransomware failed:', e.message); }
+  }
+  if (hoursSince(prev.attacks?.updatedAt) >= REFRESH_HOURS || prev.attacks?.version !== ATTACKS_VERSION) {
+    try { out.attacks = await updateAttacks(); }
+    catch (e) { out.errors.attacks = String(e.message || e); console.log('Attacks failed:', e.message); }
   }
   if (hoursSince(prev.kev?.updatedAt) >= REFRESH_HOURS || prev.kev?.version !== KEV_VERSION) {
     try { out.kev = await updateKev(); }

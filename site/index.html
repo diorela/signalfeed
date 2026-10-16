@@ -204,6 +204,7 @@
   body.on-stats .tiles, body.on-stats #breaking { display: none !important; }
   .st-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
   .st-threat { flex: 1 1 260px; max-width: 380px; }
+  .seg.na { opacity: .45; }
   .st-threat select { height: 46px; }
   .st-go { align-self: flex-start; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
   .st-go:hover { border-color: var(--accent); color: var(--accent-ink); }
@@ -1112,22 +1113,31 @@ function kpi(per, vals, unit) {
     ${now != null ? `<span class="st-note">This ${word} so far: ${now.toLocaleString('en-GB')}</span>` : ''}</div>`;
 }
 
+const EU_CC = new Set('AL AD AT BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GG GI GR HR HU IE IM IS IT JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS SE SI SK SM UA UK VA XK'.split(' '));
+const ccRegion = cc => cc === 'US' ? 'usa' : cc === 'SG' ? 'singapore' : cc === 'CN' ? 'china' : EU_CC.has(cc) ? 'europe' : '';
+const inRegion = (cc, r) => r === 'global' || ccRegion(cc) === r;
+let countryNames = null;
+const countryName = cc => { try { countryNames ||= new Intl.DisplayNames(['en'], { type: 'region' }); return countryNames.of(cc) || cc; } catch { return cc || 'Unknown'; } };
+const ATTACK_TYPE_ORDER = ['Ransomware', 'Data theft & leaks', 'Service disruption', 'DDoS & website takedowns', 'Phishing & fraud', 'Espionage & state-backed', 'Not specified'];
 const COVERAGE_LABEL = id => (SF.TOPICS.cyber.find(t => t.id === id) || { label: id }).label;
 function threatOptions(D) {
   const o = (v, l) => `<option value="${esc(v)}"${ST.threat === v ? ' selected' : ''}>${esc(l)}</option>`;
   let html = o('all', 'All threat types');
-  html += `<optgroup label="Ransomware">${o('rw', 'Ransomware attacks (victims)')}</optgroup>`;
+  if (D.attacks?.items) html += `<optgroup label="Reported cyberattacks (by country)">${o('atk', 'All reported attacks')}${ATTACK_TYPE_ORDER.filter(t => t !== 'Not specified').map(t => o('atk:' + t, t)).join('')}</optgroup>`;
+  html += `<optgroup label="Ransomware leak sites (by country)">${o('rw', 'Ransomware victims named by gangs')}</optgroup>`;
   if (D.kev?.items) {
     const types = key => [...new Set(D.kev.items.map(x => x[key]))].filter(t => t !== 'Other').sort();
-    html += `<optgroup label="Exploited vulnerabilities">${o('kev', 'All exploited vulnerabilities')}${types('p').map(t => o('kev:p:' + t, t)).join('')}</optgroup>`;
-    html += `<optgroup label="Exploited vulnerabilities · by weakness">${types('w').map(t => o('kev:w:' + t, t)).join('')}</optgroup>`;
+    html += `<optgroup label="Exploited vulnerabilities (flaws, worldwide)">${o('kev', 'All exploited vulnerabilities')}${types('p').map(t => o('kev:p:' + t, t)).join('')}</optgroup>`;
+    html += `<optgroup label="Exploited vulnerabilities by weakness (worldwide)">${types('w').map(t => o('kev:w:' + t, t)).join('')}</optgroup>`;
   }
-  if (D.coverage?.topics) html += `<optgroup label="In the news (headline counts)">${D.coverage.topics.filter(t => t !== 'ransomware').map(t => o('news:' + t, COVERAGE_LABEL(t))).join('')}</optgroup>`;
+  if (D.coverage?.topics) html += `<optgroup label="In the news (headline counts, worldwide)">${D.coverage.topics.filter(t => t !== 'ransomware').map(t => o('news:' + t, COVERAGE_LABEL(t))).join('')}</optgroup>`;
   return html;
 }
 function threatLabel() {
   const t = ST.threat;
-  if (t === 'rw') return 'Ransomware attacks';
+  if (t === 'rw') return 'Ransomware victims';
+  if (t === 'atk') return 'All reported attacks';
+  if (t.startsWith('atk:')) return t.slice(4);
   if (t === 'kev') return 'All exploited vulnerabilities';
   if (t.startsWith('kev:')) return t.split(':').slice(2).join(':');
   if (t.startsWith('news:')) return COVERAGE_LABEL(t.slice(5));
@@ -1145,9 +1155,39 @@ function renderStats() {
   if (menu.value !== ST.threat) { ST.threat = 'all'; menu.value = 'all'; }
   menu.parentElement.classList.toggle('on', ST.threat !== 'all');
   const T = ST.threat;
-  const show = { rw: T === 'all' || T === 'rw', kev: T === 'all' || T.startsWith('kev'), cov: T === 'all' || T.startsWith('news:') };
+  const show = { atk: T === 'all' || T.startsWith('atk'), rw: T === 'all' || T === 'rw', kev: T === 'all' || T.startsWith('kev'), cov: T === 'all' || T.startsWith('news:') };
+  const regionApplies = T === 'all' || T === 'rw' || T.startsWith('atk');
+  const seg = $('stRegion');
+  seg.classList.toggle('na', !regionApplies);
+  seg.title = regionApplies ? '' : 'This statistic is worldwide only: the source has no country information';
   const kevKey = T.startsWith('kev:') ? T.split(':')[1] : null, kevVal = kevKey ? T.split(':').slice(2).join(':') : null;
   const regionWord = ST_REGION[ST.region];
+
+  // 0. Publicly reported cyberattacks, by country and type
+  const atk = D.attacks;
+  if (show.atk && atk?.items) {
+    const typ = T.startsWith('atk:') ? T.slice(4) : null;
+    const items = atk.items.filter(x => inRegion(x.cc, ST.region) && (!typ || x.t === typ));
+    const first = new Date('2023-01-01T00:00:00Z');
+    const vals = per.map(p => { if (p.to <= first) return null; const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b).length; });
+    const start = ST.period === 'year' ? `${new Date().getUTCFullYear()}-01-01` : kevWindowStart();
+    const win = items.filter(x => x.d >= start);
+    const tally = (arr, f) => { const o = {}; for (const x of arr) { const k = f(x); o[k] = (o[k] || 0) + 1; } return Object.entries(o).sort((a, b) => (a[0] === 'Not specified' || a[0] === 'Unknown') - (b[0] === 'Not specified' || b[0] === 'Unknown') || b[1] - a[1]); };
+    const latest = items.filter(x => x.h).slice(0, 6);
+    parts.push(`<article class="st-card">
+      <div class="st-head"><div><h3>${typ ? `Reported attacks · ${esc(typ)}` : 'Reported cyberattacks'} ${esc(regionWord)}</h3><p>Cyberattacks on organisations that were reported in the press, by the victim’s country · source: ransomware.live</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])}</span></div>
+      ${kpi(per, vals, 'attacks reported')}
+      ${chartHTML('atk', per, vals, 'attacks reported')}
+      <div class="st-cols">
+        <div><h4>${typ ? 'Share of all reported attacks' : 'By type of attack'} · ${windowLabel()}</h4>${typ
+          ? hbars(tally(atk.items.filter(x => inRegion(x.cc, ST.region) && x.d >= start), x => x.t), 8)
+          : hbars(tally(win, x => x.t), 8)}</div>
+        ${ST.region === 'global' || ST.region === 'europe' ? `<div><h4>${ST.region === 'global' ? 'Most hit countries' : 'Most hit European countries'} · ${windowLabel()}</h4>${hbars(tally(win, x => x.cc ? countryName(x.cc) : 'Unknown'), 8)}</div>` : ''}
+      </div>
+      ${latest.length ? `<div class="st-latest"><h4 style="margin:4px 0 4px;font-size:13px;color:var(--ink-2)">Latest reported</h4>${latest.map(x => `<a href="${esc(safeUrl(x.u))}" target="_blank" rel="noopener noreferrer"><span class="cve">${esc(x.cc || '··')}</span><span>${esc(x.v ? x.v + ' · ' : '')}<span style="color:var(--muted)">${esc(x.h)}</span></span><span style="margin-left:auto;color:var(--muted);white-space:nowrap">${esc(dfmt(new Date(x.d), { day: 'numeric', month: 'short' }))}</span></a>`).join('')}</div>` : ''}
+      <div class="st-note">Only attacks that made the news are counted (about 1,200 a year worldwide), so the real number of attacks is much higher; use it to compare trends, countries and attack types. The attack type is sorted automatically from each report’s headline and summary, so some are misfiled or “not specified”.${ST.region === 'china' || ST.region === 'singapore' ? ' Few attacks in this country are reported in the sources ransomware.live follows, so numbers are small.' : ''}</div>
+    </article>`);
+  }
 
   // 1. Ransomware
   const rw = D.ransomware;
@@ -1184,7 +1224,7 @@ function renderStats() {
     const count = key => { const o = {}; for (const x of win) o[x[key]] = (o[x[key]] || 0) + 1; return Object.entries(o).sort((a, b) => (a[0] === 'Other') - (b[0] === 'Other') || b[1] - a[1]); };
     const rans = win.filter(x => x.r).length;
     parts.push(`<article class="st-card">
-      <div class="st-head"><div><h3>Exploited vulnerabilities${kevVal ? ` · ${esc(kevVal)}` : ''}</h3><p>Flaws confirmed as used in real attacks, by date added · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' (no country breakdown)' : ''}</span></div>
+      <div class="st-head"><div><h3>Exploited vulnerabilities${kevVal ? ` · ${esc(kevVal)}` : ''}</h3><p>Not attacks: newly confirmed software flaws that attackers are using, by date added · worldwide · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' · country switch doesn’t apply' : ''}</span></div>
       ${kpi(per, vals, 'flaws added')}
       ${chartHTML('kev', per, vals, 'flaws added')}
       <div class="st-cols"><div><h4>${kevKey === 'p' ? 'Most affected vendors' : 'By type of product'} · ${windowLabel()}</h4>${kevKey === 'p' ? hbars(count('v'), 10) : hbars(count('p'), 10)}</div><div><h4>By type of weakness · ${windowLabel()}</h4>${hbars(count('w'))}</div></div>
@@ -1256,6 +1296,10 @@ function statsSummary() {
     const m0 = mondayUTC(new Date()), from = new Date(+m0 - 7 * DAY_MS);
     let n = 0; for (let d = from; d < m0; d = new Date(+d + DAY_MS)) n += D.ransomware.daily[isoDay(d)]?.global || 0;
     out.push(`Ransomware gangs named ${n.toLocaleString('en-GB')} victims worldwide last week.`);
+  }
+  if (D.attacks?.items) {
+    const since = isoDay(new Date(Date.now() - 30 * DAY_MS));
+    out.push(`${D.attacks.items.filter(x => x.d >= since).length} cyberattacks were reported in the press in the last 30 days.`);
   }
   if (D.kev?.items) {
     const since = isoDay(new Date(Date.now() - 30 * DAY_MS));
