@@ -91,7 +91,7 @@ async function updateRansomware(prev) {
   const daily = { ...(prev.daily || {}) };
   const all = monthsBetween(FIRST_MONTH, ymOf(new Date()));
   const recent = new Set(all.slice(-RECENT_MONTHS));
-  const todo = [...all.filter(m => recent.has(m)), ...all.filter(m => !recent.has(m) && months[m]?.v !== RW_VERSION).reverse().slice(0, BACKFILL_PER_RUN)];
+  const todo = [...all.filter(m => recent.has(m)), ...all.filter(m => !recent.has(m) && months[m]?.v !== RW_VERSION && !(months[m]?.failed && hoursSince(months[m].fetchedAt) < 24)).reverse().slice(0, BACKFILL_PER_RUN)];
   let fetched = 0, failed = 0;
   for (const ym of todo) {
     const [y, m] = ym.split('-');
@@ -103,13 +103,16 @@ async function updateRansomware(prev) {
       for (const day of Object.keys(daily)) if (day.startsWith(ym)) delete daily[day];
       for (const [day, c] of Object.entries(s.daily)) if (day.startsWith(ym)) daily[day] = c;
       fetched++;
-    } catch (e) { failed++; console.log(`ransomware.live ${ym}: ${e.message}`); }
+    } catch (e) {
+      failed++; console.log(`ransomware.live ${ym}: ${e.message}`);
+      if (!recent.has(ym) && !months[ym]?.global) months[ym] = { failed: true, v: RW_VERSION, fetchedAt: new Date().toISOString() };   // try again tomorrow
+    }
     await sleep(1500);
   }
   console.log(`Ransomware: ${fetched} months read, ${failed} failed, ${Object.keys(months).length} months stored.`);
-  if (!fetched && failed) throw new Error('ransomware.live not reachable');
+  if (!fetched && failed && !Object.keys(months).length) throw new Error('ransomware.live not reachable');
   return { source: 'ransomware.live', months, daily: Object.fromEntries(Object.entries(daily).sort()), updatedAt: new Date().toISOString(),
-    complete: all.every(m => months[m]?.v === RW_VERSION) };
+    complete: all.every(m => months[m]?.v === RW_VERSION), missing: all.filter(m => !months[m]?.global) };
 }
 
 // ---------- 2. EXPLOITED VULNERABILITIES (CISA KEV) ----------
