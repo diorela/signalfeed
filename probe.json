@@ -1,529 +1,570 @@
 {
- "Guardian economics": {
+ "cisa kev gh mirror": {
   "status": 200,
-  "count": 20,
-  "newestHoursAgo": 0.3,
-  "withDesc": 20,
+  "bytes": 1789360,
+  "head": "{\n    \"title\": \"CISA Catalog of Known Exploited Vulnerabilities\",\n    \"catalogVersion\": \"2026.10.15\",\n    \"dateReleased\": \"2026-10-15T17:00:11.2795Z\",\n    \"count\": 1746,\n    \"vulnerabilities\": [\n        {\n            \"cveID\": \"CVE-2026-21589\",\n            \"vendorProject\": \"Atlassian\",\n            \"p",
+  "type": "object",
+  "keys": [
+   "title",
+   "catalogVersion",
+   "dateReleased",
+   "count",
+   "vulnerabilities"
+  ],
+  "count": 1746,
   "sample": [
    {
-    "t": "Repairing Brexit economic damage should be Burnham’s top priority, business chief says",
-    "l": "https://www.theguardian.com/business/2026/oct/16/brexit-economic-damage-andy-burnham-uk-business-eu-trading-relationship",
-    "d": "Shevaun Haviland argues PM is right to revisit Labour’s EU red lines as current trading relationship is bad for business Repairing the econo",
-    "date": "Fri, 16 Oct 2026 05:00:51 GMT"
+    "cveID": "CVE-2026-21589",
+    "vendorProject": "Atlassian",
+    "product": "Multiple Products",
+    "vulnerabilityName": "Atlassian Multiple Products Files or Directories Accessible to External Parties Vulnerability",
+    "dateAdded": "2026-10-15",
+    "shortDescription": "Multiple Atlassian products (Bitbucket Data Center ,Confluence Data Center, Jira Service Management Data Center, Jira Software Data Center, Bamboo Data Center, Crowd Data Center, Crucible and Fisheye) contain a files or directories accessible to external parties vulnerability which could allow an unauthenticated attacker to access specific files within the web application root directory in affected versions.",
+    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+    "dueDate": "2026-10-18",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "Yes",
+    "notes": "https://confluence.atlassian.com/security/cve-2026-21589-arbitrary-file-access-vulnerability-impacts-multiple-products-1870495748.html?ref=labs.watchtowr.com ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-21589",
+    "cwes": [
+     "CWE-552"
+    ]
    },
    {
-    "t": "Bank shares drop as John Healey prepares to raise taxes on the banking sector in the budget – business live",
-    "l": "https://www.theguardian.com/business/live/2026/oct/16/john-healey-set-to-raise-bank-taxes-shares-profits-stock-markets-imf-latest-news-updates",
-    "d": "Rolling coverage of the latest economic and financial news John Healey poised to raise taxes on banks in budget British banking stocks have ",
-    "date": "Fri, 16 Oct 2026 07:28:59 GMT"
-   },
+    "cveID": "CVE-2026-105134",
+    "vendorProject": "Ahsay",
+    "product": "AhsayCBS",
+    "vulnerabilityName": "Ahsay AhsayCBS Command Injection Vulnerability",
+    "dateAdded": "2026-10-14",
+    "shortDescription": "Ahsay AhsayCBS contains a command injection vulnerability that could allow a remote attacker to execute operating system commands via manipulation of the random parameter in the Replication Receiver component’s /rps/api/json/UpdateReceivers.do endpoint. This vulnerability can be chained with CVE-2026-105133.",
+    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+    "dueDate": "2026-10-17",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "Yes",
+    "notes": "https://www.ahsay.com/en/company/announcements/patch-cve-105133-105134-update ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-105134",
+    "cwes": [
+     "CWE-77",
+     "CWE-78"
+    ]
+   }
+  ],
+  "last": [
    {
-    "t": "‘People’s dignity, and democracy, is at stake’: meet the economist ditching ideology for reality",
-    "l": "https://www.theguardian.com/business/2026/oct/16/isabella-weber-anti-fascist-economics",
-    "d": "Exclusive: Isabella Weber prescribes a common-sense solution to poverty, inequality and fascism – making life’s essentials affordable for al",
-    "date": "Fri, 16 Oct 2026 04:00:50 GMT"
+    "cveID": "CVE-2020-29583",
+    "vendorProject": "Zyxel",
+    "product": "Multiple Products",
+    "vulnerabilityName": "Zyxel Multiple Products Use of Hard-Coded Credentials Vulnerability",
+    "dateAdded": "2021-11-03",
+    "shortDescription": "Zyxel firewalls (ATP, USG, VM) and AP Controllers (NXC2500 and NXC5500) contain a use of hard-coded credentials vulnerability in an undocumented account (\"zyfwp\") with an unchangeable password.",
+    "requiredAction": "Apply updates per vendor instructions.",
+    "dueDate": "2022-05-03",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "No",
+    "notes": "https://nvd.nist.gov/vuln/detail/CVE-2020-29583",
+    "cwes": [
+     "CWE-522"
+    ]
    }
   ]
  },
- "Economist business": {
-  "status": 200,
-  "count": 300,
-  "newestHoursAgo": 19,
-  "withDesc": 300,
-  "sample": [
-   {
-    "t": "When AI agents take matters into their own hands",
-    "l": "https://www.economist.com/business/2026/10/15/when-ai-agents-take-matters-into-their-own-hands",
-    "d": "Inside the Annapurna incident",
-    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
-   },
-   {
-    "t": "AI neolabs are raising huge sums. Most have little to show for it",
-    "l": "https://www.economist.com/business/2026/10/15/ai-neolabs-are-raising-huge-sums-most-have-little-to-show-for-it",
-    "d": "Superstar researchers who branch out on their own need to start producing results",
-    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
-   },
-   {
-    "t": "SpaceX’s Starlink expansion is a bold gamble on the future",
-    "l": "https://www.economist.com/business/2026/10/15/spacexs-starlink-expansion-is-a-bold-gamble-on-the-future",
-    "d": "Elon Musk is betting that robotics will dramatically increase demand for connectivity",
-    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
-   }
-  ]
- },
- "Economist finance": {
-  "status": 200,
-  "count": 300,
-  "newestHoursAgo": 22.3,
-  "withDesc": 300,
-  "sample": [
-   {
-    "t": "How Ukraine’s biggest bank is run in a war zone",
-    "l": "https://www.economist.com/finance-and-economics/2026/10/15/how-ukraines-biggest-bank-is-run-in-a-war-zone",
-    "d": "PrivatBank is a case study in adaptation",
-    "date": "Thu, 15 Oct 2026 09:34:30 +0000"
-   },
-   {
-    "t": "A shortage of sulphur could hurt mines and farms everywhere",
-    "l": "https://www.economist.com/finance-and-economics/2026/10/15/a-shortage-of-sulphur-could-hurt-mines-and-farms-everywhere",
-    "d": "Another commodity shock from the Iran war",
-    "date": "Thu, 15 Oct 2026 09:32:42 +0000"
-   },
-   {
-    "t": "Another warning sign for China’s economy: falling consumer credit",
-    "l": "https://www.economist.com/finance-and-economics/2026/10/14/another-warning-sign-for-chinas-economy-falling-consumer-credit",
-    "d": "A crackdown on aggressive debt collectors is good news and bad news",
-    "date": "Wed, 14 Oct 2026 17:52:55 +0000"
-   }
-  ]
- },
- "Economist briefing": {
-  "status": 200,
-  "count": 300,
-  "newestHoursAgo": 21.6,
-  "withDesc": 300,
-  "sample": [
-   {
-    "t": "Donald Trump may save Canada",
-    "l": "https://www.economist.com/briefing/2026/10/15/donald-trump-may-save-canada",
-    "d": "Can America’s bullying goad its northern neighbour out of its complacency?",
-    "date": "Thu, 15 Oct 2026 10:13:14 +0000"
-   },
-   {
-    "t": "The countries most threatened by turbulent bond markets",
-    "l": "https://www.economist.com/briefing/2026/10/08/the-countries-most-threatened-by-turbulent-bond-markets",
-    "d": "For those where interest rates outstrip economic growth, trouble looms",
-    "date": "Thu, 08 Oct 2026 09:18:47 +0000"
-   },
-   {
-    "t": "China is giving its economy a big shot in the arm",
-    "l": "https://www.economist.com/briefing/2026/10/01/china-is-giving-its-economy-a-big-shot-in-the-arm",
-    "d": "A massive infrastructure scheme may give the country a sorely needed boost—and help rebalance the world economy",
-    "date": "Thu, 01 Oct 2026 12:45:03 +0000"
-   }
-  ]
- },
- "CNBC finance": {
-  "status": 200,
-  "count": 30,
-  "newestHoursAgo": 8.8,
-  "withDesc": 30,
-  "sample": [
-   {
-    "t": "People in China are spending nearly as much of their income as Americans on healthcare",
-    "l": "https://www.cnbc.com/2026/10/15/chinese-spending-nearly-as-much-of-income-as-americans-on-healthcare.html",
-    "d": "Increasing government spending on healthcare could help boost consumption in China, the International Monetary Fund said.",
-    "date": "Thu, 15 Oct 2026 23:00:01 GMT"
-   },
-   {
-    "t": "Harvard’s endowment jumps 27% in fiscal 2026, lifted by SpaceX as top holding",
-    "l": "https://www.cnbc.com/2026/10/15/harvards-endowment-jumps-27percent-with-spacex-as-top-holding.html",
-    "d": "The latest 12-month period marked the strongest return for the university's fund since 2021.",
-    "date": "Thu, 15 Oct 2026 19:53:49 GMT"
-   },
-   {
-    "t": "China indicates rare earths will keep flowing to EU, regardless of U.S. trade deal expiration",
-    "l": "https://www.cnbc.com/2026/10/15/china-rare-earth-exports-europe.html",
-    "d": "European trade commissioner Maroš Sefčovič met with Chinese Commerce Minister Wang Wentao in Beijing last week.",
-    "date": "Thu, 15 Oct 2026 09:02:31 GMT"
-   }
-  ]
- },
- "CNBC economy": {
-  "status": 200,
-  "count": 30,
-  "newestHoursAgo": 15.6,
-  "withDesc": 30,
-  "sample": [
-   {
-    "t": "Economists: Hot PPI shows Fed's work is not done",
-    "l": "https://www.cnbc.com/2026/10/15/pce-ppi-september-fed-reserve-rate-hike.html",
-    "d": "'We see real risks the Fed will deliver another rate hike in two weeks' time,' one Fedwatcher warns",
-    "date": "Thu, 15 Oct 2026 15:37:59 GMT"
-   },
-   {
-    "t": "U.S. Treasury dismisses IMF debt warning and 'messy' forecasting",
-    "l": "https://www.cnbc.com/2026/10/15/zervos-imf-us-debt-warning.html",
-    "d": "The exchange comes as U.S. debt exceeds $40 trillion and 10-year Treasury yields remain above 5%, intensifying scrutiny of the fiscal outloo",
-    "date": "Thu, 15 Oct 2026 13:42:32 GMT"
-   },
-   {
-    "t": "Wholesale prices jumped 6.3% annually in September, biggest gain since 2022",
-    "l": "https://www.cnbc.com/2026/10/15/september-producer-price-index-retail-sales-data.html",
-    "d": "September producer prices were expected to increase 0.6% month over month and 5.5% annually, according to the consensus estimate by Dow Jone",
-    "date": "Thu, 15 Oct 2026 16:15:44 GMT"
-   }
-  ]
- },
- "FT markets": {
-  "status": 200,
-  "count": 25,
-  "newestHoursAgo": 2.3,
-  "withDesc": 25,
-  "sample": [
-   {
-    "t": "Hiding from the everything trade",
-    "l": "https://www.ft.com/content/6533c873-29df-453b-9ac4-7b17e5a3576f?syn-25a6b1a6=1",
-    "d": "Unhedged readers on how to hedge AI risk",
-    "date": "Fri, 16 Oct 2026 05:30:07 GMT"
-   },
-   {
-    "t": "So. About next year’s earnings . . .",
-    "l": "https://www.ft.com/content/d36787c1-f0b0-4445-8237-90eb4d521081",
-    "d": "Beat IT",
-    "date": "Fri, 16 Oct 2026 05:00:08 GMT"
-   },
-   {
-    "t": "The data centre IPO debacle that sparked a market meltdown",
-    "l": "https://www.ft.com/content/537c9a68-7b6f-41a7-80ff-acac5c52e80d?syn-25a6b1a6=1",
-    "d": "Decisions by Australian groups Firmus and AirTrunk have added to concerns about the AI borrowing frenzy",
-    "date": "Fri, 16 Oct 2026 04:54:52 GMT"
-   }
-  ]
- },
- "MarketWatch": {
-  "status": 200,
-  "count": 10,
-  "newestHoursAgo": 0.7,
-  "withDesc": 10,
-  "sample": [
-   {
-    "t": "Here are the key things Fed Chairman Kevin Warsh said — and didn’t say — while Americans were sleeping Thursday night",
-    "l": "https://www.marketwatch.com/story/here-are-the-key-things-fed-chairman-kevin-warsh-said-and-didnt-say-while-americans-were-sleeping-thursday-night-b82238a1?mod=mw_rss_topstories",
-    "d": "Federal Reserve Chair Kevin Warsh had an opportunity Thursday night to shape expectations heading into the central bank’s interest-rate-sett",
-    "date": "Fri, 16 Oct 2026 07:07:00 GMT"
-   },
-   {
-    "t": "Tesla finally delivers on its promise to create a flying car",
-    "l": "https://www.marketwatch.com/story/tesla-may-finally-debut-a-flying-car-today-after-testing-fans-patience-for-nearly-a-decade-9a23c8e8?mod=mw_rss_topstories",
-    "d": "Tesla’s demonstration of a levitating Roadster sports car was “an engineering flex with no commercial value beyond embarrassing traditional ",
-    "date": "Fri, 16 Oct 2026 02:42:00 GMT"
-   },
-   {
-    "t": "Pepsi loses more ground in the soda wars, as KFC switches to Coke",
-    "l": "https://www.marketwatch.com/story/pepsi-loses-more-ground-in-the-soda-wars-as-kfc-switches-to-coke-49b1ef53?mod=mw_rss_topstories",
-    "d": "As more people switch to Coke, some analysts are getting more worried about the state of archrival Pepsi.",
-    "date": "Thu, 15 Oct 2026 23:29:00 GMT"
-   }
-  ]
- },
- "FT global economy": {
-  "status": 200,
-  "count": 25,
-  "newestHoursAgo": 1.2,
-  "withDesc": 25,
-  "sample": [
-   {
-    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
-    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
-    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
-    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
-   },
-   {
-    "t": "FirstFT: Healey signals tax raid on banks in UK Budget",
-    "l": "https://www.ft.com/content/246f1614-cd9a-4747-bc58-97e9cb10fb4b?syn-25a6b1a6=1",
-    "d": "Also in today’s newsletter: London’s UBS HQ offer and Merz vows to fight on",
-    "date": "Fri, 16 Oct 2026 04:33:40 GMT"
-   },
-   {
-    "t": "The secret fight around financial flows",
-    "l": "https://www.ft.com/content/9585ba4d-5036-4f5d-9656-0dc4f6bdee4e?syn-25a6b1a6=1",
-    "d": "Quicker responses to trade challenges mean companies can free up capital",
-    "date": "Fri, 16 Oct 2026 04:00:17 GMT"
-   }
-  ]
- },
- "BBC Business": {
-  "status": 200,
-  "count": 47,
-  "newestHoursAgo": 0.6,
-  "withDesc": 47,
-  "sample": [
-   {
-    "t": "Banks say Healey planning to increase tax on their profits in Budget",
-    "l": "https://www.bbc.co.uk/news/articles/c32l4k2xdvrzo?at_medium=RSS&at_campaign=rss",
-    "d": "Senior banking executives have told the BBC they expect to be \"on the menu\" in the chancellor's Budget tax later this month.",
-    "date": "Fri, 16 Oct 2026 07:13:42 GMT"
-   },
-   {
-    "t": "I find it quite demoralising in store - why I do all my shopping online",
-    "l": "https://www.bbc.co.uk/news/articles/c36lk280kd1o?at_medium=RSS&at_campaign=rss",
-    "d": "After Primark announced plans for home delivery, we hear from women who never go into clothes stores.",
-    "date": "Thu, 15 Oct 2026 23:16:12 GMT"
-   },
-   {
-    "t": "Nandy 'minded to intervene' in Sky's £1.6bn takeover of ITV entertainment arm",
-    "l": "https://www.bbc.co.uk/news/articles/cm79pe5yej7no?at_medium=RSS&at_campaign=rss",
-    "d": "The culture secretary says the deal could affect free expression in the media and the variety of Britain's news landscape.",
-    "date": "Thu, 15 Oct 2026 14:55:21 GMT"
-   }
-  ]
- },
- "Federal Reserve": {
-  "status": 200,
-  "count": 20,
-  "newestHoursAgo": 61.8,
-  "withDesc": 20,
-  "sample": [
-   {
-    "t": "Minutes of the Board's discount rate meetings on August 17, September 9, and September 16, 2026",
-    "l": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261013a.htm",
-    "d": "Minutes of the Board's discount rate meetings on August 17, September 9, and September 16, 2026",
-    "date": "Tue, 13 Oct 2026 18:00:00 GMT"
-   },
-   {
-    "t": "Federal Reserve Board releases results of the 2025 Survey of Consumer Finances, which provides the public and policymakers with detailed insights into the economic condition of American families",
-    "l": "https://www.federalreserve.gov/newsevents/pressreleases/other20261009a.htm",
-    "d": "Federal Reserve Board releases results of the 2025 Survey of Consumer Finances, which provides the public and policymakers with detailed ins",
-    "date": "Fri, 9 Oct 2026 14:00:00 GMT"
-   },
-   {
-    "t": "Federal Reserve Board announces enforcement action against American Express Company to address, among other things, the firm’s failure to sufficiently detect and report certain suspicious activity related to money laundering",
-    "l": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261008a.htm",
-    "d": "Federal Reserve Board announces enforcement action against American Express Company to address, among other things, the firm’s failure to su",
-    "date": "Thu, 8 Oct 2026 20:30:00 GMT"
-   }
-  ]
- },
- "Economist leaders": {
-  "status": 200,
-  "count": 300,
-  "newestHoursAgo": 19,
-  "withDesc": 300,
-  "sample": [
-   {
-    "t": "America makes waves in Cuba",
-    "l": "https://www.economist.com/leaders/2026/10/15/america-makes-waves-in-cuba",
-    "d": "But it shouldn’t undermine the growth of the island’s private sector",
-    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
-   },
-   {
-    "t": "What if the machines take over science?",
-    "l": "https://www.economist.com/leaders/2026/10/15/what-if-the-machines-take-over-science",
-    "d": "Artificial intelligence will require scholars to reinvent their disciplines",
-    "date": "Thu, 15 Oct 2026 10:27:17 +0000"
-   },
-   {
-    "t": "Mark Carney shows middle powers how to handle a dangerous world",
-    "l": "https://www.economist.com/leaders/2026/10/15/mark-carney-shows-middle-powers-how-to-handle-a-dangerous-world",
-    "d": "Canada is standing up to a bullying America",
-    "date": "Thu, 15 Oct 2026 10:13:29 +0000"
-   }
-  ]
- },
- "FT world": {
-  "status": 200,
-  "count": 25,
-  "newestHoursAgo": 0.7,
-  "withDesc": 25,
-  "sample": [
-   {
-    "t": "Healey signals tax raid on banks in Budget",
-    "l": "https://www.ft.com/content/09e07278-8479-49bb-a145-51e5d93828a2?syn-25a6b1a6=1",
-    "d": "Chancellor points to looming ‘decisions’ as financial services sector braces for higher levies",
-    "date": "Fri, 16 Oct 2026 07:08:49 GMT"
-   },
-   {
-    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
-    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
-    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
-    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
-   },
-   {
-    "t": "Hiding from the everything trade",
-    "l": "https://www.ft.com/content/6533c873-29df-453b-9ac4-7b17e5a3576f?syn-25a6b1a6=1",
-    "d": "Unhedged readers on how to hedge AI risk",
-    "date": "Fri, 16 Oct 2026 05:30:07 GMT"
-   }
-  ]
- },
- "FT home": {
-  "status": 200,
-  "count": 10,
-  "newestHoursAgo": 0.7,
-  "withDesc": 10,
-  "sample": [
-   {
-    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
-    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
-    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
-    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
-   },
-   {
-    "t": "‘Early days’ to see full effect of energy prices on inflation, BoE’s Bailey says",
-    "l": "https://www.ft.com/content/b6255adb-3ce5-4463-92cd-de2f8e9a1f74?syn-25a6b1a6=1",
-    "d": "Lengthy period of higher costs would squeeze corporate margins and spur some companies to raise prices",
-    "date": "Fri, 16 Oct 2026 03:12:41 GMT"
-   },
-   {
-    "t": "How Trump’s America fell in love with UFC",
-    "l": "https://www.ft.com/content/56d14d34-955a-41e9-90da-5eda7d179509?syn-25a6b1a6=1",
-    "d": "For politicians, celebrities and tycoons, the brutal Ultimate Fighting Championship has become a vote-winner and money-spinner like no other",
-    "date": "Fri, 16 Oct 2026 04:00:17 GMT"
-   }
-  ]
- },
- "IMF": {
-  "status": 403,
-  "count": 0,
-  "newestHoursAgo": null,
-  "withDesc": 0,
-  "sample": []
- },
- "Nikkei Asia": {
-  "status": 200,
-  "count": 50,
-  "newestHoursAgo": null,
-  "withDesc": 0,
-  "sample": [
-   {
-    "t": "US Fed chair warns of financial stability risk as investment rises",
-    "l": "https://asia.nikkei.com/business/markets/us-fed-chair-warns-of-financial-stability-risk-as-investment-rises",
-    "d": "",
-    "date": ""
-   },
-   {
-    "t": "Japan bullet trains to raise super express fares in 2027",
-    "l": "https://asia.nikkei.com/business/transportation/japan-bullet-trains-to-raise-super-express-fares-in-2027",
-    "d": "",
-    "date": ""
-   },
-   {
-    "t": "Indonesia stocks plunge after MSCI signals possible downgrade in status",
-    "l": "https://asia.nikkei.com/business/markets/indonesia-stocks-plunge-after-msci-signals-possible-downgrade-in-status",
-    "d": "",
-    "date": ""
-   }
-  ]
- },
- "Guardian business": {
-  "status": 200,
-  "count": 19,
-  "newestHoursAgo": 17.3,
-  "withDesc": 19,
-  "sample": [
-   {
-    "t": "Key US voters say economy is getting worse ahead of midterms, exclusive poll finds",
-    "l": "https://www.theguardian.com/business/2026/oct/15/voters-economy-cost-of-living-prices-poll",
-    "d": "Nearly 61% believe country is in recession and 65% of independents say economy is worse, according to new Harris poll Tell us: what is your ",
-    "date": "Thu, 15 Oct 2026 09:00:13 GMT"
-   },
-   {
-    "t": "US lawmakers unveil bill to hold Wall Street’s ‘Epstein-connected’ bosses to account",
-    "l": "https://www.theguardian.com/business/2026/oct/15/new-bill-wall-street-bosses-epstein-connections",
-    "d": "Move comes as Senator Elizabeth Warren condemns Barclays response to questions over ex-boss’s ties to sex offender US lawmakers have unveile",
-    "date": "Thu, 15 Oct 2026 13:30:11 GMT"
-   },
-   {
-    "t": "Tech market sell-off deepens amid fears over US inflation and AI debt",
-    "l": "https://www.theguardian.com/business/2026/oct/15/tech-market-sell-off-deepens-amid-fears-over-us-inflation-and-ai-debt",
-    "d": "Chip makers and tech investors such as Samsung and SoftBank plunge as potential interest rate hikes spook markets Business news – live updat",
-    "date": "Thu, 15 Oct 2026 14:33:12 GMT"
-   }
-  ]
- },
- "France 24 business": {
-  "status": 200,
-  "count": 30,
-  "newestHoursAgo": 11.3,
-  "withDesc": 30,
-  "sample": [
-   {
-    "t": "EU member states set for budget clash",
-    "l": "https://www.france24.com/en/eu-member-states-set-for-budget-clash",
-    "d": "European lawmakers have kicked off what's likely to be a long and fierce negotiation over the bloc's seven-year budget. Member states are di",
-    "date": "Thu, 15 Oct 2026 20:33:18 GMT"
-   },
-   {
-    "t": "French crypto unicorn Ledger warns of AI security risks",
-    "l": "https://www.france24.com/en/tv-shows/people-profit/20261015-french-crypto-unicorn-ledger-warns-of-ai-security-risks",
-    "d": "Artificial intelligence is \"changing the security landscape\". That's according to Ledger, a French unicorn of cryptocurrency that's seeking ",
-    "date": "Thu, 15 Oct 2026 13:31:22 GMT"
-   },
-   {
-    "t": "China, North Korea open long-delayed trade bridge",
-    "l": "https://www.france24.com/en/tv-shows/business/20261015-china-north-korea-open-long-delayed-trade-bridge",
-    "d": "China and North Korea formally opened the Yalu River Bridge on Thursday, connecting Dandong in China with Sinuiju in North Korea. Beijing sa",
-    "date": "Thu, 15 Oct 2026 12:20:08 GMT"
-   }
-  ]
- },
- "Yahoo Finance": {
+ "rl data repo": {
   "status": 404,
-  "count": 0,
-  "newestHoursAgo": null,
-  "withDesc": 0,
-  "sample": []
+  "bytes": 14,
+  "head": "404: Not Found"
  },
- "ECB": {
+ "cf radar noauth": {
+  "status": 400,
+  "bytes": 141,
+  "head": "{\"success\":false,\"errors\":[{\"code\":9106,\"message\":\"Missing X-Auth-Key, X-Auth-Email or Authorization headers\"}],\"messages\":[],\"result\":null}\n",
+  "type": "object",
+  "keys": [
+   "success",
+   "errors",
+   "messages",
+   "result"
+  ]
+ },
+ "ransomwatch posts": {
   "status": 200,
-  "count": 15,
-  "newestHoursAgo": 55.8,
-  "withDesc": 0,
+  "bytes": 2286958,
+  "head": "[\n    {\n        \"post_title\": \"Windemuller\",\n        \"group_name\": \"lorenz\",\n        \"discovered\": \"2020-01-12 00:00:00.000000\"\n    },\n    {\n        \"post_title\": \"Leaks Company Birch Communications inc.\",\n        \"group_name\": \"ragnarlocker\",\n        \"discovered\": \"2020-06-10 00:00:00.000000\"\n    }",
+  "type": "array",
+  "keys": null,
+  "count": 16072,
   "sample": [
    {
-    "t": "Frank Elderson: Ensuring resilience in the face of uncertainty",
-    "l": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261014~e4ca33588e.en.html",
-    "d": "",
-    "date": "Wed, 14 Oct 2026 02:00:00 +0200"
+    "post_title": "Windemuller",
+    "group_name": "lorenz",
+    "discovered": "2020-01-12 00:00:00.000000"
    },
    {
-    "t": "Philip R. Lane: The AI opportunity for Europe",
-    "l": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261013~9db9bf4fd6.en.html",
-    "d": "",
-    "date": "Tue, 13 Oct 2026 20:30:00 +0200"
-   },
+    "post_title": "Leaks Company Birch Communications inc.",
+    "group_name": "ragnarlocker",
+    "discovered": "2020-06-10 00:00:00.000000"
+   }
+  ],
+  "last": [
    {
-    "t": "Meeting of 9-10 September 2026",
-    "l": "https://www.ecb.europa.eu//press/accounts/2026/html/ecb.mg261008~a10153d090.en.html",
-    "d": "",
-    "date": "Thu, 08 Oct 2026 13:30:00 +0200"
+    "post_title": "NF Stroth & Associates",
+    "group_name": "play",
+    "discovered": "2025-06-16 20:30:52.596196"
    }
   ]
  },
- "Al Jazeera economy": {
+ "cisa kev": {
   "status": 200,
-  "count": 2,
-  "newestHoursAgo": 6.6,
-  "withDesc": 2,
+  "bytes": 1789360,
+  "head": "{\n    \"title\": \"CISA Catalog of Known Exploited Vulnerabilities\",\n    \"catalogVersion\": \"2026.10.15\",\n    \"dateReleased\": \"2026-10-15T17:00:11.2795Z\",\n    \"count\": 1746,\n    \"vulnerabilities\": [\n        {\n            \"cveID\": \"CVE-2026-21589\",\n            \"vendorProject\": \"Atlassian\",\n            \"p",
+  "type": "object",
+  "keys": [
+   "title",
+   "catalogVersion",
+   "dateReleased",
+   "count",
+   "vulnerabilities"
+  ],
+  "count": 1746,
   "sample": [
    {
-    "t": "Can Zimbabwe’s ZiG win trust and replace the US dollar?",
-    "l": "https://www.aljazeera.com/economy/2026/10/16/can-zimbabwes-zig-win-trust-and-replace-the-us-dollar?traffic_source=rss",
-    "d": "After repeated currency crises, Zimbabweans remain wary of the ZiG.",
-    "date": "Fri, 16 Oct 2026 01:12:26 +0000"
+    "cveID": "CVE-2026-21589",
+    "vendorProject": "Atlassian",
+    "product": "Multiple Products",
+    "vulnerabilityName": "Atlassian Multiple Products Files or Directories Accessible to External Parties Vulnerability",
+    "dateAdded": "2026-10-15",
+    "shortDescription": "Multiple Atlassian products (Bitbucket Data Center ,Confluence Data Center, Jira Service Management Data Center, Jira Software Data Center, Bamboo Data Center, Crowd Data Center, Crucible and Fisheye) contain a files or directories accessible to external parties vulnerability which could allow an unauthenticated attacker to access specific files within the web application root directory in affected versions.",
+    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+    "dueDate": "2026-10-18",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "Yes",
+    "notes": "https://confluence.atlassian.com/security/cve-2026-21589-arbitrary-file-access-vulnerability-impacts-multiple-products-1870495748.html?ref=labs.watchtowr.com ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-21589",
+    "cwes": [
+     "CWE-552"
+    ]
    },
    {
-    "t": "Two Syrian pipelines damaged amid spate of attacks on energy infrastructure",
-    "l": "https://www.aljazeera.com/economy/2026/10/15/two-syrian-pipelines-damaged-amid-spate-of-attacks-on-energy-infrastructure?traffic_source=rss",
-    "d": "Fuel theft cited in Baniyas-Homs leak as gas export line in Hasakah catches fire.",
-    "date": "Thu, 15 Oct 2026 23:35:26 +0000"
+    "cveID": "CVE-2026-105134",
+    "vendorProject": "Ahsay",
+    "product": "AhsayCBS",
+    "vulnerabilityName": "Ahsay AhsayCBS Command Injection Vulnerability",
+    "dateAdded": "2026-10-14",
+    "shortDescription": "Ahsay AhsayCBS contains a command injection vulnerability that could allow a remote attacker to execute operating system commands via manipulation of the random parameter in the Replication Receiver component’s /rps/api/json/UpdateReceivers.do endpoint. This vulnerability can be chained with CVE-2026-105133.",
+    "requiredAction": "Apply mitigations in accordance with vendor instructions, ensuring compliance with CISA’s BOD 26-04 Prioritizing Security Updates Based on Risk (see URL in Notes) guidance and CISA’s “Forensics Triage Requirements” (see URL in Notes). Follow applicable BOD 26-04 guidance for cloud services or discontinue use of the product if mitigations are unavailable. Stakeholders are responsible for evaluating each asset's internet exposure and ensuring adherence to BOD 26-04 patching guidelines.",
+    "dueDate": "2026-10-17",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "Yes",
+    "notes": "https://www.ahsay.com/en/company/announcements/patch-cve-105133-105134-update ; ; BOD 26-04: https://www.cisa.gov/news-events/directives/bod-26-04-prioritizing-security-updates-based-risk ; Forensics Triage Requirements: https://www.cisa.gov/news-events/directives/bod-26-04-implementation-guidance-prioritizing-security-updates-based-risk ; https://nvd.nist.gov/vuln/detail/CVE-2026-105134",
+    "cwes": [
+     "CWE-77",
+     "CWE-78"
+    ]
+   }
+  ],
+  "last": [
+   {
+    "cveID": "CVE-2020-29583",
+    "vendorProject": "Zyxel",
+    "product": "Multiple Products",
+    "vulnerabilityName": "Zyxel Multiple Products Use of Hard-Coded Credentials Vulnerability",
+    "dateAdded": "2021-11-03",
+    "shortDescription": "Zyxel firewalls (ATP, USG, VM) and AP Controllers (NXC2500 and NXC5500) contain a use of hard-coded credentials vulnerability in an undocumented account (\"zyfwp\") with an unchangeable password.",
+    "requiredAction": "Apply updates per vendor instructions.",
+    "dueDate": "2022-05-03",
+    "knownRansomwareCampaignUse": "Unknown",
+    "forensicTriage": "No",
+    "notes": "https://nvd.nist.gov/vuln/detail/CVE-2020-29583",
+    "cwes": [
+     "CWE-522"
+    ]
    }
   ]
  },
- "DW business": {
+ "oecd aim": {
+  "status": 404,
+  "bytes": 96746,
+  "head": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head>\n    <!-- Global site tag (gtag.js) - Google Analytics -->\n    <script async=\"\" src=\"https://www.googletagmanager.com/gtag/js?id=G-71P6TXBD3E\"></script>\n    <script>\n      window.dataLayer = window.dataLayer || []\n      function gtag() {\n        dataLay"
+ },
+ "rl v2 info": {
   "status": 200,
-  "count": 20,
-  "newestHoursAgo": 23.1,
-  "withDesc": 20,
+  "bytes": 31,
+  "head": "{\"groups\":409,\"victims\":32798}\n",
+  "type": "object",
+  "keys": [
+   "groups",
+   "victims"
+  ]
+ },
+ "rl v2 recent": {
+  "status": 200,
+  "bytes": 73631,
+  "head": "[{\"activity\":\"Not Found\",\"attackdate\":\"2026-10-16T01:23:25.695217+00:00\",\"claim_url\":\"http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion\",\"country\":\"US\",\"data_size\":null,\"description\":\"fintech payments \\u00b7 US | [PENDING EXPOSURE]\",\"discovered\":\"2026-10-16T01:23:41.272921+00:00\"",
+  "type": "array",
+  "keys": null,
+  "count": 100,
   "sample": [
    {
-    "t": "Why Chinese tech brands are outpacing Western rivals from EVs to robot vacuums",
-    "l": "https://www.dw.com/en/why-chinese-tech-brands-are-outpacing-western-rivals-from-evs-to-robot-vacuums/a-79646187?maca=en-rss-en-bus-2091-rdf",
-    "d": "From action cameras and smartphones to EVs and robot vacuums, Chinese brands are gaining ground worldwide, despite privacy and security conc",
-    "date": "2026-10-15T08:45:00Z"
+    "activity": "Not Found",
+    "attackdate": "2026-10-16T01:23:25.695217+00:00",
+    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion",
+    "country": "US",
+    "data_size": null,
+    "description": "fintech payments · US | [PENDING EXPOSURE]",
+    "discovered": "2026-10-16T01:23:41.272921+00:00",
+    "domain": "",
+    "group": "N0n",
+    "press": null,
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/cd9319ce146401b8763e0b86ae1f7407.png",
+    "url": "https://www.ransomware.live/id/Q29tcGFueSAjNzVATjBu",
+    "victim": "Company #75"
    },
    {
-    "t": "Trump's diesel deal with Russia is unlikely to significantly lower global fuel prices despite expectations of rapid relief",
-    "l": "https://www.dw.com/en/trump-s-diesel-deal-with-russia-is-unlikely-to-significantly-lower-global-fuel-prices-despite-expectations-of-rapid-relief/a-79659601?maca=en-rss-en-bus-2091-rdf",
-    "d": "As the world's largest diesel exporter, the US benefits from high prices. At home, however, consumers are feeling the strain of rising livin",
-    "date": "2026-10-14T14:15:00Z"
+    "activity": "Not Found",
+    "attackdate": "2026-10-16T01:22:51.267437+00:00",
+    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion",
+    "country": "US",
+    "data_size": null,
+    "description": "media technology / broadcast playout · United States | [PENDING EXPOSURE]",
+    "discovered": "2026-10-16T01:23:06.889496+00:00",
+    "domain": "",
+    "group": "N0n",
+    "press": null,
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/cd9319ce146401b8763e0b86ae1f7407.png",
+    "url": "https://www.ransomware.live/id/Q29tcGFueSAjNzRATjBu",
+    "victim": "Company #74"
+   }
+  ],
+  "last": [
+   {
+    "activity": "Manufacturing",
+    "attackdate": "2026-10-13T00:00:00+00:00",
+    "claim_url": "http://maa2yprc5pldyr5hjn246hw7i66wdhglnostqgqkcbuh4vyyeos4xxyd.onion/index.html?new_gtrmxcqweplznsavhu",
+    "country": "IN",
+    "data_size": null,
+    "description": "Today Durga Bearings, we're proud to be the leading supplier of top-quality bearings in the country. With a wide range of products from world-renowned brands like NSK-RHP, INA,FAG, THK, BMD, GRW and many more we ensure our customers have access to over 150,000 types of bearings.",
+    "discovered": "2026-10-13T14:57:30.066827+00:00",
+    "domain": "www.durgabrgs.com",
+    "group": "Orova",
+    "press": null,
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/e4eb18e4cd8a322c00152ace1b8004ff.png",
+    "url": "https://www.ransomware.live/id/RHVyZ2EgQmVhcmluZ3NAT3JvdmE=",
+    "victim": "Durga Bearings"
+   }
+  ]
+ },
+ "rl v2 country SG": {
+  "status": 200,
+  "bytes": 122755,
+  "head": "[{\"activity\":\"Professional Services\",\"country\":\"SG\",\"data_size\":null,\"description\":\"N/A\",\"discovered\":\"2026-10-14T15:31:05.498186+00:00\",\"group_name\":\"qilin\",\"post_title\":\"MOA Architecture\",\"post_url\":\"http://ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd.onion/site/blog?uuid=14137818-4d18",
+  "type": "array",
+  "keys": null,
+  "count": 197,
+  "sample": [
+   {
+    "activity": "Professional Services",
+    "country": "SG",
+    "data_size": null,
+    "description": "N/A",
+    "discovered": "2026-10-14T15:31:05.498186+00:00",
+    "group_name": "qilin",
+    "post_title": "MOA Architecture",
+    "post_url": "http://ijzn3sicrcy7guixkzjkib4ukbiilwc3xhnmby4mcbccnsd7j2rekvqd.onion/site/blog?uuid=14137818-4d18-4e68-9e9b-8855af8cfbbd",
+    "published": "2026-10-14T15:30:48.004132+00:00",
+    "ransom": null,
+    "website": "www.moaarch.com"
    },
    {
-    "t": "Germany's China calculation shifts as import pressures eclipse export benefits",
-    "l": "https://www.dw.com/en/germany-s-china-calculation-shifts-as-import-pressures-eclipse-export-benefits/a-79571852?maca=en-rss-en-bus-2091-rdf",
-    "d": "Germany has long resisted tougher action against China, fearing retaliation. But rising pressure on key industries has pushed Berlin to seek",
-    "date": "2026-10-13T08:47:00Z"
+    "activity": "Technology",
+    "country": "SG",
+    "data_size": null,
+    "description": "As one of the pioneers specializing in marine radio communications and navigational equipment, Codar Pte Ltd provides a one-stop solution with seamless services and supply of marine electronics products and spares to our customers in the region.",
+    "discovered": "2026-10-13T14:56:57.293985+00:00",
+    "group_name": "Orova",
+    "post_title": "Codar (Pte) Ltd",
+    "post_url": "http://maa2yprc5pldyr5hjn246hw7i66wdhglnostqgqkcbuh4vyyeos4xxyd.onion/index.html?new_jkwpnvzxqmtresdcul",
+    "published": "2026-10-13T00:00:00+00:00",
+    "ransom": null,
+    "website": "www.codar.com.sg"
+   }
+  ],
+  "last": [
+   {
+    "activity": "Technology",
+    "country": "SG",
+    "data_size": null,
+    "description": "",
+    "discovered": "2017-05-12T00:00:00+00:00",
+    "group_name": "wannacry",
+    "post_title": "MediaOnline",
+    "post_url": "",
+    "published": "2017-05-12T00:00:00+00:00",
+    "ransom": null,
+    "website": ""
+   }
+  ]
+ },
+ "rl v2 month": {
+  "status": 200,
+  "bytes": 758449,
+  "head": "[{\"activity\":\"Technology\",\"attackdate\":\"2026-10-04 00:00:00.000000\",\"claim_url\":\"\",\"country\":\"US\",\"data_size\":null,\"description\":\"Trump mobile was informed they had been breached, they then replied with \\\"We have no team to handle this\\\" and that anyone who hacks them are a terrorist. Well unfortuna",
+  "type": "array",
+  "keys": null,
+  "count": 821,
+  "sample": [
+   {
+    "activity": "Technology",
+    "attackdate": "2026-10-04 00:00:00.000000",
+    "claim_url": "",
+    "country": "US",
+    "data_size": null,
+    "description": "Trump mobile was informed they had been breached, they then replied with \"We have no team to handle this\" and that anyone who hacks them are a terrorist. Well unfortunately for them, all 3615 customers and their PII, alongside telecom details are now up for grabs. Feel free to take a gander at it yourself, don't be shy, we (and them) certainly aren't stopping you.",
+    "discovered": "2026-10-05T08:04:48.407649+00:00",
+    "domain": "trumpmobile.com",
+    "group": "BYOD",
+    "press": {
+     "link": "https://www.ransomware.live/id/dHJ1bXBtb2JpbGUuY29tQDIwMjYtMTAtMDQ=",
+     "source": "https://san.com/cc/trump-mobiles-latest-problem-hackers-just-released-customer-information/",
+     "summary": "Trump Mobile, une société de téléphonie mobile liée à la famille de Donald Trump, a été victime d'une cyberattaque par un groupe de ransomware nouvellement établi, BYOD. Cette attaque a entraîné l'exposition des données personnelles de 3 615 clients, incluant des noms, adresses e-mail, numéros de téléphone, adresses résidentielles et détails de commandes. Le groupe BYOD a divulgué ces données sur son site de fuite sur le dark web. L'accès a été obtenu après qu'un employé de la société Liberty Mobile, basée en Floride, ait été infecté par un logiciel malveillant. Trump Mobile a été critiquée pour sa gestion de l'incident, répondant par une déclaration peu professionnelle."
+    },
+    "ransom": null,
+    "screenshot": "",
+    "url": "https://www.ransomware.live/id/VHJ1bXAgTW9iaWxlIFdpcmVsZXNzIChUZWxlY29tKUBCWU9E",
+    "victim": "Trump Mobile Wireless (Telecom)"
+   },
+   {
+    "activity": "Technology",
+    "attackdate": "2026-10-04 00:00:00.000000",
+    "claim_url": "",
+    "country": "US",
+    "data_size": null,
+    "description": "Revenue: 4K Users\n\nTrump Mobile is an American mobile virtual network operator (MVNO) that uses a licensed brand from the Trump Organization and was launched by Donald Trump Jr. and Eric Trump. THEY GOT FKED LOL. ONLY 4K USERS? LOL Includes eSIM QR codes and user PII.",
+    "discovered": "2026-09-23T15:21:01.778316+00:00",
+    "domain": "trumpmobile.com",
+    "group": "EndZone",
+    "press": {
+     "link": "https://www.ransomware.live/id/dHJ1bXBtb2JpbGUuY29tQDIwMjYtMTAtMDQ=",
+     "source": "https://san.com/cc/trump-mobiles-latest-problem-hackers-just-released-customer-information/",
+     "summary": "Trump Mobile, une société de téléphonie mobile liée à la famille de Donald Trump, a été victime d'une cyberattaque par un groupe de ransomware nouvellement établi, BYOD. Cette attaque a entraîné l'exposition des données personnelles de 3 615 clients, incluant des noms, adresses e-mail, numéros de téléphone, adresses résidentielles et détails de commandes. Le groupe BYOD a divulgué ces données sur son site de fuite sur le dark web. L'accès a été obtenu après qu'un employé de la société Liberty Mobile, basée en Floride, ait été infecté par un logiciel malveillant. Trump Mobile a été critiquée pour sa gestion de l'incident, répondant par une déclaration peu professionnelle."
+    },
+    "ransom": null,
+    "screenshot": "",
+    "url": "https://www.ransomware.live/id/VHJ1bXAgTW9iaWxlQEVuZFpvbmU=",
+    "victim": "Trump Mobile"
+   }
+  ],
+  "last": [
+   {
+    "activity": "Education",
+    "attackdate": "2023-09-14 00:00:00.000000",
+    "claim_url": "http://threeamkelxicjsaf2czjyz2lc4q3ngqkxhhlexyfcp2o6raw4rphyad.onion/detail/cagswhuu8hnoy061j9aeb00nu5z5od",
+    "country": "AU",
+    "data_size": null,
+    "description": "St James’ Anglican School provides a holistic education for students from Kindergarten to Year 12, focusing on unlocking individual potential and fostering excellence across various disciplines. The school offers a diverse curriculum that includes",
+    "discovered": "2026-09-28T18:49:38.475443+00:00",
+    "domain": "stjames.wa.edu.au",
+    "group": "threeam",
+    "press": {
+     "link": "https://www.ransomware.live/id/c3RqYW1lcy53YS5lZHUuYXVAMjAyMy0wOS0xNA==",
+     "source": "https://stjames.wa.edu.au/incident-updates/",
+     "summary": "L'école anglicane St James a identifié un incident de cybersécurité impliquant un accès non autorisé à ses systèmes informatiques. L'école a sécurisé ses systèmes, mené un audit de cybersécurité et a informé les familles que des informations personnelles de la communauté scolaire étaient concernées. L'incident a été signalé au Centre australien de cybersécurité (ACSC) et au Commissaire australien à l'information."
+    },
+    "ransom": null,
+    "screenshot": "",
+    "url": "https://www.ransomware.live/id/c3RqYW1lcy53YS5lZHUuYXVAdGhyZWVhbQ==",
+    "victim": "stjames.wa.edu.au"
+   }
+  ]
+ },
+ "rl v2 sectors": {
+  "status": 200,
+  "bytes": 2297799,
+  "head": "[{\"activity\":\"Healthcare\",\"attackdate\":\"2026-10-16T00:22:35.221004+00:00\",\"claim_url\":\"http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-evospine\",\"country\":\"\",\"data_size\":null,\"description\":\"Medical device manufacturing (US) \\u00b7 Texas, USA | FDA quality system records of a ",
+  "type": "array",
+  "keys": null,
+  "count": 2793,
+  "sample": [
+   {
+    "activity": "Healthcare",
+    "attackdate": "2026-10-16T00:22:35.221004+00:00",
+    "claim_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-evospine",
+    "country": "",
+    "data_size": null,
+    "description": "Medical device manufacturing (US) · Texas, USA | FDA quality system records of a Texas spinal implant manufacturer: CAPAs, device history records for implant lots, management reviews, design drawings and audit files; The complete inventory database of the business, 317 tables, with hospital and surgical-center customers, purchase orders and implant lot shipping records; Finance records: purchase orders, tax forms and payroll timesheets; Hospital product packets for spinal fusion systems and staff mailbox exports | [NOT PAID — EXPOSED]",
+    "discovered": "2026-10-16T00:22:58.465900+00:00",
+    "domain": "",
+    "group": "N0n",
+    "press": null,
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/53ffa3f593d6e1ac2f8883b0910bf2e2.png",
+    "url": "https://www.ransomware.live/id/RXZvbHV0aW9uIFNwaW5lIC8gQWxsIExhYnNATjBu",
+    "victim": "Evolution Spine / All Labs"
+   },
+   {
+    "activity": "Healthcare",
+    "attackdate": "2026-10-15T14:27:00+00:00",
+    "claim_url": "http://lockbitapt67g6rwzjbcxnww5efpg4qok6vpfeth7wx3okj52ks4wtad.onion/post/8d34b608644114d6e45dd1b947435179",
+    "country": "US",
+    "data_size": null,
+    "description": "Kidz R Kool Pediatric Dentistry is a dental practice located in Peoria, AZ, specializing in pediatri...",
+    "discovered": "2026-10-15T16:09:28.727968+00:00",
+    "domain": "kidzrkooldental.com",
+    "group": "lockbit5",
+    "press": null,
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/562aa7f6ddc48fa889623399e26597b9.png",
+    "url": "https://www.ransomware.live/id/a2lkenJrb29sZGVudGFsLmNvbUBsb2NrYml0NQ==",
+    "victim": "kidzrkooldental.com"
+   }
+  ],
+  "last": [
+   {
+    "activity": "Healthcare",
+    "attackdate": "2015-01-01T00:00:00+00:00",
+    "claim_url": "",
+    "country": "US",
+    "data_size": null,
+    "description": "",
+    "discovered": "2015-01-01T00:00:00+00:00",
+    "domain": "",
+    "group": "cryptolocker",
+    "press": null,
+    "ransom": null,
+    "screenshot": "",
+    "url": "https://www.ransomware.live/id/S2Vsc2V5LVNleWJvbGQgQ2xpbmljQGNyeXB0b2xvY2tlcg==",
+    "victim": "Kelsey-Seybold Clinic"
+   }
+  ]
+ },
+ "rl v2 allcyberattacks": {
+  "status": 200,
+  "bytes": 5083386,
+  "head": "[{\"added\":\"\",\"claim_gang\":\"akira\",\"claim_url\":\"https://www.ransomware.live/id/QXF1YWxlY3RyYSBIb2xkaW5nc0Bha2lyYQ==\",\"country\":\"CU\",\"date\":\"2023-12-07\",\"description\":\"\",\"domain\":\"aqualectra.com\",\"has_infostealer_info\":true,\"infostealer_data\":{\"employees\":2,\"employees_url\":3,\"infostealer_stats\":{},\"la",
+  "type": "array",
+  "keys": null,
+  "count": 4246,
+  "sample": [
+   {
+    "added": "",
+    "claim_gang": "akira",
+    "claim_url": "https://www.ransomware.live/id/QXF1YWxlY3RyYSBIb2xkaW5nc0Bha2lyYQ==",
+    "country": "CU",
+    "date": "2023-12-07",
+    "description": "",
+    "domain": "aqualectra.com",
+    "has_infostealer_info": true,
+    "infostealer_data": {
+     "employees": 2,
+     "employees_url": 3,
+     "infostealer_stats": {},
+     "last_employee_compromised": null,
+     "last_user_compromised": null,
+     "thirdparties": 3,
+     "update": "2024-02-25T12:06:12",
+     "users": 198,
+     "users_url": 12
+    },
+    "link": "https://www.ransomware.live/id/YXF1YWxlY3RyYS5jb21AMjAyMy0xMi0wNw==",
+    "summary": "L'entreprise de distribution d'eau et d'électricité Aqualectra à Curaçao a subi une cyberattaque qui l'a contrainte à déconnecter temporairement toutes ses connexions en ligne, affectant ses systèmes internes et son service client. Aqualectra a agi rapidement pour contrer l'attaque et a effectué des analyses approfondies pour éviter des dommages permanents. Les services sont désormais pleinement rétablis et les récentes coupures de courant sur l'île ne sont pas liées à cette cyberattaque.",
+    "title": "Aqualectra herstelt na cyberaanval - Curacao.nu",
+    "url": "https://curacao.nu/aqualectra-herstelt-na-cyberaanval/",
+    "victim": "Aqualectra"
+   },
+   {
+    "added": "",
+    "claim_gang": "akira",
+    "claim_url": "https://www.ransomware.live/id/Tmlzc2FuIEF1c3RyYWxpYUBha2lyYQ==",
+    "country": "AU",
+    "date": "2023-12-06",
+    "description": "",
+    "domain": "nissan.com.au",
+    "has_infostealer_info": true,
+    "infostealer_data": {
+     "employees": 0,
+     "employees_url": 0,
+     "infostealer_stats": {},
+     "last_employee_compromised": null,
+     "last_user_compromised": null,
+     "thirdparties": 0,
+     "update": "2024-02-25T12:06:39",
+     "users": 60,
+     "users_url": 12
+    },
+    "link": "https://www.ransomware.live/id/bmlzc2FuLmNvbS5hdUAyMDIzLTEyLTA2",
+    "summary": "Le constructeur automobile japonais Nissan enquête sur une cyberattaque qui a ciblé ses systèmes en Australie et en Nouvelle-Zélande, et qui pourrait avoir permis aux pirates d'accéder à des informations personnelles. Nissan Océanie a informé ses clients d'une potentielle violation de données et les a mis en garde contre le risque d'escroqueries à venir. L'entreprise travaille avec son équipe mondiale de réponse aux incidents pour évaluer l'impact de l'attaque et s'efforce de restaurer les systèmes affectés, tout en précisant que le réseau de concessionnaires n'est pas impacté.",
+    "title": "Nissan is investigating cyberattack and potential data breach",
+    "url": "https://www.bleepingcomputer.com/news/security/nissan-is-investigating-cyberattack-and-potential-data-breach/",
+    "victim": "Nissan Oceania"
+   }
+  ],
+  "last": [
+   {
+    "added": "2026-10-16",
+    "claim_gang": false,
+    "claim_url": false,
+    "country": "US",
+    "date": "2026-10-15",
+    "description": "",
+    "domain": "heberut.gov",
+    "has_infostealer_info": false,
+    "link": "https://www.ransomware.live/id/aGViZXJ1dC5nb3ZAMjAyNi0xMC0xNQ==",
+    "summary": "Une cyberattaque a compromis le réseau du gouvernement local de Heber City, Utah. L'incident a été rapidement contenu par l'équipe informatique de la ville, et les systèmes ont été rétablis. Aucun service essentiel n'a été suspendu. Le FBI mène actuellement une enquête forensique. La ville n'a pas identifié de rançongiciel ni de groupe responsable, et il reste inconnu si des informations municipales ont été accédées ou supprimées.",
+    "title": "Cyberattack breaches Heber City government network in Utah",
+    "url": "https://dysruptionhub.com/heber-city-utah-cyberattack/",
+    "victim": "Heber City"
+   }
+  ]
+ },
+ "rl v1 month": {
+  "status": 200,
+  "bytes": 689692,
+  "head": "[{\"activity\":\"Healthcare\",\"country\":\"US\",\"data_size\":null,\"description\":\"Healthcare - Endocrinology (US) \\u00b7 Houston, Texas | 14,441 patient document scans from a Houston endocrinology practice: lab results, medical summaries, diagnoses, insurance records, day sheets; Protected health information",
+  "type": "array",
+  "keys": null,
+  "count": 847,
+  "sample": [
+   {
+    "activity": "Healthcare",
+    "country": "US",
+    "data_size": null,
+    "description": "Healthcare - Endocrinology (US) · Houston, Texas | 14,441 patient document scans from a Houston endocrinology practice: lab results, medical summaries, diagnoses, insurance records, day sheets; Protected health information of thousands of patients including SSNs, dates of birth, and clinical data; Billing and claims records with financial data | [ACTIVE: deadline 2026-10-04 12:00 UTC]",
+    "discovered": "2026-09-30T22:53:00.862321+00:00",
+    "group_name": "N0n",
+    "post_title": "Houston Thyroid & Endocrine Specialists",
+    "post_url": "http://nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion#v-htes",
+    "published": "2026-09-30T22:52:46.877549+00:00",
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/f86697c644ca35be816fe74c8b56ffa3.png",
+    "website": ""
+   },
+   {
+    "activity": "Technology",
+    "country": "US",
+    "data_size": null,
+    "description": "Software company serving the long-term stay accommodation industry, including corporate housing and serviced apartments",
+    "discovered": "2026-09-30T22:34:21.282691+00:00",
+    "group_name": "pear",
+    "post_title": "Software Answers, a Banyan Software Company",
+    "post_url": "http://pearsmob5sn44ismokiusuld34pnfwi6ctgin3qbvonpoob4lh3rmtqd.onion/Companies/softwareanswers",
+    "published": "2026-09-14T00:00:00+00:00",
+    "ransom": null,
+    "screenshot": "",
+    "website": "softwareanswers.com"
+   }
+  ],
+  "last": [
+   {
+    "activity": "Technology",
+    "country": "PE",
+    "data_size": null,
+    "description": "[AI generated] Italtel Peru is a subsidiary of Italtel, an Italian telecommunications technology company. Operating in Peru, it provides ICT solutions including network infrastructure, system integration, and telecommunications services. The company serves enterprise and public sector clients, offering digital transformation, unified communications, and managed services. It operates within the telecommunications and information technology industry in the Peruvian market.",
+    "discovered": "2026-09-01T02:24:48.790434+00:00",
+    "group_name": "everest",
+    "post_title": "Italtel Peru",
+    "post_url": "http://everestndkvzcibcje2cqxhre2hmmybl3rn2gwzwsblz7gx6uryn5rad.onion/news/italtel-peru",
+    "published": "2026-09-01T01:24:25.353489+00:00",
+    "ransom": null,
+    "screenshot": "https://images.ransomware.live/victims/c49bf55965e17e3b37363b1ec1b1dea0.png",
+    "website": ""
    }
   ]
  }
