@@ -10,11 +10,13 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import vm from 'node:vm';
+import { pathToFileURL } from 'node:url';
 
 const OUT_DIR = 'site/data';
 const OUT = `${OUT_DIR}/stats.json`;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const REFRESH_HOURS = 12;              // outside sources: refresh about twice a day
+const KEV_VERSION = 2;                 // bump when the product/weakness sorting changes, to re-sort right away
 const FIRST_MONTH = '2022-01';         // ransomware history starts here
 const BACKFILL_PER_RUN = 24;           // fetch at most this many old months per run (be polite)
 const RECENT_MONTHS = 3;               // always re-read the current month and the 2 before it
@@ -108,13 +110,16 @@ async function updateRansomware(prev) {
 }
 
 // ---------- 2. EXPLOITED VULNERABILITIES (CISA KEV) ----------
-const PRODUCT_TYPES = [
-  ['Network & edge devices', /cisco|fortinet|fortios|fortigate|ivanti|pulse secure|palo alto|pan-os|citrix|netscaler|sonicwall|juniper|f5|big-ip|zyxel|d-link|tp-link|netgear|check point|sophos|array networks|draytek|mikrotik|ubiquiti|barracuda|watchguard|versa|aruba|router|firewall|vpn|gateway|zimbra/i],
-  ['Browsers', /chrome|chromium|firefox|mozilla|webkit|safari|internet explorer|edge\b/i],
-  ['Operating systems & phones', /windows|win32k|microsoft kernel|\bios\b|ipados|macos|android|linux kernel|apple multiple|kernel/i],
-  ['Office & documents', /office|word|excel|outlook|powerpoint|acrobat|reader|winrar|7-zip/i],
-  ['Cloud, servers & business apps', /vmware|vcenter|esxi|atlassian|confluence|jira|oracle|sap\b|exchange|sharepoint|coldfusion|gitlab|jenkins|moveit|apache|solarwinds|connectwise|screenconnect|veeam|citrix sharefile|progress|weblogic|struts|log4j|tomcat|kubernetes|docker|salesforce|crushftp|wordpress|drupal|php|server/i],
-  ['IoT, cameras & industrial', /hikvision|dahua|qnap|synology|siemens|schneider|rockwell|camera|nas\b|dvr|scada|plc|iot/i],
+const PRODUCT_TYPES = [   // first match wins, so the more specific groups come first
+  ['AI & developer tools', /langflow|litellm|mlflow|ray-project|marimo|\bn8n\b|jfrog|artifactory|teamcity|jenkins|gitlab|gitea|gogs|\bgit\b|github action|nx console|tanstack|\bvite|prettier|eslint|react native|trivy|kestra|ollama|openai/i],
+  ['Browsers', /chrome|chromium|firefox|mozilla|webkit|safari|internet explorer|flash player|\bskia\b|google \| dawn|\bdawn\b/i],
+  ['Network & edge devices', /cisco|fortinet|fortios|fortigate|fortiweb|ivanti|pulse secure|palo alto|pan-os|citrix|netscaler|sonicwall|juniper|\bf5\b|big-ip|zyxel|d-link|tp-link|netgear|check point|sophos|array networks|draytek|mikrotik|ubiquiti|barracuda|watchguard|versa|aruba|arista|brocade|aviatrix|velocloud|dd-wrt|sierra wireless|aleos|lantronix|\bbind\b|proftpd|nhttpd|nostromo|router|firewall|vpn/i],
+  ['IT management, backup & file transfer', /simplehelp|n-able|n-central|beyondtrust|connectwise|screenconnect|sysaid|\bkace\b|prtg|configuration manager|workspace one|omnissa|lanscope|skysea|papercut|commvault|nakivo|acronis|veeam|\bcleo\b|goanywhere|gladinet|centrestack|triofox|filezen|proself|moveit|crushftp|ahsay|recoverpoint|oneview|splunk|sciencelogic|servicenow|trend micro|apex one|defender|threatsonar|kaseya|solarwinds/i],
+  ['Web apps, CMS & email', /roundcube|craft cms|kentico|sitecore|joomla|wordpress|drupal|magento|commerce|laravel|livewire|\brails\b|\byii\b|strapi|xwiki|projectsend|adminer|cyberpanel|control web panel|cpanel|smartermail|zimbra|owncloud|metabase|grafana|zammad|jquery|ajax\.net|output messenger|active! mail|mirth|cityworks|usaherds|veracore|apriso|windchill|\bqlik\b|power pages|partner center|starlette|erlang|\bphp\b|struts|log4j|tomcat|apache|weblogic|coldfusion|experience manager|sharepoint|exchange|confluence|jira|atlassian|webmail/i],
+  ['Office, documents & apps', /\boffice\b|\bword\b|excel|outlook|powerpoint|publisher|microsoft \| project|visual basic|acrobat|reader|winrar|7-zip|whatsapp|authy|notepad\+\+|daemon tools|telemessage|trueconf|imagemagick|freetype|jai-ext/i],
+  ['Operating systems & phones', /windows|win32k|kernel|\bios\b|ipados|macos|android|pixel|samsung|qualcomm|chipset|\bmali\b|\bdwm\b|smartscreen|directx|\.net framework|streaming service|active directory|\bsudo\b|\bbash\b|inetutils|libuser|bug reporting|red hat|igel|apple/i],
+  ['IoT, cameras & industrial', /hikvision|dahua|qnap|synology|siemens|schneider|rockwell|camera|\bnas\b|\bdvr\b|scada|\bplc\b|\biot\b|geovision|nuuo|digiever|\bknx\b|meteobridge|megarac|linear emerge|mitel|sangoma|freepbx|switchvox|audinate|dante|sunhillo/i],
+  ['Virtualisation & enterprise software', /vmware|vcenter|esxi|oracle|\bsap\b|progress|kubernetes|docker|salesforce|\bibm\b|\bhpe\b|\bdell\b|wso2|server|microsoft/i],
 ];
 const WEAKNESS_TYPES = [
   ['Code & command injection', /CWE-(77|78|94|95|74|917|1336|502|20)\b/, /command injection|code injection|deserializ|remote code/i],
@@ -123,8 +128,8 @@ const WEAKNESS_TYPES = [
   ['Files: path traversal & upload', /CWE-(22|23|35|552|434|73|59)\b/, /path traversal|directory traversal|file upload|arbitrary file/i],
   ['Web attacks (XSS, SSRF, CSRF, SQL)', /CWE-(79|918|352|601|89)\b/, /cross-site|server-side request|sql injection|open redirect/i],
 ];
-const classifyKev = v => {
-  const prod = `${v.vendorProject} ${v.product}`;
+export const classifyKev = v => {
+  const prod = `${v.vendorProject} | ${v.product}`;
   const p = PRODUCT_TYPES.find(([, re]) => re.test(prod))?.[0] || 'Other';
   const cwes = (v.cwes || []).join(' ');
   const text = `${v.vulnerabilityName} ${v.shortDescription}`;
@@ -140,7 +145,7 @@ async function updateKev() {
     return { d: v.dateAdded, c: v.cveID, v: v.vendorProject, n: v.product, p, w, r: /^known$/i.test(String(v.knownRansomwareCampaignUse || '').trim()) ? 1 : 0 };
   }).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.d)).sort((a, b) => b.d.localeCompare(a.d));
   console.log(`CISA KEV: ${list.length} entries.`);
-  return { source: 'CISA KEV', items: list, updatedAt: new Date().toISOString() };
+  return { source: 'CISA KEV', version: KEV_VERSION, items: list, updatedAt: new Date().toISOString() };
 }
 
 // ---------- 3. NEWS COVERAGE BY ATTACK TYPE ----------
@@ -178,7 +183,7 @@ async function main() {
     try { out.ransomware = await updateRansomware(prev.ransomware || {}); }
     catch (e) { out.errors.ransomware = String(e.message || e); console.log('Ransomware failed:', e.message); }
   }
-  if (hoursSince(prev.kev?.updatedAt) >= REFRESH_HOURS) {
+  if (hoursSince(prev.kev?.updatedAt) >= REFRESH_HOURS || prev.kev?.version !== KEV_VERSION) {
     try { out.kev = await updateKev(); }
     catch (e) { out.errors.kev = String(e.message || e); console.log('KEV failed:', e.message); }
   }
@@ -190,7 +195,7 @@ async function main() {
   console.log(`Wrote ${OUT}.`);
 }
 
-main().catch(async e => {
+if (import.meta.url === pathToFileURL(process.argv[1] || '').href) main().catch(async e => {
   // Never break the news update: fall back to whatever we had before.
   console.log('Stats failed:', e.message);
   try { await mkdir(OUT_DIR, { recursive: true }); await writeFile(OUT, JSON.stringify(await loadPrevious())); } catch {}
