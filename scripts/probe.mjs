@@ -1,15 +1,8 @@
 import { writeFile } from 'node:fs/promises';
-const H = { 'User-Agent': 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)', 'Accept': 'application/json' };
-const a = await (await fetch('https://api.ransomware.live/v2/allcyberattacks', { headers: H })).json();
-const keys = {}; for (const x of a) for (const k of Object.keys(x)) keys[k] = (keys[k] || 0) + 1;
-const byYear = {}, byCountry = {}, byGang = {};
-for (const x of a) { const y = String(x.date || x.added).slice(0, 4); byYear[y] = (byYear[y] || 0) + 1; byCountry[x.country || '?'] = (byCountry[x.country || '?'] || 0) + 1; byGang[x.claim_gang ? 'has gang' : 'no gang'] = (byGang[x.claim_gang ? 'has gang' : 'no gang'] || 0) + 1; }
-const recent = a.filter(x => String(x.date) >= '2026-09-01').slice(0, 8).map(x => ({ date: x.date, country: x.country, gang: x.claim_gang, title: x.title, summary: String(x.summary || x.description || '').slice(0, 220), url: x.url }));
-// other candidate datasets
-const tryUrl = async u => { try { const r = await fetch(u, { headers: H, signal: AbortSignal.timeout(30000) }); const t = await r.text(); return { status: r.status, bytes: t.length, head: t.slice(0, 300) }; } catch (e) { return { error: String(e.message) }; } };
-const others = {
-  eurepoc: await tryUrl('https://eurepoc.eu/database/'),
-  hackmageddon: await tryUrl('https://www.hackmageddon.com/feed/'),
-  rl_v2_press: await tryUrl('https://api.ransomware.live/v2/press/recent'),
-};
-await writeFile('probe.json', JSON.stringify({ total: a.length, keys, byYear, topCountries: Object.entries(byCountry).sort((x, y) => y[1] - x[1]).slice(0, 15), byGang, recent, others }, null, 1));
+const s = await (await fetch('https://diorela.github.io/signalfeed/data/stats.json?t=' + Date.now())).json();
+const A = s.attacks?.items || [];
+const EU = new Set('AL AD AT BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GG GI GR HR HU IE IM IS IT JE LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS SE SI SK SM UA UK VA XK'.split(' '));
+const reg = cc => cc === 'US' ? 'usa' : cc === 'SG' ? 'sg' : cc === 'CN' ? 'cn' : EU.has(cc) ? 'eu' : 'other';
+const y = {}; for (const x of A) { const k = x.d.slice(0, 4) + ' ' + reg(x.cc); y[k] = (y[k] || 0) + 1; }
+const t = {}; for (const x of A.filter(x => x.d >= '2026-01-01')) t[x.t] = (t[x.t] || 0) + 1;
+await writeFile('probe.json', JSON.stringify({ errors: s.errors, n: A.length, years: y, types2026: t, sample: A.filter(x => x.h).slice(0, 12).map(x => [x.d, x.cc, x.t, x.h]) }, null, 1));
