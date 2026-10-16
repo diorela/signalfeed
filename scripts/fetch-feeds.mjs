@@ -36,9 +36,27 @@ export const SOURCES = [
   { name: 'Foreign Policy', category: 'geo', type: 'rss', url: 'https://foreignpolicy.com/feed/' },
   { name: 'France 24',      category: 'geo', type: 'rss', url: 'https://www.france24.com/en/monde/rss',
     keep: it => !/\/sport\//.test(it.link) },
+
+  // ---- Economy & Finance ----
+  // FT and The Economist are paywalled: their feeds give the headline and a one-line summary, and the link opens their site.
+  { name: 'Financial Times',   category: 'fin', type: 'rss', url: 'https://www.ft.com/global-economy?format=rss' },
+  { name: 'Financial Times',   category: 'fin', type: 'rss', url: 'https://www.ft.com/markets?format=rss' },
+  { name: 'The Economist',     category: 'fin', type: 'rss', url: 'https://www.economist.com/finance-and-economics/rss.xml' },
+  { name: 'The Economist',     category: 'fin', type: 'rss', url: 'https://www.economist.com/business/rss.xml' },
+  { name: 'BBC Business',      category: 'fin', type: 'rss', url: 'https://feeds.bbci.co.uk/news/business/rss.xml',
+    keep: it => !/\/(sport|sounds|iplayer|videos)\//.test(it.link) },
+  { name: 'Guardian Business', category: 'fin', type: 'rss', url: 'https://www.theguardian.com/business/economics/rss' },
+  { name: 'Guardian Business', category: 'fin', type: 'rss', url: 'https://www.theguardian.com/business/rss' },
+  { name: 'CNBC',              category: 'fin', type: 'rss', url: 'https://www.cnbc.com/id/20910258/device/rss/rss.html' },
+  { name: 'CNBC',              category: 'fin', type: 'rss', url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html' },
+  { name: 'MarketWatch',       category: 'fin', type: 'rss', url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories' },
+  { name: 'DW Business',       category: 'fin', type: 'rss', url: 'https://rss.dw.com/rdf/rss-en-bus' },
+  { name: 'France 24 Business',category: 'fin', type: 'rss', url: 'https://www.france24.com/en/business/rss' },
+  { name: 'ECB',               category: 'fin', type: 'rss', url: 'https://www.ecb.europa.eu/rss/press.html' },
+  { name: 'Federal Reserve',   category: 'fin', type: 'rss', url: 'https://www.federalreserve.gov/feeds/press_all.xml' },
 ];
 
-const DAYS = { cyber: 21, geo: 21 };   // keep 3 weeks of news; older stories are deleted
+const DAYS = { cyber: 21, geo: 21, fin: 21 };   // keep 3 weeks of news; older stories are deleted
 const MAX_PER_COLUMN = 2000;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const OUT_DIR = 'site/data';
@@ -234,7 +252,7 @@ export async function main() {
 
   // Drop expired items, keep newest first, cap each column.
   const items = [];
-  for (const cat of ['cyber', 'geo']) {
+  for (const cat of ['cyber', 'geo', 'fin']) {
     items.push(...[...byLink.values()]
       .filter(it => it.category === cat)
       .filter(it => {

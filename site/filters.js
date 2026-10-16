@@ -50,6 +50,26 @@
       { id: 'terror', label: 'Terrorism & coups', hint: 'Terror attacks, extremism, hostages, coups',
         re: /(terror|extremis|jihad|hostage|\bmilitants?\b|assassinat|\bcoup\b|insurgen|\bisis\b|islamic state|al-qaeda|al-shabab)/ },
     ],
+    fin: [
+      { id: 'markets', label: 'Markets', hint: 'Stocks, bonds, currencies, investors',
+        re: /(\bstocks?\b|\bshares?\b|equit|\bbonds?\b|\byields?\b|treasur|\bmarkets?\b|wall street|\bindex\b|s&p|nasdaq|\bdow\b|ftse|nikkei|\bdax\b|investors?|sell-?off|\brally\b|\bdollar\b|\beuro\b|\byen\b|currenc|hedge fund|valuation)/ },
+      { id: 'rates', label: 'Central banks & rates', hint: 'Fed, ECB, Bank of England and other central bank decisions',
+        re: /(central bank|\bfed\b|federal reserve|\becb\b|bank of england|\bboe\b|bank of japan|\bboj\b|interest rates?|rate (cut|hike|rise|hold)|monetary policy|powell|warsh|lagarde|bailey|basis points)/ },
+      { id: 'macro', label: 'Inflation & growth', hint: 'Inflation, GDP, jobs, recession, public debt',
+        re: /(inflation|\bcpi\b|\bppi\b|\bgdp\b|recession|\bgrowth\b|economy|economic|unemployment|\bjobs\b|payrolls|labou?r market|wages|cost of living|\bdebt\b|deficit|budget|\bimf\b|world bank|fiscal|\btax(es)?\b)/ },
+      { id: 'trade', label: 'Trade & tariffs', hint: 'Tariffs, trade deals, sanctions, supply chains',
+        re: /(tariff|\btrade\b|export|import|sanction|supply chains?|\bwto\b|protectionis|customs|dumping)/ },
+      { id: 'companies', label: 'Companies & deals', hint: 'Earnings, mergers, takeovers, IPOs, layoffs',
+        re: /(earnings|profits?\b|revenue|quarterly|results|merger|acquisition|acquire|takeover|\bbuys?\b|\bdeal\b|\bipo\b|listing|layoffs?|job cuts|\bceo\b|bankrupt|insolven|valuation|startup|unicorn)/ },
+      { id: 'banking', label: 'Banks & finance', hint: 'Banks, lenders, regulation, private credit, insurance',
+        re: /(\bbanks?\b|banking|lenders?|\bcredit\b|private equity|insur|regulator|\bsec\b|financial stability|capital rules|basel|asset manag|pension)/ },
+      { id: 'energyfin', label: 'Energy & commodities', hint: 'Oil, gas, metals, food and commodity prices',
+        re: /(\boil\b|\bgas\b|\bopec\b|\bbrent\b|commodit|\bgold\b|copper|lithium|\bmetals?\b|\bwheat\b|\bgrain\b|\bfood prices\b|energy prices|\bsulphur\b|\bcoal\b|\blng\b)/ },
+      { id: 'techbiz', label: 'Tech & AI business', hint: 'Big tech, AI investment, chips',
+        re: /(\bai\b|artificial intelligence|nvidia|openai|\bchips?\b|semiconductor|big tech|apple|microsoft|alphabet|google|amazon|\bmeta\b|tesla|data cent(re|er)|tech (stocks|giants))/ },
+      { id: 'crypto', label: 'Crypto', hint: 'Bitcoin, stablecoins, digital currencies',
+        re: /(crypto|bitcoin|ethereum|stablecoin|blockchain|digital currenc|\bcbdc\b|\btoken)/ },
+    ],
   };
 
   // ---------- REGIONS (for both columns) ----------

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SignalFeed — Cyber & World Briefing</title>
+<title>SignalFeed — Cyber, World & Finance Briefing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script>
@@ -20,8 +20,8 @@
   :root, [data-theme="light"] {
     --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #F7F9FC; --border: #E3E7F0; --border-2: #DDE2EC;
     --ink: #10142A; --ink-2: #3B4258; --muted: #5A6178; --faint: #8A90A3;
-    --cyber: #2851E8; --on-cyber: #FFFFFF; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF;
-    --lead-cyber: #EEF3FF; --lead-geo: #FFF1EA; --lead-chip: #FFFFFF;
+    --cyber: #2851E8; --on-cyber: #FFFFFF; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF; --fin: #0E8A6A; --fin-ink: #0A6650; --on-fin: #FFFFFF;
+    --lead-cyber: #EEF3FF; --lead-geo: #FFF1EA; --lead-fin: #E7F6F0; --lead-chip: #FFFFFF;
     --ticker-bg: #10142A; --ticker-ink: #FFFFFF; --ticker-muted: #9AA6C9; --ticker-tag-bg: #B9F18C; --ticker-tag-ink: #10142A;
     --new-bg: #E3F7EA; --new-ink: #146C3A; --live-bg: #E8F8EE; --live-ink: #146C3A; --live-dot: #1FA855;
     --warn-bg: #FFF4D6; --warn-ink: #7A4B00; --err-bg: #FFE9E7; --err-ink: #A8261A;
@@ -34,8 +34,8 @@
   [data-theme="dark"] {
     --bg: #0B0F17; --surface: #131A26; --surface-2: #0F1520; --border: #1E2738; --border-2: #263045;
     --ink: #EEF2F8; --ink-2: #C3CBDB; --muted: #9BA6BC; --faint: #7C879D;
-    --cyber: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17;
-    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-chip: #0B0F17;
+    --cyber: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17; --fin: #60A5FA; --fin-ink: #93C5FD; --on-fin: #0B0F17;
+    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-fin: #0F1A2B; --lead-chip: #0B0F17;
     --ticker-bg: #1A2333; --ticker-ink: #EEF2F8; --ticker-muted: #9BA6BC; --ticker-tag-bg: #34D399; --ticker-tag-ink: #0B0F17;
     --new-bg: #11281F; --new-ink: #6EE7B7; --live-bg: #11281F; --live-ink: #6EE7B7; --live-dot: #34D399;
     --warn-bg: #2A220C; --warn-ink: #FCD267; --err-bg: #3A1C16; --err-ink: #FF9B80;
@@ -181,12 +181,14 @@
   /* ---------- COLUMNS ---------- */
   .cols { display: block; }
   .col[hidden] { display: none; }
-  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
+  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
   .tab { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 18px; border-radius: 18px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; }
   .tab:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tab-accent) 60%, transparent); border-color: color-mix(in srgb, var(--tab-accent) 45%, var(--border)); }
   .tab .ti { flex: none; width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
   .tab .ti svg { width: 24px; height: 24px; }
   .tab .tt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .tab .tl .short { display: none; }
+  @media (max-width: 640px) { .tab .tl .full { display: none; } .tab .tl .short { display: inline; } }
   .tab .tl { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; line-height: 1.15; }
   .tab .tn { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .tab .tn b { font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
@@ -196,6 +198,7 @@
   .tab[aria-selected="false"] .tl { color: var(--ink-2); }
   .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
   .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
+  .tab.fin { --tab-accent: var(--fin); --tab-on: var(--on-fin); }
   .cols .col { border-top: 4px solid var(--accent); }
   .cols .col-head { display: none; }
   .col-head .counts { display: none; }
@@ -215,6 +218,7 @@
     .ticker-items button { width: 100%; }
   }
   .col.geo { --accent: var(--geo); --on-accent: var(--on-geo); --lead: var(--lead-geo); --accent-ink: var(--geo-ink); }
+  .col.fin { --accent: var(--fin); --on-accent: var(--on-fin); --lead: var(--lead-fin); --accent-ink: var(--fin-ink); }
   .col.cyber { --accent: var(--cyber); --on-accent: var(--on-cyber); --lead: var(--lead-cyber); --accent-ink: var(--cyber); }
   .col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
   .col-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; }
@@ -265,8 +269,10 @@
     header { position: static; }
     .tabs { top: 0; gap: 8px; margin-inline: -16px; padding: 8px 16px; }
     #tabs-anchor { scroll-margin-top: 8px !important; }
-    .tab { min-height: 60px; padding: 8px 10px; gap: 10px; border-radius: 14px; }
-    .tab[aria-selected="true"] { padding: 7px 9px; }
+    .tab { min-height: 64px; padding: 8px 4px; gap: 4px; border-radius: 14px; flex-direction: column; justify-content: center; text-align: center; }
+    .tab[aria-selected="true"] { padding: 7px 3px; }
+    .tab .tt { align-items: center; gap: 1px; }
+    .tabs { gap: 6px; }
     .tab .ti { width: 34px; height: 34px; border-radius: 10px; }
     .tab .ti svg { width: 18px; height: 18px; }
     .tab .tl { font-size: 15px; }
@@ -374,8 +380,9 @@
 
   <div id="tabs-anchor" style="scroll-margin-top: calc(var(--hdr-h, 71px) + 8px)"></div>
   <div class="tabs" role="tablist" aria-label="Choose a news section">
-    <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span><span class="tt"><span class="tl">Cybersecurity</span><span class="tn" id="tabN-cyber"></span></span></button>
-    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl">Geopolitics</span><span class="tn" id="tabN-geo"></span></span></button>
+    <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span><span class="tt"><span class="tl"><span class="full">Cybersecurity</span><span class="short">Cyber</span></span><span class="tn" id="tabN-cyber"></span></span></button>
+    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl"><span class="full">Geopolitics</span><span class="short">World</span></span><span class="tn" id="tabN-geo"></span></span></button>
+    <button class="tab fin" role="tab" id="tab-fin" data-tab="fin" aria-controls="col-fin" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path><path d="M15 7h6v6"></path></svg></span><span class="tt"><span class="tl"><span class="full">Economy &amp; Finance</span><span class="short">Finance</span></span><span class="tn" id="tabN-fin"></span></span></button>
   </div>
   <div class="cols">
     <section class="col cyber" id="col-cyber" aria-labelledby="h-cyber" role="tabpanel">
@@ -407,6 +414,21 @@
       <div id="geoLead"></div>
       <div class="stories" id="geoList"></div>
     </section>
+
+    <section class="col fin" id="col-fin" aria-labelledby="h-fin" role="tabpanel" hidden>
+      <div class="col-head">
+        <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path><path d="M15 7h6v6"></path></svg></span>
+        <div><h2 class="display" id="h-fin">Economy &amp; Finance</h2><span class="counts" id="finCounts"></span></div>
+      </div>
+      <div class="filters">
+        <label class="fsel"><span>Topic</span><select id="finTopic" data-key="fin" data-f="topic"></select></label>
+        <label class="fsel"><span>Source</span><select id="finSource" data-key="fin" data-f="source"></select></label>
+        <label class="fsel"><span>Region</span><select id="finRegion" data-key="fin" data-f="region"></select></label>
+      </div>
+      <div class="resultline" id="finResult" hidden></div>
+      <div id="finLead"></div>
+      <div class="stories" id="finList"></div>
+    </section>
   </div>
 
   <footer class="site">
@@ -435,11 +457,13 @@ const TOPIC_COLOR = {
   infra: 'teal', ai: 'indigo', phishing: 'amber', supply: 'teal', regulation: 'indigo',
   conflict: 'orange', diplomacy: 'blue', sanctions: 'amber', elections: 'violet', cybertech: 'teal',
   energy: 'amber', humanitarian: 'green', terror: 'pink',
+  rates: 'blue', markets: 'green', macro: 'violet', trade: 'amber', companies: 'slate', banking: 'indigo', energyfin: 'orange', techbiz: 'teal', crypto: 'pink',
 };
 // Order topics by urgency, not by definition order.
 const TOPIC_ORDER = {
   cyber: ['exploited', 'impact', 'vulns', 'ransomware', 'nation', 'law', 'infra', 'ai', 'phishing', 'supply', 'regulation'],
   geo: ['conflict', 'diplomacy', 'sanctions', 'elections', 'cybertech', 'energy', 'humanitarian', 'terror'],
+  fin: ['rates', 'markets', 'macro', 'trade', 'companies', 'banking', 'energyfin', 'techbiz', 'crypto'],
 };
 const SOURCE_BADGE = {
   'The Hacker News': ['THN', 'indigo'], 'BleepingComputer': ['BC', 'blue'], 'Dark Reading': ['DR', 'orange'],
@@ -454,13 +478,15 @@ const state = {
   f: {
     cyber: { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
     geo:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
+    fin:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
   },
   seen: new Set(), firstVisit: false,
   lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
 };
 const $ = id => document.getElementById(id);
 const BASE_TITLE = document.title;
-const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo].find(t => t.id === id);
+const SECTIONS = ['cyber', 'geo', 'fin'];
+const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo, ...SF.TOPICS.fin].find(t => t.id === id);
 const regionLabel = id => (SF.REGIONS.find(r => r.id === id) || {}).label || '';
 
 // ---------- STORAGE (remembers what you've read, on this browser only) ----------
@@ -569,7 +595,7 @@ function updateLive() {
 }
 
 // ---------- HERO ----------
-const HERO = { cyber: { name: 'cybersecurity', noun: 'cyber' }, geo: { name: 'geopolitics', noun: 'world' } };
+const HERO = { cyber: { name: 'cybersecurity', noun: 'cyber' }, geo: { name: 'geopolitics', noun: 'world' }, fin: { name: 'economy and finance', noun: 'finance' } };
 const BIG_WINDOW = 48 * 3600e3;
 const CLUSTER_STOP = new Set(('the a an of on in and or for to by with at from is are was were about into its it as be news says said say after over new how what why amid could would will can may us report reports reported calls call live latest update updates than more has have had not who his her their they this that these been first two one three year years day days week weeks back off out up down against under amid via just now still also get gets make makes made take takes set sets while where when which there here our your all any most many some other such only').split(' '));
 function titleTokens(a) {
@@ -739,9 +765,11 @@ function renderColumn(key, toTop = false) {
 const BREAKING_WINDOW = 6 * 3600e3;
 const CYBER_BREAK = /zero[- ]?day|0-day|actively exploited|in the wild|emergency (patch|update|directive)|out[- ]of[- ]band|mass exploitation|\b(outage|shuts? down|shut down|grounded|halts?|disrupt\w*|nationwide|millions)\b/i;
 const GEO_BREAK = /\b(breaking|killed|kills|dead|deaths|explosions?|blasts?|missiles?|air ?strikes?|invad\w*|invasion|coup|ceasefire|truce|declares?|martial law|assassinat\w*|resigns?|ousted|earthquake|tsunami|hostages?|mobiliz\w*|nuclear)\b/i;
+const FIN_BREAK = /\b(crash\w*|plunge\w*|plummet\w*|tumble\w*|soar\w*|surge\w*|slump\w*|rout|sell-?off|meltdown|panic|emergency|surprise (rate|cut|hike)|rate (cut|hike)s?|raises? rates|cuts? rates|default\w*|bankrupt\w*|collapse\w*|bail-?out|downgrade\w*|record (high|low)|halts? trading|circuit breaker)\b/i;
 function isBreaking(a) {
   if (Date.now() - new Date(a.date) > BREAKING_WINDOW) return false;
   if (a.category === 'cyber') return a._topics.includes('exploited') || CYBER_BREAK.test(a.title);
+  if (a.category === 'fin') return FIN_BREAK.test(a.title);
   return GEO_BREAK.test(a.title) && (a._topics.includes('conflict') || a._topics.includes('terror') || a._topics.includes('humanitarian') || a._topics.includes('elections') || /breaking|coup|ceasefire|earthquake|tsunami/i.test(a.title));
 }
 const brk = { list: [], i: 0, paused: false, timer: null };
@@ -770,7 +798,7 @@ $('breaking').addEventListener('mouseleave', () => brk.paused = false);
 setInterval(() => { if (!brk.paused && !document.hidden) stepBreaking(1); }, 7000);
 
 function render() {
-  renderBreaking(); renderHero(); renderColumn('cyber'); renderColumn('geo');
+  renderBreaking(); renderHero(); SECTIONS.forEach(k => renderColumn(k));
   const ok = state.sources.filter(s => s.ok).length;
   $('footLine').textContent = state.sources.length ? `${ok} of ${state.sources.length} sources read ${ago(state.generatedAt)} · stories kept for 3 weeks` : 'Stories kept for 3 weeks';
 }
@@ -803,6 +831,7 @@ function openSources() {
     <p style="font-size:14px">Status from the last read of all sites${state.generatedAt ? ` (${esc(ago(state.generatedAt))})` : ''}. A ✗ means a site couldn't be read that time; its earlier stories stay visible.</p>
     <div class="srchead mono">CYBERSECURITY</div>${group('cyber')}
     <div class="srchead mono">GEOPOLITICS</div>${group('geo')}
+    <div class="srchead mono">ECONOMY &amp; FINANCE</div>${group('fin')}
     <div class="modal-actions"><button class="btn" data-close style="flex:1;justify-content:center">Close</button></div>`);
 }
 
@@ -863,7 +892,7 @@ $('notif').onclick = async () => {
 // ---------- SEARCH (applies to both columns) ----------
 function setQuery(value) {
   state.query = value; state.tokens = SF.parseQuery(value);
-  state.f.cyber.limit = state.f.geo.limit = PAGE_SIZE;
+  SECTIONS.forEach(k => state.f[k].limit = PAGE_SIZE);
   $('search').value = value;
   $('searchBox').classList.toggle('has', !!value);
 }
@@ -872,10 +901,10 @@ $('search').addEventListener('input', e => {
   const v = e.target.value;
   $('searchBox').classList.toggle('has', !!v);
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { setQuery(v); renderColumn('cyber'); renderColumn('geo'); }, 150);
+  searchTimer = setTimeout(() => { setQuery(v); SECTIONS.forEach(k => renderColumn(k)); }, 150);
 });
-$('search').addEventListener('keydown', e => { if (e.key === 'Escape') { setQuery(''); renderColumn('cyber'); renderColumn('geo'); } });
-$('clearSearch').onclick = e => { e.preventDefault(); setQuery(''); renderColumn('cyber'); renderColumn('geo'); $('search').focus(); };
+$('search').addEventListener('keydown', e => { if (e.key === 'Escape') { setQuery(''); SECTIONS.forEach(k => renderColumn(k)); } });
+$('clearSearch').onclick = e => { e.preventDefault(); setQuery(''); SECTIONS.forEach(k => renderColumn(k)); $('search').focus(); };
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('overlay').classList.contains('show')) { closeModal(); return; }
   const typing = /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName);
@@ -884,10 +913,10 @@ document.addEventListener('keydown', e => {
 
 // ---------- CLICKS ----------
 const TAB_KEY = 'signalfeed_tab';
-let currentTab = (() => { try { return localStorage.getItem(TAB_KEY) === 'geo' ? 'geo' : 'cyber'; } catch { return 'cyber'; } })();
+let currentTab = (() => { try { const v = localStorage.getItem(TAB_KEY); return SECTIONS.includes(v) ? v : 'cyber'; } catch { return 'cyber'; } })();
 function setTab(key, focus = false) {
   currentTab = key;
-  for (const k of ['cyber', 'geo']) {
+  for (const k of SECTIONS) {
     $('col-' + k).hidden = k !== key;
     $('tab-' + k).setAttribute('aria-selected', k === key);
     $('tab-' + k).tabIndex = k === key ? 0 : -1;
@@ -896,9 +925,9 @@ function setTab(key, focus = false) {
   try { localStorage.setItem(TAB_KEY, key); } catch {}
   renderHero(); renderBreaking();
 }
-for (const k of ['cyber', 'geo']) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
+for (const k of SECTIONS) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
 document.querySelector('.tabs').addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); setTab(currentTab === 'cyber' ? 'geo' : 'cyber', true); }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const i = SECTIONS.indexOf(currentTab), n = SECTIONS.length; setTab(SECTIONS[(i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n], true); }
 });
 setTab(currentTab);
 const syncHeader = () => document.documentElement.style.setProperty('--hdr-h', document.querySelector('header').offsetHeight + 'px');
@@ -909,7 +938,7 @@ document.addEventListener('click', e => {
   if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
   if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; state.seen.add(l); saveSeen(); setTimeout(render, 0); return; }
   const reset = t.closest('[data-reset]');
-  if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { breaking: false, topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); renderColumn('cyber'); renderColumn('geo'); return; }
+  if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { breaking: false, topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); SECTIONS.forEach(k => renderColumn(k)); return; }
   const more = t.closest('[data-more]');
   if (more) { state.f[more.dataset.more].limit += 50; renderColumn(more.dataset.more); return; }
   const open = t.closest('[data-open]');
@@ -920,7 +949,7 @@ $('tileVictims').onclick = () => { if (currentBig) openCoverage(currentBig); };
 $('tileTrend').onclick = () => { if (currentTrend) { state.f[currentTab].breaking = false; setTopic(currentTab, currentTrend.topic.id); } };
 $('checkNow').onclick = () => check();
 $('showSources').onclick = openSources;
-for (const key of ['cyber', 'geo']) {
+for (const key of SECTIONS) {
   $(key + 'Region').innerHTML = '<option value="">All regions</option>' + SF.REGIONS.map(r => `<option value="${r.id}">${esc(r.label)}</option>`).join('');
   for (const n of ['Topic', 'Source', 'Region']) $(key + n).onchange = e => {
     const f = state.f[key], v = e.target.value; f[e.target.dataset.f] = n === 'Region' ? v : (v || null); f.limit = PAGE_SIZE; renderColumn(key);
