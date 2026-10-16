@@ -347,12 +347,12 @@
     <div class="tiles">
       <button class="tile ex" id="tileExploited" type="button">
         <span class="num display" id="exNum">–</span>
-        <span class="label">Actively exploited</span>
+        <span class="label" id="exLabel">Actively exploited</span>
         <span class="sub" id="exSub">in the last 24 hours</span>
       </button>
       <button class="tile vi" id="tileVictims" type="button">
         <span class="num display" id="viNum">–</span>
-        <span class="label">Victims this week</span>
+        <span class="label" id="viLabel">Victims this week</span>
         <span class="sub" id="viSub">companies &amp; governments hit</span>
       </button>
     </div>
@@ -556,29 +556,39 @@ function updateLive() {
 }
 
 // ---------- HERO ----------
+const HERO = {
+  cyber: { name: 'cybersecurity', noun: 'cyber',
+    t1: { topic: 'exploited', label: 'Actively exploited', ms: 864e5, when: 'last 24h', none: 'nothing new in the last 24 hours' },
+    t2: { topic: 'impact', label: 'Victims this week', ms: 7 * 864e5, sub: 'companies & governments hit · tap to see', none: 'no new victims reported this week' },
+    line: n => n === 0 ? 'Nothing new is being actively exploited right now.' : n === 1 ? 'One flaw is being actively exploited right now.' : `${n} flaws are being actively exploited right now.` },
+  geo: { name: 'geopolitics', noun: 'world',
+    t1: { topic: 'conflict', label: 'Conflict updates', ms: 864e5, when: 'last 24h', none: 'no new conflict reports in the last 24 hours' },
+    t2: { topic: 'diplomacy', label: 'Diplomacy this week', ms: 7 * 864e5, sub: 'talks, summits & deals · tap to see', none: 'no diplomacy news this week' },
+    line: n => n === 0 ? 'No new conflict reports in the last 24 hours.' : n === 1 ? 'One new conflict report in the last 24 hours.' : `${n} conflict reports in the last 24 hours.` },
+};
 function renderHero() {
   const now = new Date(), h = now.getHours();
   $('greeting').textContent = `${h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'}.`;
   $('dateLine').textContent = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`.toUpperCase();
 
-  const cyber = state.items.filter(a => a.category === 'cyber');
-  const exploited = cyber.filter(a => a._topics.includes('exploited') && within(a, 864e5));
-  const victims = cyber.filter(a => a._topics.includes('impact') && within(a, 7 * 864e5));
-  const newCount = state.items.filter(isNew).length;
-  const midnight = new Date(now); midnight.setHours(0, 0, 0, 0);
-  const today = state.items.filter(a => new Date(a.date) >= midnight);
-  const readToday = today.filter(a => state.seen.has(a.link)).length;
+  const tab = typeof currentTab === 'string' ? currentTab : 'cyber';
+  const T = HERO[tab];
+  const pool = state.items.filter(a => a.category === tab);
+  const t1 = pool.filter(a => a._topics.includes(T.t1.topic) && within(a, T.t1.ms));
+  const t2 = pool.filter(a => a._topics.includes(T.t2.topic) && within(a, T.t2.ms));
+  const newCount = pool.filter(isNew).length;
 
-  $('exNum').textContent = state.generatedAt ? exploited.length : '–';
-  $('exSub').textContent = exploited.length ? [...new Set(exploited.map(a => a.source))].slice(0, 3).join(' · ') + ' · last 24h' : 'nothing new in the last 24 hours';
-  $('viNum').textContent = state.generatedAt ? victims.length : '–';
-  $('viSub').textContent = victims.length ? 'companies & governments hit · tap to see' : 'no new victims reported this week';
+  $('exLabel').textContent = T.t1.label; $('viLabel').textContent = T.t2.label;
+  $('exNum').textContent = state.generatedAt ? t1.length : '–';
+  $('exSub').textContent = t1.length ? [...new Set(t1.map(a => a.source))].slice(0, 3).join(' · ') + ' · ' + T.t1.when : T.t1.none;
+  $('viNum').textContent = state.generatedAt ? t2.length : '–';
+  $('viSub').textContent = t2.length ? T.t2.sub : T.t2.none;
+  $('tileExploited').setAttribute('aria-label', `${t1.length} ${T.t1.label}, show these stories`);
+  $('tileVictims').setAttribute('aria-label', `${t2.length} ${T.t2.label}, show these stories`);
 
   if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
-  const lead = newCount ? `${newCount} new ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : "You're all caught up.";
-  const urgent = exploited.length === 0 ? 'Nothing new is being actively exploited right now.'
-    : exploited.length === 1 ? 'One flaw is being actively exploited right now.'
-    : `${exploited.length} flaws are being actively exploited right now.`;
+  const lead = newCount ? `${newCount} new ${T.noun} ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : `You're all caught up on ${T.name}.`;
+  const urgent = T.line(t1.length);
   $('heroLine').textContent = `${lead} ${urgent}`;
 }
 
@@ -661,7 +671,7 @@ function isBreaking(a) {
 const brk = { list: [], i: 0, paused: false, timer: null };
 function renderBreaking() {
   const prev = brk.list[brk.i]?.link;
-  brk.list = state.items.filter(isBreaking).slice(0, 6);
+  brk.list = state.items.filter(a => a.category === currentTab && isBreaking(a)).slice(0, 6);
   const bar = $('breaking');
   bar.hidden = !brk.list.length;
   if (!brk.list.length) return;
@@ -808,6 +818,7 @@ function setTab(key, focus = false) {
   }
   if (focus) $('tab-' + key).focus();
   try { localStorage.setItem(TAB_KEY, key); } catch {}
+  renderHero(); renderBreaking();
 }
 for (const k of ['cyber', 'geo']) $('tab-' + k).onclick = () => { setTab(k); const t = $('tabs-anchor'); if (t && t.getBoundingClientRect().top < 0) t.scrollIntoView({ block: 'start' }); };
 document.querySelector('.tabs').addEventListener('keydown', e => {
@@ -828,8 +839,8 @@ document.addEventListener('click', e => {
   const open = t.closest('[data-open]');
   if (open) { const a = state.items.find(x => x.link === open.dataset.open); if (a) openArticle(a); }
 });
-$('tileExploited').onclick = () => setTopic('cyber', 'exploited');
-$('tileVictims').onclick = () => setTopic('cyber', 'impact');
+$('tileExploited').onclick = () => setTopic(currentTab, HERO[currentTab].t1.topic);
+$('tileVictims').onclick = () => setTopic(currentTab, HERO[currentTab].t2.topic);
 $('checkNow').onclick = () => check();
 $('showSources').onclick = openSources;
 for (const key of ['cyber', 'geo']) {
