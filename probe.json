@@ -1,0 +1,530 @@
+{
+ "Guardian economics": {
+  "status": 200,
+  "count": 20,
+  "newestHoursAgo": 0.3,
+  "withDesc": 20,
+  "sample": [
+   {
+    "t": "Repairing Brexit economic damage should be Burnham’s top priority, business chief says",
+    "l": "https://www.theguardian.com/business/2026/oct/16/brexit-economic-damage-andy-burnham-uk-business-eu-trading-relationship",
+    "d": "Shevaun Haviland argues PM is right to revisit Labour’s EU red lines as current trading relationship is bad for business Repairing the econo",
+    "date": "Fri, 16 Oct 2026 05:00:51 GMT"
+   },
+   {
+    "t": "Bank shares drop as John Healey prepares to raise taxes on the banking sector in the budget – business live",
+    "l": "https://www.theguardian.com/business/live/2026/oct/16/john-healey-set-to-raise-bank-taxes-shares-profits-stock-markets-imf-latest-news-updates",
+    "d": "Rolling coverage of the latest economic and financial news John Healey poised to raise taxes on banks in budget British banking stocks have ",
+    "date": "Fri, 16 Oct 2026 07:28:59 GMT"
+   },
+   {
+    "t": "‘People’s dignity, and democracy, is at stake’: meet the economist ditching ideology for reality",
+    "l": "https://www.theguardian.com/business/2026/oct/16/isabella-weber-anti-fascist-economics",
+    "d": "Exclusive: Isabella Weber prescribes a common-sense solution to poverty, inequality and fascism – making life’s essentials affordable for al",
+    "date": "Fri, 16 Oct 2026 04:00:50 GMT"
+   }
+  ]
+ },
+ "Economist business": {
+  "status": 200,
+  "count": 300,
+  "newestHoursAgo": 19,
+  "withDesc": 300,
+  "sample": [
+   {
+    "t": "When AI agents take matters into their own hands",
+    "l": "https://www.economist.com/business/2026/10/15/when-ai-agents-take-matters-into-their-own-hands",
+    "d": "Inside the Annapurna incident",
+    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
+   },
+   {
+    "t": "AI neolabs are raising huge sums. Most have little to show for it",
+    "l": "https://www.economist.com/business/2026/10/15/ai-neolabs-are-raising-huge-sums-most-have-little-to-show-for-it",
+    "d": "Superstar researchers who branch out on their own need to start producing results",
+    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
+   },
+   {
+    "t": "SpaceX’s Starlink expansion is a bold gamble on the future",
+    "l": "https://www.economist.com/business/2026/10/15/spacexs-starlink-expansion-is-a-bold-gamble-on-the-future",
+    "d": "Elon Musk is betting that robotics will dramatically increase demand for connectivity",
+    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
+   }
+  ]
+ },
+ "Economist finance": {
+  "status": 200,
+  "count": 300,
+  "newestHoursAgo": 22.3,
+  "withDesc": 300,
+  "sample": [
+   {
+    "t": "How Ukraine’s biggest bank is run in a war zone",
+    "l": "https://www.economist.com/finance-and-economics/2026/10/15/how-ukraines-biggest-bank-is-run-in-a-war-zone",
+    "d": "PrivatBank is a case study in adaptation",
+    "date": "Thu, 15 Oct 2026 09:34:30 +0000"
+   },
+   {
+    "t": "A shortage of sulphur could hurt mines and farms everywhere",
+    "l": "https://www.economist.com/finance-and-economics/2026/10/15/a-shortage-of-sulphur-could-hurt-mines-and-farms-everywhere",
+    "d": "Another commodity shock from the Iran war",
+    "date": "Thu, 15 Oct 2026 09:32:42 +0000"
+   },
+   {
+    "t": "Another warning sign for China’s economy: falling consumer credit",
+    "l": "https://www.economist.com/finance-and-economics/2026/10/14/another-warning-sign-for-chinas-economy-falling-consumer-credit",
+    "d": "A crackdown on aggressive debt collectors is good news and bad news",
+    "date": "Wed, 14 Oct 2026 17:52:55 +0000"
+   }
+  ]
+ },
+ "Economist briefing": {
+  "status": 200,
+  "count": 300,
+  "newestHoursAgo": 21.6,
+  "withDesc": 300,
+  "sample": [
+   {
+    "t": "Donald Trump may save Canada",
+    "l": "https://www.economist.com/briefing/2026/10/15/donald-trump-may-save-canada",
+    "d": "Can America’s bullying goad its northern neighbour out of its complacency?",
+    "date": "Thu, 15 Oct 2026 10:13:14 +0000"
+   },
+   {
+    "t": "The countries most threatened by turbulent bond markets",
+    "l": "https://www.economist.com/briefing/2026/10/08/the-countries-most-threatened-by-turbulent-bond-markets",
+    "d": "For those where interest rates outstrip economic growth, trouble looms",
+    "date": "Thu, 08 Oct 2026 09:18:47 +0000"
+   },
+   {
+    "t": "China is giving its economy a big shot in the arm",
+    "l": "https://www.economist.com/briefing/2026/10/01/china-is-giving-its-economy-a-big-shot-in-the-arm",
+    "d": "A massive infrastructure scheme may give the country a sorely needed boost—and help rebalance the world economy",
+    "date": "Thu, 01 Oct 2026 12:45:03 +0000"
+   }
+  ]
+ },
+ "CNBC finance": {
+  "status": 200,
+  "count": 30,
+  "newestHoursAgo": 8.8,
+  "withDesc": 30,
+  "sample": [
+   {
+    "t": "People in China are spending nearly as much of their income as Americans on healthcare",
+    "l": "https://www.cnbc.com/2026/10/15/chinese-spending-nearly-as-much-of-income-as-americans-on-healthcare.html",
+    "d": "Increasing government spending on healthcare could help boost consumption in China, the International Monetary Fund said.",
+    "date": "Thu, 15 Oct 2026 23:00:01 GMT"
+   },
+   {
+    "t": "Harvard’s endowment jumps 27% in fiscal 2026, lifted by SpaceX as top holding",
+    "l": "https://www.cnbc.com/2026/10/15/harvards-endowment-jumps-27percent-with-spacex-as-top-holding.html",
+    "d": "The latest 12-month period marked the strongest return for the university's fund since 2021.",
+    "date": "Thu, 15 Oct 2026 19:53:49 GMT"
+   },
+   {
+    "t": "China indicates rare earths will keep flowing to EU, regardless of U.S. trade deal expiration",
+    "l": "https://www.cnbc.com/2026/10/15/china-rare-earth-exports-europe.html",
+    "d": "European trade commissioner Maroš Sefčovič met with Chinese Commerce Minister Wang Wentao in Beijing last week.",
+    "date": "Thu, 15 Oct 2026 09:02:31 GMT"
+   }
+  ]
+ },
+ "CNBC economy": {
+  "status": 200,
+  "count": 30,
+  "newestHoursAgo": 15.6,
+  "withDesc": 30,
+  "sample": [
+   {
+    "t": "Economists: Hot PPI shows Fed's work is not done",
+    "l": "https://www.cnbc.com/2026/10/15/pce-ppi-september-fed-reserve-rate-hike.html",
+    "d": "'We see real risks the Fed will deliver another rate hike in two weeks' time,' one Fedwatcher warns",
+    "date": "Thu, 15 Oct 2026 15:37:59 GMT"
+   },
+   {
+    "t": "U.S. Treasury dismisses IMF debt warning and 'messy' forecasting",
+    "l": "https://www.cnbc.com/2026/10/15/zervos-imf-us-debt-warning.html",
+    "d": "The exchange comes as U.S. debt exceeds $40 trillion and 10-year Treasury yields remain above 5%, intensifying scrutiny of the fiscal outloo",
+    "date": "Thu, 15 Oct 2026 13:42:32 GMT"
+   },
+   {
+    "t": "Wholesale prices jumped 6.3% annually in September, biggest gain since 2022",
+    "l": "https://www.cnbc.com/2026/10/15/september-producer-price-index-retail-sales-data.html",
+    "d": "September producer prices were expected to increase 0.6% month over month and 5.5% annually, according to the consensus estimate by Dow Jone",
+    "date": "Thu, 15 Oct 2026 16:15:44 GMT"
+   }
+  ]
+ },
+ "FT markets": {
+  "status": 200,
+  "count": 25,
+  "newestHoursAgo": 2.3,
+  "withDesc": 25,
+  "sample": [
+   {
+    "t": "Hiding from the everything trade",
+    "l": "https://www.ft.com/content/6533c873-29df-453b-9ac4-7b17e5a3576f?syn-25a6b1a6=1",
+    "d": "Unhedged readers on how to hedge AI risk",
+    "date": "Fri, 16 Oct 2026 05:30:07 GMT"
+   },
+   {
+    "t": "So. About next year’s earnings . . .",
+    "l": "https://www.ft.com/content/d36787c1-f0b0-4445-8237-90eb4d521081",
+    "d": "Beat IT",
+    "date": "Fri, 16 Oct 2026 05:00:08 GMT"
+   },
+   {
+    "t": "The data centre IPO debacle that sparked a market meltdown",
+    "l": "https://www.ft.com/content/537c9a68-7b6f-41a7-80ff-acac5c52e80d?syn-25a6b1a6=1",
+    "d": "Decisions by Australian groups Firmus and AirTrunk have added to concerns about the AI borrowing frenzy",
+    "date": "Fri, 16 Oct 2026 04:54:52 GMT"
+   }
+  ]
+ },
+ "MarketWatch": {
+  "status": 200,
+  "count": 10,
+  "newestHoursAgo": 0.7,
+  "withDesc": 10,
+  "sample": [
+   {
+    "t": "Here are the key things Fed Chairman Kevin Warsh said — and didn’t say — while Americans were sleeping Thursday night",
+    "l": "https://www.marketwatch.com/story/here-are-the-key-things-fed-chairman-kevin-warsh-said-and-didnt-say-while-americans-were-sleeping-thursday-night-b82238a1?mod=mw_rss_topstories",
+    "d": "Federal Reserve Chair Kevin Warsh had an opportunity Thursday night to shape expectations heading into the central bank’s interest-rate-sett",
+    "date": "Fri, 16 Oct 2026 07:07:00 GMT"
+   },
+   {
+    "t": "Tesla finally delivers on its promise to create a flying car",
+    "l": "https://www.marketwatch.com/story/tesla-may-finally-debut-a-flying-car-today-after-testing-fans-patience-for-nearly-a-decade-9a23c8e8?mod=mw_rss_topstories",
+    "d": "Tesla’s demonstration of a levitating Roadster sports car was “an engineering flex with no commercial value beyond embarrassing traditional ",
+    "date": "Fri, 16 Oct 2026 02:42:00 GMT"
+   },
+   {
+    "t": "Pepsi loses more ground in the soda wars, as KFC switches to Coke",
+    "l": "https://www.marketwatch.com/story/pepsi-loses-more-ground-in-the-soda-wars-as-kfc-switches-to-coke-49b1ef53?mod=mw_rss_topstories",
+    "d": "As more people switch to Coke, some analysts are getting more worried about the state of archrival Pepsi.",
+    "date": "Thu, 15 Oct 2026 23:29:00 GMT"
+   }
+  ]
+ },
+ "FT global economy": {
+  "status": 200,
+  "count": 25,
+  "newestHoursAgo": 1.2,
+  "withDesc": 25,
+  "sample": [
+   {
+    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
+    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
+    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
+    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
+   },
+   {
+    "t": "FirstFT: Healey signals tax raid on banks in UK Budget",
+    "l": "https://www.ft.com/content/246f1614-cd9a-4747-bc58-97e9cb10fb4b?syn-25a6b1a6=1",
+    "d": "Also in today’s newsletter: London’s UBS HQ offer and Merz vows to fight on",
+    "date": "Fri, 16 Oct 2026 04:33:40 GMT"
+   },
+   {
+    "t": "The secret fight around financial flows",
+    "l": "https://www.ft.com/content/9585ba4d-5036-4f5d-9656-0dc4f6bdee4e?syn-25a6b1a6=1",
+    "d": "Quicker responses to trade challenges mean companies can free up capital",
+    "date": "Fri, 16 Oct 2026 04:00:17 GMT"
+   }
+  ]
+ },
+ "BBC Business": {
+  "status": 200,
+  "count": 47,
+  "newestHoursAgo": 0.6,
+  "withDesc": 47,
+  "sample": [
+   {
+    "t": "Banks say Healey planning to increase tax on their profits in Budget",
+    "l": "https://www.bbc.co.uk/news/articles/c32l4k2xdvrzo?at_medium=RSS&at_campaign=rss",
+    "d": "Senior banking executives have told the BBC they expect to be \"on the menu\" in the chancellor's Budget tax later this month.",
+    "date": "Fri, 16 Oct 2026 07:13:42 GMT"
+   },
+   {
+    "t": "I find it quite demoralising in store - why I do all my shopping online",
+    "l": "https://www.bbc.co.uk/news/articles/c36lk280kd1o?at_medium=RSS&at_campaign=rss",
+    "d": "After Primark announced plans for home delivery, we hear from women who never go into clothes stores.",
+    "date": "Thu, 15 Oct 2026 23:16:12 GMT"
+   },
+   {
+    "t": "Nandy 'minded to intervene' in Sky's £1.6bn takeover of ITV entertainment arm",
+    "l": "https://www.bbc.co.uk/news/articles/cm79pe5yej7no?at_medium=RSS&at_campaign=rss",
+    "d": "The culture secretary says the deal could affect free expression in the media and the variety of Britain's news landscape.",
+    "date": "Thu, 15 Oct 2026 14:55:21 GMT"
+   }
+  ]
+ },
+ "Federal Reserve": {
+  "status": 200,
+  "count": 20,
+  "newestHoursAgo": 61.8,
+  "withDesc": 20,
+  "sample": [
+   {
+    "t": "Minutes of the Board's discount rate meetings on August 17, September 9, and September 16, 2026",
+    "l": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261013a.htm",
+    "d": "Minutes of the Board's discount rate meetings on August 17, September 9, and September 16, 2026",
+    "date": "Tue, 13 Oct 2026 18:00:00 GMT"
+   },
+   {
+    "t": "Federal Reserve Board releases results of the 2025 Survey of Consumer Finances, which provides the public and policymakers with detailed insights into the economic condition of American families",
+    "l": "https://www.federalreserve.gov/newsevents/pressreleases/other20261009a.htm",
+    "d": "Federal Reserve Board releases results of the 2025 Survey of Consumer Finances, which provides the public and policymakers with detailed ins",
+    "date": "Fri, 9 Oct 2026 14:00:00 GMT"
+   },
+   {
+    "t": "Federal Reserve Board announces enforcement action against American Express Company to address, among other things, the firm’s failure to sufficiently detect and report certain suspicious activity related to money laundering",
+    "l": "https://www.federalreserve.gov/newsevents/pressreleases/enforcement20261008a.htm",
+    "d": "Federal Reserve Board announces enforcement action against American Express Company to address, among other things, the firm’s failure to su",
+    "date": "Thu, 8 Oct 2026 20:30:00 GMT"
+   }
+  ]
+ },
+ "Economist leaders": {
+  "status": 200,
+  "count": 300,
+  "newestHoursAgo": 19,
+  "withDesc": 300,
+  "sample": [
+   {
+    "t": "America makes waves in Cuba",
+    "l": "https://www.economist.com/leaders/2026/10/15/america-makes-waves-in-cuba",
+    "d": "But it shouldn’t undermine the growth of the island’s private sector",
+    "date": "Thu, 15 Oct 2026 12:50:21 +0000"
+   },
+   {
+    "t": "What if the machines take over science?",
+    "l": "https://www.economist.com/leaders/2026/10/15/what-if-the-machines-take-over-science",
+    "d": "Artificial intelligence will require scholars to reinvent their disciplines",
+    "date": "Thu, 15 Oct 2026 10:27:17 +0000"
+   },
+   {
+    "t": "Mark Carney shows middle powers how to handle a dangerous world",
+    "l": "https://www.economist.com/leaders/2026/10/15/mark-carney-shows-middle-powers-how-to-handle-a-dangerous-world",
+    "d": "Canada is standing up to a bullying America",
+    "date": "Thu, 15 Oct 2026 10:13:29 +0000"
+   }
+  ]
+ },
+ "FT world": {
+  "status": 200,
+  "count": 25,
+  "newestHoursAgo": 0.7,
+  "withDesc": 25,
+  "sample": [
+   {
+    "t": "Healey signals tax raid on banks in Budget",
+    "l": "https://www.ft.com/content/09e07278-8479-49bb-a145-51e5d93828a2?syn-25a6b1a6=1",
+    "d": "Chancellor points to looming ‘decisions’ as financial services sector braces for higher levies",
+    "date": "Fri, 16 Oct 2026 07:08:49 GMT"
+   },
+   {
+    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
+    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
+    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
+    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
+   },
+   {
+    "t": "Hiding from the everything trade",
+    "l": "https://www.ft.com/content/6533c873-29df-453b-9ac4-7b17e5a3576f?syn-25a6b1a6=1",
+    "d": "Unhedged readers on how to hedge AI risk",
+    "date": "Fri, 16 Oct 2026 05:30:07 GMT"
+   }
+  ]
+ },
+ "FT home": {
+  "status": 200,
+  "count": 10,
+  "newestHoursAgo": 0.7,
+  "withDesc": 10,
+  "sample": [
+   {
+    "t": "Bets on Fed rate hold in October strengthen after Warsh comments",
+    "l": "https://www.ft.com/content/95a8e05d-fc20-441d-b271-64e87fe41f76?syn-25a6b1a6=1",
+    "d": "US central bank chair says economy has ‘broadly conformed with our expectations’ since rate increase in September",
+    "date": "Fri, 16 Oct 2026 06:37:09 GMT"
+   },
+   {
+    "t": "‘Early days’ to see full effect of energy prices on inflation, BoE’s Bailey says",
+    "l": "https://www.ft.com/content/b6255adb-3ce5-4463-92cd-de2f8e9a1f74?syn-25a6b1a6=1",
+    "d": "Lengthy period of higher costs would squeeze corporate margins and spur some companies to raise prices",
+    "date": "Fri, 16 Oct 2026 03:12:41 GMT"
+   },
+   {
+    "t": "How Trump’s America fell in love with UFC",
+    "l": "https://www.ft.com/content/56d14d34-955a-41e9-90da-5eda7d179509?syn-25a6b1a6=1",
+    "d": "For politicians, celebrities and tycoons, the brutal Ultimate Fighting Championship has become a vote-winner and money-spinner like no other",
+    "date": "Fri, 16 Oct 2026 04:00:17 GMT"
+   }
+  ]
+ },
+ "IMF": {
+  "status": 403,
+  "count": 0,
+  "newestHoursAgo": null,
+  "withDesc": 0,
+  "sample": []
+ },
+ "Nikkei Asia": {
+  "status": 200,
+  "count": 50,
+  "newestHoursAgo": null,
+  "withDesc": 0,
+  "sample": [
+   {
+    "t": "US Fed chair warns of financial stability risk as investment rises",
+    "l": "https://asia.nikkei.com/business/markets/us-fed-chair-warns-of-financial-stability-risk-as-investment-rises",
+    "d": "",
+    "date": ""
+   },
+   {
+    "t": "Japan bullet trains to raise super express fares in 2027",
+    "l": "https://asia.nikkei.com/business/transportation/japan-bullet-trains-to-raise-super-express-fares-in-2027",
+    "d": "",
+    "date": ""
+   },
+   {
+    "t": "Indonesia stocks plunge after MSCI signals possible downgrade in status",
+    "l": "https://asia.nikkei.com/business/markets/indonesia-stocks-plunge-after-msci-signals-possible-downgrade-in-status",
+    "d": "",
+    "date": ""
+   }
+  ]
+ },
+ "Guardian business": {
+  "status": 200,
+  "count": 19,
+  "newestHoursAgo": 17.3,
+  "withDesc": 19,
+  "sample": [
+   {
+    "t": "Key US voters say economy is getting worse ahead of midterms, exclusive poll finds",
+    "l": "https://www.theguardian.com/business/2026/oct/15/voters-economy-cost-of-living-prices-poll",
+    "d": "Nearly 61% believe country is in recession and 65% of independents say economy is worse, according to new Harris poll Tell us: what is your ",
+    "date": "Thu, 15 Oct 2026 09:00:13 GMT"
+   },
+   {
+    "t": "US lawmakers unveil bill to hold Wall Street’s ‘Epstein-connected’ bosses to account",
+    "l": "https://www.theguardian.com/business/2026/oct/15/new-bill-wall-street-bosses-epstein-connections",
+    "d": "Move comes as Senator Elizabeth Warren condemns Barclays response to questions over ex-boss’s ties to sex offender US lawmakers have unveile",
+    "date": "Thu, 15 Oct 2026 13:30:11 GMT"
+   },
+   {
+    "t": "Tech market sell-off deepens amid fears over US inflation and AI debt",
+    "l": "https://www.theguardian.com/business/2026/oct/15/tech-market-sell-off-deepens-amid-fears-over-us-inflation-and-ai-debt",
+    "d": "Chip makers and tech investors such as Samsung and SoftBank plunge as potential interest rate hikes spook markets Business news – live updat",
+    "date": "Thu, 15 Oct 2026 14:33:12 GMT"
+   }
+  ]
+ },
+ "France 24 business": {
+  "status": 200,
+  "count": 30,
+  "newestHoursAgo": 11.3,
+  "withDesc": 30,
+  "sample": [
+   {
+    "t": "EU member states set for budget clash",
+    "l": "https://www.france24.com/en/eu-member-states-set-for-budget-clash",
+    "d": "European lawmakers have kicked off what's likely to be a long and fierce negotiation over the bloc's seven-year budget. Member states are di",
+    "date": "Thu, 15 Oct 2026 20:33:18 GMT"
+   },
+   {
+    "t": "French crypto unicorn Ledger warns of AI security risks",
+    "l": "https://www.france24.com/en/tv-shows/people-profit/20261015-french-crypto-unicorn-ledger-warns-of-ai-security-risks",
+    "d": "Artificial intelligence is \"changing the security landscape\". That's according to Ledger, a French unicorn of cryptocurrency that's seeking ",
+    "date": "Thu, 15 Oct 2026 13:31:22 GMT"
+   },
+   {
+    "t": "China, North Korea open long-delayed trade bridge",
+    "l": "https://www.france24.com/en/tv-shows/business/20261015-china-north-korea-open-long-delayed-trade-bridge",
+    "d": "China and North Korea formally opened the Yalu River Bridge on Thursday, connecting Dandong in China with Sinuiju in North Korea. Beijing sa",
+    "date": "Thu, 15 Oct 2026 12:20:08 GMT"
+   }
+  ]
+ },
+ "Yahoo Finance": {
+  "status": 404,
+  "count": 0,
+  "newestHoursAgo": null,
+  "withDesc": 0,
+  "sample": []
+ },
+ "ECB": {
+  "status": 200,
+  "count": 15,
+  "newestHoursAgo": 55.8,
+  "withDesc": 0,
+  "sample": [
+   {
+    "t": "Frank Elderson: Ensuring resilience in the face of uncertainty",
+    "l": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261014~e4ca33588e.en.html",
+    "d": "",
+    "date": "Wed, 14 Oct 2026 02:00:00 +0200"
+   },
+   {
+    "t": "Philip R. Lane: The AI opportunity for Europe",
+    "l": "https://www.ecb.europa.eu//press/key/date/2026/html/ecb.sp261013~9db9bf4fd6.en.html",
+    "d": "",
+    "date": "Tue, 13 Oct 2026 20:30:00 +0200"
+   },
+   {
+    "t": "Meeting of 9-10 September 2026",
+    "l": "https://www.ecb.europa.eu//press/accounts/2026/html/ecb.mg261008~a10153d090.en.html",
+    "d": "",
+    "date": "Thu, 08 Oct 2026 13:30:00 +0200"
+   }
+  ]
+ },
+ "Al Jazeera economy": {
+  "status": 200,
+  "count": 2,
+  "newestHoursAgo": 6.6,
+  "withDesc": 2,
+  "sample": [
+   {
+    "t": "Can Zimbabwe’s ZiG win trust and replace the US dollar?",
+    "l": "https://www.aljazeera.com/economy/2026/10/16/can-zimbabwes-zig-win-trust-and-replace-the-us-dollar?traffic_source=rss",
+    "d": "After repeated currency crises, Zimbabweans remain wary of the ZiG.",
+    "date": "Fri, 16 Oct 2026 01:12:26 +0000"
+   },
+   {
+    "t": "Two Syrian pipelines damaged amid spate of attacks on energy infrastructure",
+    "l": "https://www.aljazeera.com/economy/2026/10/15/two-syrian-pipelines-damaged-amid-spate-of-attacks-on-energy-infrastructure?traffic_source=rss",
+    "d": "Fuel theft cited in Baniyas-Homs leak as gas export line in Hasakah catches fire.",
+    "date": "Thu, 15 Oct 2026 23:35:26 +0000"
+   }
+  ]
+ },
+ "DW business": {
+  "status": 200,
+  "count": 20,
+  "newestHoursAgo": 23.1,
+  "withDesc": 20,
+  "sample": [
+   {
+    "t": "Why Chinese tech brands are outpacing Western rivals from EVs to robot vacuums",
+    "l": "https://www.dw.com/en/why-chinese-tech-brands-are-outpacing-western-rivals-from-evs-to-robot-vacuums/a-79646187?maca=en-rss-en-bus-2091-rdf",
+    "d": "From action cameras and smartphones to EVs and robot vacuums, Chinese brands are gaining ground worldwide, despite privacy and security conc",
+    "date": "2026-10-15T08:45:00Z"
+   },
+   {
+    "t": "Trump's diesel deal with Russia is unlikely to significantly lower global fuel prices despite expectations of rapid relief",
+    "l": "https://www.dw.com/en/trump-s-diesel-deal-with-russia-is-unlikely-to-significantly-lower-global-fuel-prices-despite-expectations-of-rapid-relief/a-79659601?maca=en-rss-en-bus-2091-rdf",
+    "d": "As the world's largest diesel exporter, the US benefits from high prices. At home, however, consumers are feeling the strain of rising livin",
+    "date": "2026-10-14T14:15:00Z"
+   },
+   {
+    "t": "Germany's China calculation shifts as import pressures eclipse export benefits",
+    "l": "https://www.dw.com/en/germany-s-china-calculation-shifts-as-import-pressures-eclipse-export-benefits/a-79571852?maca=en-rss-en-bus-2091-rdf",
+    "d": "Germany has long resisted tougher action against China, fearing retaliation. But rising pressure on key industries has pushed Berlin to seek",
+    "date": "2026-10-13T08:47:00Z"
+   }
+  ]
+ }
+}
