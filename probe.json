@@ -1,104 +1,112 @@
 {
- "errors": {},
- "n": 4214,
- "years": {
-  "2026 eu": 281,
-  "2026 other": 329,
-  "2026 usa": 297,
-  "2026 sg": 5,
-  "2025 other": 256,
-  "2025 eu": 278,
-  "2025 usa": 730,
-  "2025 sg": 6,
-  "2024 other": 267,
-  "2024 usa": 569,
-  "2024 eu": 306,
-  "2024 sg": 11,
-  "2023 sg": 3,
-  "2023 eu": 314,
-  "2023 other": 208,
-  "2023 usa": 354
- },
- "types2026": {
-  "Not specified": 145,
-  "Service disruption": 115,
-  "Ransomware": 469,
-  "Data theft & leaks": 149,
-  "DDoS & website takedowns": 2,
-  "Phishing & fraud": 26,
-  "Espionage & state-backed": 6
- },
- "sample": [
+ "sizeKB": 1508,
+ "version": 2,
+ "n": 4217,
+ "withHeadline": 4148,
+ "oct17": [
+  [
+   "2026-10-16",
+   "RO",
+   "Phishing & fraud",
+   "Depozitarul Central",
+   "Atac cibernetic la Depozitarul Central. CNP-uri și coduri IBAN, printre datele personale accesate"
+  ],
   [
    "2026-10-15",
    "DE",
    "Not specified",
+   "Mampf",
    "Frankenberg, Oederan und Euba: Cyberangriff trifft Schulspeisung"
   ],
   [
    "2026-10-15",
    "JP",
    "Service disruption",
+   "Maruki Ikashikai",
    "丸木医科器械にサイバー攻撃、医療機器の受注・出荷を停止―基幹システム全面ダウン、FAXで代替受付|セキュリティニュースのセキュリティ対策Lab"
   ],
   [
    "2026-10-15",
    "US",
    "Ransomware",
+   "Heber City",
    "Cyberattack breaches Heber City government network in Utah"
   ],
   [
    "2026-10-14",
    "IS",
    "Data theft & leaks",
+   "Colmobil",
    "Cyber incident disrupts operations at Israel’s largest car importer, Colmobil | CTech"
+  ],
+  [
+   "2026-10-14",
+   "JP",
+   "Data theft & leaks",
+   "Fukuda Hospital",
+   "全国的なサイバー攻撃 熊本市の産婦人科で予約システムに影響 同じ運営会社のシステムは他の医療機関でも使用（ＫＫＴ熊本県民テレビ） - Yahoo!ニュース"
   ],
   [
    "2026-10-14",
    "GB",
    "Not specified",
+   "Southville Primary School",
    "Southville Primary school in Bristol hit by targeted cyber-attack"
   ],
   [
    "2026-10-13",
    "DE",
    "Data theft & leaks",
+   "Tangerhütte",
    "In Sachsen-Anhalt: Bundesweit erster KI-Angriff auf Kommune in Deutschland"
   ],
   [
    "2026-10-13",
    "DE",
    "Ransomware",
+   "Ville d'Eichstätt",
    "Cyberangriff legt Stadtverwaltung in Oberbayern lahm: „Wir bereiten uns auf alle Eventualitäten vor“"
   ],
   [
    "2026-10-13",
    "FR",
    "Not specified",
+   "TNMSC",
    "Le Havre. L'activité portuaire en partie à l'arrêt en raison d'un problème informatique"
+  ],
+  [
+   "2026-10-13",
+   "ES",
+   "Ransomware",
+   "Colegio Oficial de Médicos de Tenerife (COMTF)",
+   "El Colegio de Médicos de Tenerife sufre un ciberataque y analiza un posible robo de datos"
   ],
   [
    "2026-10-13",
    "FR",
    "Ransomware",
+   "Clinique vétérinaire Voltaire",
    "La clinique vétérinaire Voltaire à Dijon victime d’une cyberattaque"
   ],
   [
    "2026-10-12",
    "NL",
    "Not specified",
+   "Ahold Delhaize",
    "Atac cibernetic la Ahold Delhaize, proprietarul lanțurilor Mega Image și Profi - Economica.net"
   ],
   [
    "2026-10-12",
    "FR",
    "Service disruption",
+   "Super U",
    "Intermarché, Leclerc, Monoprix, Super U... la température est montée jusqu'à 50 degrés, la cyberattaque dévaste la chaîne du froid"
   ],
   [
    "2026-10-12",
    "DN",
    "Service disruption",
+   "Femern Link Contractors (FLC)",
    "Fehmarn Bält-bygget drabbat av cyberattack"
   ]
  ]
