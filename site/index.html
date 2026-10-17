@@ -169,6 +169,19 @@
   .tile.vi { background: var(--tile-vi-bg); } .tile.vi .num { color: var(--tile-vi-num); } .tile.vi .sub { color: var(--tile-vi-sub); }
   .tile.rd { border-color: var(--border); }
   .tile:disabled { cursor: default; }
+  .nset { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+  .nset fieldset { border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px 10px; margin: 0; }
+  .nset fieldset.dim { opacity: .5; }
+  .nset legend { font-size: 12px; font-weight: 600; color: var(--muted); padding: 0 4px; }
+  .nopt { display: flex; gap: 10px; align-items: flex-start; padding: 8px 2px; cursor: pointer; font-size: 14px; }
+  .nopt input { margin-top: 3px; accent-color: var(--cyber-ink); width: 18px; height: 18px; }
+  .nopt small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; }
+  .nset-toggle { display: flex; align-items: center; gap: 12px; background: none; border: 0; padding: 4px 0; font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; text-align: left; }
+  .nset-toggle:disabled { opacity: .5; cursor: default; }
+  .nset-toggle .knob { width: 46px; height: 28px; border-radius: 999px; background: var(--border-2); position: relative; flex: none; transition: background .2s; }
+  .nset-toggle .knob::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: left .2s; }
+  .nset-toggle.on .knob { background: var(--cyber); } .nset-toggle.on .knob::after { left: 21px; }
+  .nset-warn { font-size: 13px; background: var(--warn-bg); color: var(--warn-ink); border-radius: 10px; padding: 10px 12px; }
   .tile.tr { background: var(--new-bg); } .tile.tr .num { color: var(--new-ink); } .tile.tr .sub { color: var(--ink-2); }
   @media (max-width: 640px) { .tiles { grid-template-columns: 1fr 1fr; } .tile.tr { grid-column: 1 / -1; } }
   .tile .sub.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--ink-2); font-weight: 500; }
@@ -683,9 +696,10 @@ function announce(fresh) {
   if (document.hidden) {
     state.unseenWhileHidden += n;
     document.title = `(${state.unseenWhileHidden}) ${BASE_TITLE}`;
-    if (notifOn()) {
-      const note = new Notification(n === 1 ? `SignalFeed · ${top.source}` : `SignalFeed · ${n} new stories`, { body: top.title, tag: 'signalfeed' });
-      note.onclick = () => { window.focus(); note.close(); };
+    const worthy = notifOn() ? alertWorthy(fresh) : [];
+    if (worthy.length) {
+      const brk = notifPrefs().mode === 'breaking', w = worthy[0];
+      showAlert(worthy.length === 1 ? `${brk ? 'Breaking · ' : ''}${w.source}` : `SignalFeed · ${worthy.length} new ${brk ? 'breaking ' : ''}stories`, w.title, 'signalfeed');
     }
   }
 }
@@ -990,40 +1004,91 @@ $('theme').onclick = () => {
   updateThemeButton();
 };
 const NOTIF_KEY = 'signalfeed_notify';
+const NOTIF_PREFS_KEY = 'signalfeed_notify_prefs';
+const SECTION_NAME = { cyber: 'Cybersecurity', geo: 'Geopolitics', fin: 'Economy & Finance' };
 function notifWanted() { try { return localStorage.getItem(NOTIF_KEY) !== 'off'; } catch { return true; } }
 function setNotifWanted(v) { try { localStorage.setItem(NOTIF_KEY, v ? 'on' : 'off'); } catch {} }
-function notifOn() { return 'Notification' in window && Notification.permission === 'granted' && notifWanted(); }
+function notifPrefs() {
+  let p = {}; try { p = JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}'); } catch {}
+  return { mode: p.mode === 'breaking' ? 'breaking' : 'all', sections: Array.isArray(p.sections) && p.sections.length ? p.sections.filter(k => SECTIONS.includes(k)) : [...SECTIONS] };
+}
+function saveNotifPrefs(p) { try { localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(p)); } catch {} }
+const notifSupported = () => 'Notification' in window;
+function notifOn() { return notifSupported() && Notification.permission === 'granted' && notifWanted(); }
+// Which of the new stories should trigger an alert, given the person's choices.
+function alertWorthy(fresh) {
+  const p = notifPrefs();
+  return fresh.filter(a => p.sections.includes(a.category) && (p.mode === 'all' || isBreaking(a)));
+}
+async function showAlert(title, body, tag) {
+  try {
+    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+    if (reg) { await reg.showNotification(title, { body, tag, icon: 'icon-192.png', badge: 'icon-192.png', data: { url: APP_URL } }); return; }
+  } catch {}
+  try { const n = new Notification(title, { body, tag, icon: 'icon-192.png' }); n.onclick = () => { window.focus(); n.close(); }; } catch {}
+}
 function updateNotifIcon() {
   const btn = $('notif');
-  if (!('Notification' in window)) { btn.style.display = 'none'; return; }
   const on = notifOn();
   $('notifIcon').innerHTML = on ? ICONS.bell : ICONS.bellOff;
   btn.classList.toggle('on', on);
-  const label = on ? 'Desktop alerts are on. Click to turn off'
-    : Notification.permission === 'denied' ? 'Desktop alerts are blocked by your browser. Click for how to allow them'
-    : 'Turn on desktop alerts for new stories';
+  const label = on ? 'Alerts are on. Click to change what you are alerted about' : 'Alert settings';
   btn.setAttribute('aria-label', label); btn.title = label; btn.setAttribute('aria-pressed', on);
 }
-$('notif').onclick = async () => {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'denied') {
-    showToast('Alerts are blocked by your browser', 'Click the icon left of the web address (the padlock or sliders), set Notifications to Allow, then reload the page.');
-    return;
-  }
-  if (notifOn()) { setNotifWanted(false); updateNotifIcon(); showToast('Desktop alerts off', 'You will still see new stories here when the page is open.'); return; }
+function openNotifSettings() {
+  const p = notifPrefs(), on = notifOn();
+  const status = !notifSupported()
+    ? `<div class="nset-warn">This browser can’t show alerts. On iPhone, alerts only work when SignalFeed is opened from its Home Screen icon (iOS 16.4 or later).</div>`
+    : Notification.permission === 'denied'
+      ? `<div class="nset-warn">Alerts are blocked for this site. On a computer, click the icon left of the web address and set Notifications to Allow. On iPhone, go to Settings → Notifications → SignalFeed. Then reload.</div>` : '';
+  openModal(`
+    <h3 class="display">Alerts</h3>
+    <p style="font-size:14px">Get a pop-up when new stories arrive while SignalFeed is open in the background.</p>
+    ${status}
+    <div class="nset">
+      <button class="nset-toggle${on ? ' on' : ''}" id="nToggle" role="switch" aria-checked="${on}" ${notifSupported() && Notification.permission !== 'denied' ? '' : 'disabled'}><span class="knob"></span><span>${on ? 'Alerts are on' : 'Alerts are off'}</span></button>
+      <fieldset${on ? '' : ' class="dim"'}><legend>Alert me about</legend>
+        <label class="nopt"><input type="radio" name="nmode" value="breaking"${p.mode === 'breaking' ? ' checked' : ''}><span><b>Breaking news only</b><small>Urgent stories, the same ones shown in the red Breaking bar</small></span></label>
+        <label class="nopt"><input type="radio" name="nmode" value="all"${p.mode === 'all' ? ' checked' : ''}><span><b>Every new story</b><small>One alert per update, summarising what’s new</small></span></label>
+      </fieldset>
+      <fieldset${on ? '' : ' class="dim"'}><legend>Sections</legend>
+        ${SECTIONS.map(k => `<label class="nopt"><input type="checkbox" name="nsec" value="${k}"${p.sections.includes(k) ? ' checked' : ''}><span><b>${esc(SECTION_NAME[k])}</b></span></label>`).join('')}
+      </fieldset>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="nTest"${on ? '' : ' disabled'}>Send a test alert</button>
+      <button class="btn primary" data-close>Done</button>
+    </div>`);
+}
+async function turnAlertsOn() {
   let perm = Notification.permission;
   if (perm === 'default') { try { perm = await Notification.requestPermission(); } catch { perm = Notification.permission; } }
-  if (perm === 'granted') {
-    setNotifWanted(true); updateNotifIcon();
-    showToast('Desktop alerts on', "You'll get a pop-up for new stories while SignalFeed is open in another tab or minimised.");
-    try { new Notification('SignalFeed alerts are on', { body: 'This is what a new-story alert looks like.', tag: 'signalfeed-test' }); } catch {}
-  } else if (perm === 'denied') {
-    updateNotifIcon();
-    showToast('Alerts are blocked by your browser', 'Click the icon left of the web address (the padlock or sliders), set Notifications to Allow, then reload the page.');
-  } else {
-    showToast('No answer from the browser', 'Your browser may have hidden the request: look for a small bell or blocked icon in the address bar and choose Allow.');
+  if (perm === 'granted') { setNotifWanted(true); showAlert('SignalFeed alerts are on', 'This is what an alert looks like.', 'signalfeed-test'); }
+  else if (perm === 'default') showToast('No answer from the browser', 'Look for a small bell or blocked icon in the address bar and choose Allow.');
+  updateNotifIcon(); openNotifSettings();
+}
+$('notif').onclick = openNotifSettings;
+document.addEventListener('click', async e => {
+  if (e.target.closest?.('#nToggle')) {
+    if (notifOn()) { setNotifWanted(false); updateNotifIcon(); openNotifSettings(); }
+    else await turnAlertsOn();
+    return;
   }
-};
+  if (e.target.closest?.('#nTest')) {
+    const p = notifPrefs();
+    showAlert('SignalFeed · test alert', `You’ll be alerted about ${p.mode === 'breaking' ? 'breaking news only' : 'every new story'} in ${p.sections.map(k => SECTION_NAME[k]).join(', ')}.`, 'signalfeed-test');
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'nmode') { const p = notifPrefs(); p.mode = t.value; saveNotifPrefs(p); }
+  if (t.name === 'nsec') {
+    const picked = [...document.querySelectorAll('input[name="nsec"]:checked')].map(x => x.value);
+    if (!picked.length) { t.checked = true; showToast('Pick at least one section', 'Turn alerts off instead if you want none.'); return; }
+    const p = notifPrefs(); p.sections = picked; saveNotifPrefs(p);
+  }
+});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
 // ---------- SEARCH (applies to both columns) ----------
 function setQuery(value) {
