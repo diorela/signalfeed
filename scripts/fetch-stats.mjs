@@ -18,7 +18,7 @@ const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reade
 const REFRESH_HOURS = 12;              // outside sources: refresh about twice a day
 const KEV_VERSION = 2;                 // bump when the product/weakness sorting changes, to re-sort right away
 const RW_VERSION = 2;                  // bump when the monthly ransomware summary changes; months are re-read gradually
-const ATTACKS_VERSION = 1;             // bump when the attack-type sorting changes
+const ATTACKS_VERSION = 2;             // bump when the attack-type sorting changes
 const FIRST_MONTH = '2022-01';         // ransomware history starts here
 const BACKFILL_PER_RUN = 24;           // fetch at most this many old months per run (be polite)
 const RECENT_MONTHS = 3;               // always re-read the current month and the 2 before it
@@ -135,13 +135,13 @@ export const classifyAttack = a => {
 async function updateAttacks() {
   const list = await getJSON('https://api.ransomware.live/v2/allcyberattacks', 120000);
   if (!Array.isArray(list)) throw new Error('unexpected reply');
-  const recentCut = new Date(Date.now() - 120 * 864e5).toISOString().slice(0, 10);
   const items = [];
   for (const a of list) {
     const d = String(a.date || a.added || '').slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || d < '2023-01-01') continue;
     const it = { d, cc: String(a.country || '').toUpperCase(), t: classifyAttack(a) };
-    if (d >= recentCut) { it.v = String(a.victim || a.domain || '').slice(0, 80); it.h = String(a.title || '').slice(0, 160); it.u = a.url || a.link || ''; }
+    // victim, headline and link for every attack, so each bar on the page can list what happened
+    it.v = String(a.victim || a.domain || '').slice(0, 70); it.h = String(a.title || '').slice(0, 140); it.u = /^https:\/\//i.test(a.url || '') ? a.url : '';
     items.push(it);
   }
   items.sort((a, b) => b.d.localeCompare(a.d));

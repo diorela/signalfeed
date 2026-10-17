@@ -244,6 +244,24 @@
   .chart .val { position: absolute; font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
   .chart .xl { position: absolute; top: calc(100% + 6px); font-size: 11px; color: var(--muted); white-space: nowrap; }
   .chart-pad { height: 22px; }
+  .chart .slot.clickable { cursor: pointer; }
+  .chart .slot.sel .cbar { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+  .chart .slot.sel .xl { color: var(--ink); font-weight: 600; }
+  .detail { border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .detail-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; justify-content: space-between; }
+  .detail-head b { font-size: 15px; }
+  .detail-close { background: none; border: 0; color: var(--accent-ink); font-weight: 600; font-size: 13px; cursor: pointer; text-decoration: underline; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips span { font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-2); }
+  .dlist { display: flex; flex-direction: column; max-height: 420px; overflow-y: auto; }
+  .drow { display: grid; grid-template-columns: 62px 38px 1fr; gap: 4px 10px; align-items: baseline; padding: 8px 2px; border-top: 1px solid var(--border); font-size: 13px; color: var(--ink); text-decoration: none; }
+  a.drow:hover .dh { text-decoration: underline; }
+  .drow .dd, .drow .dc { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .drow .dc { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .drow .dt { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); color: var(--accent-ink); margin-right: 6px; }
+  .drow .dv { font-weight: 600; }
+  .drow .dh { color: var(--ink-2); }
+  @media (max-width: 640px) { .drow { grid-template-columns: 52px 30px 1fr; } }
   .tip { position: fixed; z-index: 60; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 13px; line-height: 1.4; padding: 8px 10px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.18); max-width: 240px; }
   .tip[hidden] { display: none; }
   .st-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
@@ -1084,7 +1102,8 @@ function niceMax(v) {
   const p = Math.pow(10, Math.floor(Math.log10(v))), f = v / p;
   return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p;
 }
-function chartHTML(id, per, vals, unit) {
+function chartHTML(id, per, vals, unit, extra = {}) {
+  const sel = ST.sel?.chart === id ? ST.sel.idx : -1;
   const max = Math.max(4, niceMax(Math.max(0, ...vals.filter(v => v != null))));
   const last = vals.length - 2;                 // last complete period
   const peak = vals.indexOf(Math.max(...vals.filter(v => v != null)));
@@ -1092,16 +1111,18 @@ function chartHTML(id, per, vals, unit) {
   const bars = per.map((p, i) => {
     const v = vals[i];
     const h = !v ? 0 : Math.max(0.5, (v / max) * 100);
-    const tip = `${p.long}: ${v == null ? 'no data yet' : `${v.toLocaleString('en-GB')} ${unit}`}${p.partial ? ' (so far)' : ''}`;
+    const tip = `${p.long}: ${v == null ? 'no data yet' : `${v.toLocaleString('en-GB')} ${unit}`}${p.partial ? ' (so far)' : ''}${v && extra.tips?.[i] ? ' · ' + extra.tips[i] : ''}${v && extra.clickable ? ' · click for the list' : ''}`;
+    const click = extra.clickable && v;
     const showVal = v != null && (i === last || i === peak || p.partial);
-    return `<div class="slot${p.partial ? ' partial' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}">
+    return `<div class="slot${p.partial ? ' partial' : ''}${click ? ' clickable' : ''}${i === sel ? ' sel' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}"${click ? ` role="button" aria-pressed="${i === sel}" data-pick="${id}:${i}"` : ''}>
       ${showVal ? `<span class="val" style="bottom:calc(${h}% + 4px)">${fmtN(v)}${p.partial ? '*' : ''}</span>` : ''}
       <div class="cbar" style="height:${h}%"></div>
       <span class="xl${i % 2 && per.length > 8 ? ' odd' : ''}">${esc(p.label)}</span></div>`;
   }).join('');
   const rows = per.map((p, i) => `<tr><td>${esc(p.long)}${p.partial ? ' (so far)' : ''}</td><td>${vals[i] == null ? '–' : vals[i].toLocaleString('en-GB')}</td></tr>`).join('');
-  return `<div class="chart" role="img" aria-label="${esc(unit)} per ${PERIOD_WORD[ST.period][0]}">${grid}<div class="bars">${bars}</div></div><div class="chart-pad"></div>
-    <div class="st-note">* the current ${PERIOD_WORD[ST.period][0]} so far (lighter bar).</div>
+  return `<div class="chart" role="group" aria-label="${esc(unit)} per ${PERIOD_WORD[ST.period][0]}">${grid}<div class="bars">${bars}</div></div><div class="chart-pad"></div>
+    <div class="st-note">* the current ${PERIOD_WORD[ST.period][0]} so far (lighter bar).${extra.clickable ? ' <b>Click a bar</b> to see what happened in that period.' : ''}</div>
+    ${extra.detail && sel >= 0 ? extra.detail(sel) : ''}
     <button class="tbl-toggle" data-table="${id}">${ST.table[id] ? 'Hide table' : 'Show as table'}</button>
     ${ST.table[id] ? `<table class="st-table"><thead><tr><th>Period</th><th>${esc(unit[0].toUpperCase() + unit.slice(1))}</th></tr></thead><tbody>${rows}</tbody></table>` : ''}`;
 }
@@ -1154,6 +1175,22 @@ function threatLabel() {
   return 'All threat types';
 }
 
+function typeSummary(list, key, n = 3) {
+  const o = {}; for (const x of list) o[x[key]] = (o[x[key]] || 0) + 1;
+  return Object.entries(o).sort((a, b) => b[1] - a[1]);
+}
+function detailPanel(title, list, rowHTML, key, emptyText) {
+  const types = typeSummary(list, key);
+  const shown = list.slice(0, ST.showAll ? 500 : 40);
+  return `<div class="detail" id="stDetail">
+    <div class="detail-head"><b>${esc(title)}</b><button class="detail-close" data-unpick>Close list</button></div>
+    ${types.length ? `<div class="chips">${types.map(([t, n]) => `<span>${esc(t)} · ${n}</span>`).join('')}</div>` : ''}
+    ${list.length ? `<div class="dlist">${shown.map(rowHTML).join('')}</div>` : `<div class="st-note">${esc(emptyText)}</div>`}
+    ${list.length > shown.length ? `<button class="detail-close" data-showall>Show all ${list.length}</button>` : ''}
+  </div>`;
+}
+const shortDate = d => dfmt(new Date(d), { day: 'numeric', month: 'short' }) + (d.slice(0, 4) !== String(new Date().getUTCFullYear()) ? ' ’' + d.slice(2, 4) : '');
+
 function renderStats() {
   const body = $('stBody'); if (!body) return;
   for (const b of document.querySelectorAll('#stRegion button')) b.setAttribute('aria-pressed', b.dataset.region === ST.region);
@@ -1179,7 +1216,14 @@ function renderStats() {
     const typ = T.startsWith('atk:') ? T.slice(4) : null;
     const items = atk.items.filter(x => inRegion(x.cc, ST.region) && (!typ || x.t === typ));
     const first = new Date('2023-01-01T00:00:00Z');
-    const vals = per.map(p => { if (p.to <= first) return null; const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b).length; });
+    const buckets = per.map(p => { if (p.to <= first) return null; const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b); });
+    const vals = buckets.map(b => b ? b.length : null);
+    const tips = buckets.map(b => b && b.length ? typeSummary(b, 't').slice(0, 3).map(([t, n]) => `${t} ${n}`).join(', ') : '');
+    const atkRow = x => {
+      const inner = `<span class="dd">${esc(shortDate(x.d))}</span><span class="dc" title="${esc(x.cc ? countryName(x.cc) : 'Country unknown')}">${esc(x.cc || '··')}</span><span><span class="dt">${esc(x.t)}</span>${x.v ? `<span class="dv">${esc(x.v)}</span> · ` : ''}<span class="dh">${esc(x.h || 'No headline recorded')}</span></span>`;
+      return x.u ? `<a class="drow" href="${esc(safeUrl(x.u))}" target="_blank" rel="noopener noreferrer">${inner}</a>` : `<div class="drow">${inner}</div>`;
+    };
+    const atkDetail = i => detailPanel(`${vals[i]} ${vals[i] === 1 ? 'attack' : 'attacks'} reported ${regionWord} · ${per[i].long}${per[i].partial ? ' (so far)' : ''}`, buckets[i] || [], atkRow, 't', 'No attacks reported in this period.');
     const start = ST.period === 'year' ? `${new Date().getUTCFullYear()}-01-01` : kevWindowStart();
     const win = items.filter(x => x.d >= start);
     const tally = (arr, f) => { const o = {}; for (const x of arr) { const k = f(x); o[k] = (o[k] || 0) + 1; } return Object.entries(o).sort((a, b) => (a[0] === 'Not specified' || a[0] === 'Unknown') - (b[0] === 'Not specified' || b[0] === 'Unknown') || b[1] - a[1]); };
@@ -1187,7 +1231,7 @@ function renderStats() {
     parts.push(`<article class="st-card">
       <div class="st-head"><div><h3>${typ ? `Reported attacks · ${esc(typ)}` : 'Reported cyberattacks'} ${esc(regionWord)}</h3><p>Cyberattacks on organisations that were reported in the press, by the victim’s country · source: ransomware.live</p></div><span class="chip">${esc(PERIOD_WORD[ST.period][2])}</span></div>
       ${kpi(per, vals, 'attacks reported')}
-      ${chartHTML('atk', per, vals, 'attacks reported')}
+      ${chartHTML('atk', per, vals, 'attacks reported', { tips, clickable: true, detail: atkDetail })}
       <div class="st-cols">
         <div><h4>${typ ? 'Share of all reported attacks' : 'By type of attack'} · ${windowLabel()}</h4>${typ
           ? hbars(tally(atk.items.filter(x => inRegion(x.cc, ST.region) && x.d >= start), x => x.t), 8)
@@ -1229,14 +1273,18 @@ function renderStats() {
   const kev = D.kev;
   if (show.kev && kev && kev.items) {
     const items = kevKey ? kev.items.filter(x => x[kevKey] === kevVal) : kev.items;
-    const vals = per.map(p => { const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b).length; });
+    const kb = per.map(p => { const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b); });
+    const vals = kb.map(b => b.length);
+    const ktips = kb.map(b => b.length ? typeSummary(b, 'p').slice(0, 2).map(([t, n]) => `${t} ${n}`).join(', ') : '');
+    const kevRow = x => `<a class="drow" href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(x.c)}" target="_blank" rel="noopener noreferrer"><span class="dd">${esc(shortDate(x.d))}</span><span class="dc">${x.r ? 'RW' : ''}</span><span><span class="dt">${esc(x.p)}</span><span class="dv">${esc(x.v)} ${esc(x.n)}</span> · <span class="dh">${esc(x.c)} · ${esc(x.w)}</span></span></a>`;
+    const kevDetail = i => detailPanel(`${vals[i]} exploited ${vals[i] === 1 ? 'flaw' : 'flaws'} added · ${per[i].long}${per[i].partial ? ' (so far)' : ''}`, kb[i], kevRow, 'p', 'No flaws added in this period.') + '<div class="st-note">RW = known to be used by ransomware gangs.</div>';
     const start = kevWindowStart(), win = items.filter(x => x.d >= start);
     const count = key => { const o = {}; for (const x of win) o[x[key]] = (o[x[key]] || 0) + 1; return Object.entries(o).sort((a, b) => (a[0] === 'Other') - (b[0] === 'Other') || b[1] - a[1]); };
     const rans = win.filter(x => x.r).length;
     parts.push(`<article class="st-card">
       <div class="st-head"><div><h3>Exploited vulnerabilities${kevVal ? ` · ${esc(kevVal)}` : ''}</h3><p>Not attacks: newly confirmed software flaws that attackers are using, by date added · worldwide · source: CISA Known Exploited Vulnerabilities</p></div><span class="chip">Worldwide${ST.region !== 'global' ? ' · country switch doesn’t apply' : ''}</span></div>
       ${kpi(per, vals, 'flaws added')}
-      ${chartHTML('kev', per, vals, 'flaws added')}
+      ${chartHTML('kev', per, vals, 'flaws added', { tips: ktips, clickable: true, detail: kevDetail })}
       <div class="st-cols"><div><h4>${kevKey === 'p' ? 'Most affected vendors' : 'By type of product'} · ${windowLabel()}</h4>${kevKey === 'p' ? hbars(count('v'), 10) : hbars(count('p'), 10)}</div><div><h4>By type of weakness · ${windowLabel()}</h4>${hbars(count('w'))}</div></div>
       <div class="st-note">${rans} of the ${win.length} flaws added in this period are known to be used by ransomware gangs. Product and weakness types are sorted automatically from CISA’s descriptions, so a few may be misfiled.</div>
       <div class="st-latest"><h4 style="margin:4px 0 4px;font-size:13px;color:var(--ink-2)">Latest additions</h4>${items.slice(0, 6).map(x => `<a href="https://nvd.nist.gov/vuln/detail/${encodeURIComponent(x.c)}" target="_blank" rel="noopener noreferrer"><span class="cve">${esc(x.c)}</span><span>${esc(x.v)} ${esc(x.n)} · <span style="color:var(--muted)">${esc(x.p)}</span></span><span style="margin-left:auto;color:var(--muted);white-space:nowrap">${esc(dfmt(new Date(x.d), { day: 'numeric', month: 'short' }))}</span></a>`).join('')}</div>
@@ -1318,9 +1366,22 @@ function statsSummary() {
   return out.join(' ') || 'Cyber statistics, updated about twice a day.';
 }
 
-for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; saveStatsPrefs(); renderStats(); };
-for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; saveStatsPrefs(); renderStats(); };
-$('stThreat').onchange = e => { ST.threat = e.target.value; saveStatsPrefs(); renderStats(); };
+for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; ST.sel = null; saveStatsPrefs(); renderStats(); };
+for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; ST.sel = null; saveStatsPrefs(); renderStats(); };
+$('stThreat').onchange = e => { ST.threat = e.target.value; ST.sel = null; saveStatsPrefs(); renderStats(); };
+document.addEventListener('click', e => {
+  const pick = e.target.closest?.('[data-pick]');
+  if (pick) {
+    const [chart, idx] = pick.dataset.pick.split(':');
+    ST.sel = ST.sel?.chart === chart && ST.sel.idx === +idx ? null : { chart, idx: +idx };
+    ST.showAll = false; renderStats();
+    if (ST.sel) document.getElementById('stDetail')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return;
+  }
+  if (e.target.closest?.('[data-unpick]')) { ST.sel = null; renderStats(); return; }
+  if (e.target.closest?.('[data-showall]')) { ST.showAll = true; renderStats(); }
+});
+document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('[data-pick]')) { e.preventDefault(); e.target.click(); } });
 document.addEventListener('click', e => { const g = e.target.closest?.('[data-gotopic]'); if (g) { setTab('cyber'); setTopic('cyber', g.dataset.gotopic); } });
 function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat })); } catch {} }
 document.addEventListener('click', e => { const t = e.target.closest?.('[data-table]'); if (t) { ST.table[t.dataset.table] = !ST.table[t.dataset.table]; renderStats(); } });
