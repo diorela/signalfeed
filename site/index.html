@@ -213,7 +213,7 @@
   .col.stats { --accent: var(--stats); --on-accent: var(--on-stats); --lead: var(--lead-stats); --accent-ink: var(--stats-ink); }
   body.on-stats .tiles, body.on-stats #breaking { display: none !important; }
   .st-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
-  .st-threat { flex: 1 1 260px; max-width: 380px; }
+  .st-threat { flex: 1 1 240px; max-width: 360px; }
   .seg.na { opacity: .45; }
   .st-threat select { height: 46px; }
   .st-go { align-self: flex-start; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -531,6 +531,7 @@
         <div class="seg" id="stPeriod" role="group" aria-label="Period">
           <button data-period="week" aria-pressed="true">Weekly</button><button data-period="month" aria-pressed="false">Monthly</button><button data-period="year" aria-pressed="false">Yearly</button>
         </div>
+        <label class="fsel st-threat"><span>Data source</span><select id="stSource"></select></label>
         <label class="fsel st-threat"><span>Threat type</span><select id="stThreat"></select></label>
       </div>
       <div id="stBody"><div class="empty">Loading statistics…</div></div>
@@ -1023,8 +1024,8 @@ document.addEventListener('keydown', e => {
 
 // ---------- CLICKS ----------
 // ---------- CYBER STATS ----------
-const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', threat: 'all', table: {} };
-try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region && v.region !== 'china') ST.region = v.region; if (v.period) ST.period = v.period; if (v.threat) ST.threat = v.threat; } catch {}
+const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', threat: 'all', source: 'all', table: {} };
+try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region && v.region !== 'china') ST.region = v.region; if (v.period) ST.period = v.period; if (v.threat) ST.threat = v.threat; if (v.source) ST.source = v.source; } catch {}
 const ST_REGION = { global: 'worldwide', europe: 'in Europe', usa: 'in the USA', singapore: 'in Singapore', china: 'in China' };
 const DAY_MS = 864e5;
 const fmtN = n => n == null ? '–' : n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en-GB');
@@ -1151,17 +1152,27 @@ let countryNames = null;
 const countryName = cc => { try { countryNames ||= new Intl.DisplayNames(['en'], { type: 'region' }); return countryNames.of(cc) || cc; } catch { return cc || 'Unknown'; } };
 const ATTACK_TYPE_ORDER = ['Ransomware', 'Data theft & leaks', 'Service disruption', 'DDoS & website takedowns', 'Phishing & fraud', 'Espionage & state-backed', 'Not specified'];
 const COVERAGE_LABEL = id => (SF.TOPICS.cyber.find(t => t.id === id) || { label: id }).label;
+const STAT_SOURCES = [
+  ['all', 'All sources'],
+  ['atk', 'Attacks in the press (ransomware.live)'],
+  ['rw', 'Ransomware leak sites (ransomware.live)'],
+  ['kev', 'Exploited flaws (CISA)'],
+  ['news', 'SignalFeed headlines'],
+  ['reports', 'Official reports'],
+];
+function sourceOptions() { return STAT_SOURCES.map(([v, l]) => `<option value="${v}"${ST.source === v ? ' selected' : ''}>${esc(l)}</option>`).join(''); }
+const srcOK = k => ST.source === 'all' || ST.source === k;
 function threatOptions(D) {
   const o = (v, l) => `<option value="${esc(v)}"${ST.threat === v ? ' selected' : ''}>${esc(l)}</option>`;
   let html = o('all', 'All threat types');
-  if (D.attacks?.items) html += `<optgroup label="Reported cyberattacks (by country)">${o('atk', 'All reported attacks')}${ATTACK_TYPE_ORDER.filter(t => t !== 'Not specified').map(t => o('atk:' + t, t)).join('')}</optgroup>`;
-  html += `<optgroup label="Ransomware leak sites (by country)">${o('rw', 'Ransomware victims named by gangs')}</optgroup>`;
-  if (D.kev?.items) {
+  if (srcOK('atk') && D.attacks?.items) html += `<optgroup label="Reported cyberattacks (by country)">${o('atk', 'All reported attacks')}${ATTACK_TYPE_ORDER.filter(t => t !== 'Not specified').map(t => o('atk:' + t, t)).join('')}</optgroup>`;
+  if (srcOK('rw')) html += `<optgroup label="Ransomware leak sites (by country)">${o('rw', 'Ransomware victims named by gangs')}</optgroup>`;
+  if (srcOK('kev') && D.kev?.items) {
     const types = key => [...new Set(D.kev.items.map(x => x[key]))].filter(t => t !== 'Other').sort();
     html += `<optgroup label="Exploited vulnerabilities (flaws, worldwide)">${o('kev', 'All exploited vulnerabilities')}${types('p').map(t => o('kev:p:' + t, t)).join('')}</optgroup>`;
     html += `<optgroup label="Exploited vulnerabilities by weakness (worldwide)">${types('w').map(t => o('kev:w:' + t, t)).join('')}</optgroup>`;
   }
-  if (D.coverage?.topics) html += `<optgroup label="In the news (headline counts, worldwide)">${D.coverage.topics.filter(t => t !== 'ransomware').map(t => o('news:' + t, COVERAGE_LABEL(t))).join('')}</optgroup>`;
+  if (srcOK('news') && D.coverage?.topics) html += `<optgroup label="In the news (headline counts, worldwide)">${D.coverage.topics.filter(t => t !== 'ransomware').map(t => o('news:' + t, COVERAGE_LABEL(t))).join('')}</optgroup>`;
   return html;
 }
 function threatLabel() {
@@ -1189,6 +1200,7 @@ function detailPanel(title, list, rowHTML, key, emptyText) {
     ${list.length > shown.length ? `<button class="detail-close" data-showall>Show all ${list.length}</button>` : ''}
   </div>`;
 }
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
 const shortDate = d => dfmt(new Date(d), { day: 'numeric', month: 'short' }) + (d.slice(0, 4) !== String(new Date().getUTCFullYear()) ? ' ’' + d.slice(2, 4) : '');
 
 function renderStats() {
@@ -1197,13 +1209,15 @@ function renderStats() {
   for (const b of document.querySelectorAll('#stPeriod button')) b.setAttribute('aria-pressed', b.dataset.period === ST.period);
   if (!ST.data) { body.innerHTML = `<div class="empty">${esc(ST.loading ? 'Loading statistics…' : ST.error || 'Loading statistics…')}</div>`; return; }
   const D = ST.data, per = stPeriods(ST.period), parts = [];
+  $('stSource').innerHTML = sourceOptions();
+  $('stSource').parentElement.classList.toggle('on', ST.source !== 'all');
   const menu = $('stThreat');
   menu.innerHTML = threatOptions(D);
   if (menu.value !== ST.threat) { ST.threat = 'all'; menu.value = 'all'; }
   menu.parentElement.classList.toggle('on', ST.threat !== 'all');
   const T = ST.threat;
-  const show = { atk: T === 'all' || T.startsWith('atk'), rw: T === 'all' || T === 'rw', kev: T === 'all' || T.startsWith('kev'), cov: T === 'all' || T.startsWith('news:') };
-  const regionApplies = T === 'all' || T === 'rw' || T.startsWith('atk');
+  const show = { atk: srcOK('atk') && (T === 'all' || T.startsWith('atk')), rw: srcOK('rw') && (T === 'all' || T === 'rw'), kev: srcOK('kev') && (T === 'all' || T.startsWith('kev')), cov: srcOK('news') && (T === 'all' || T.startsWith('news:')) };
+  const regionApplies = (T === 'all' || T === 'rw' || T.startsWith('atk')) && ['all', 'atk', 'rw'].includes(ST.source);
   const seg = $('stRegion');
   seg.classList.toggle('na', !regionApplies);
   seg.title = regionApplies ? '' : 'This statistic is worldwide only: the source has no country information';
@@ -1220,7 +1234,7 @@ function renderStats() {
     const vals = buckets.map(b => b ? b.length : null);
     const tips = buckets.map(b => b && b.length ? typeSummary(b, 't').slice(0, 3).map(([t, n]) => `${t} ${n}`).join(', ') : '');
     const atkRow = x => {
-      const inner = `<span class="dd">${esc(shortDate(x.d))}</span><span class="dc" title="${esc(x.cc ? countryName(x.cc) : 'Country unknown')}">${esc(x.cc || '··')}</span><span><span class="dt">${esc(x.t)}</span>${x.v ? `<span class="dv">${esc(x.v)}</span> · ` : ''}<span class="dh">${esc(x.h || 'No headline recorded')}</span></span>`;
+      const inner = `<span class="dd">${esc(shortDate(x.d))}</span><span class="dc" title="${esc(x.cc ? countryName(x.cc) : 'Country unknown')}">${esc(x.cc || '··')}</span><span><span class="dt">${esc(x.t)}</span>${x.v ? `<span class="dv">${esc(x.v)}</span> · ` : ''}<span class="dh">${esc(x.h || 'No headline recorded')}</span>${x.u ? ` <span class="dd">· ${esc(hostOf(x.u))}</span>` : ''}</span>`;
       return x.u ? `<a class="drow" href="${esc(safeUrl(x.u))}" target="_blank" rel="noopener noreferrer">${inner}</a>` : `<div class="drow">${inner}</div>`;
     };
     const atkDetail = i => detailPanel(`${vals[i]} ${vals[i] === 1 ? 'attack' : 'attacks'} reported ${regionWord} · ${per[i].long}${per[i].partial ? ' (so far)' : ''}`, buckets[i] || [], atkRow, 't', 'No attacks reported in this period.');
@@ -1329,7 +1343,7 @@ function renderStats() {
   }
 
   // 4. Reports library
-  if (T === 'all') {
+  if (T === 'all' && srcOK('reports')) {
   const R = (title, url, note) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${esc(title)}<small>${esc(note)}</small></a>`;
   parts.push(`<article class="st-card">
     <div class="st-head"><div><h3>Official reports</h3><p>Free yearly and quarterly reports with attack numbers by type, for deeper reading</p></div></div>
@@ -1368,6 +1382,7 @@ function statsSummary() {
 
 for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; ST.sel = null; saveStatsPrefs(); renderStats(); };
 for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; ST.sel = null; saveStatsPrefs(); renderStats(); };
+$('stSource').onchange = e => { ST.source = e.target.value; ST.sel = null; saveStatsPrefs(); renderStats(); };
 $('stThreat').onchange = e => { ST.threat = e.target.value; ST.sel = null; saveStatsPrefs(); renderStats(); };
 document.addEventListener('click', e => {
   const pick = e.target.closest?.('[data-pick]');
@@ -1383,7 +1398,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('[data-pick]')) { e.preventDefault(); e.target.click(); } });
 document.addEventListener('click', e => { const g = e.target.closest?.('[data-gotopic]'); if (g) { setTab('cyber'); setTopic('cyber', g.dataset.gotopic); } });
-function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat })); } catch {} }
+function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat, source: ST.source })); } catch {} }
 document.addEventListener('click', e => { const t = e.target.closest?.('[data-table]'); if (t) { ST.table[t.dataset.table] = !ST.table[t.dataset.table]; renderStats(); } });
 function showTip(el) {
   const tip = $('tip'); if (!el?.dataset?.tip) { tip.hidden = true; return; }
