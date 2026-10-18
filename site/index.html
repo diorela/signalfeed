@@ -628,6 +628,9 @@ const SOURCE_BADGE = {
   'The Hacker News': ['THN', 'indigo'], 'BleepingComputer': ['BC', 'blue'], 'Dark Reading': ['DR', 'orange'],
   'SecurityWeek': ['SW', 'amber'], 'Krebs on Security': ['KoS', 'green'], 'SANS ISC': ['ISC', 'violet'], 'IT-Connect': ['IT', 'teal'],
   'BBC World': ['BBC', 'pink'], 'The Guardian': ['G', 'blue'], 'Al Jazeera': ['AJ', 'amber'], 'Foreign Policy': ['FP', 'violet'], 'France 24': ['F24', 'teal'],
+  'Le Monde': ['LM', 'slate'], 'La Repubblica': ['LR', 'indigo'],
+  'Financial Times': ['FT', 'pink'], 'The Economist': ['E', 'orange'], 'BBC Business': ['BBC', 'pink'], 'Guardian Business': ['G', 'blue'],
+  'CNBC': ['CN', 'indigo'], 'MarketWatch': ['MW', 'green'], 'DW Business': ['DW', 'blue'], 'France 24 Business': ['F24', 'teal'], 'ECB': ['ECB', 'amber'], 'Federal Reserve': ['FED', 'green'],
 };
 
 // ---------- STATE ----------
@@ -926,13 +929,13 @@ function renderColumn(key, toTop = false) {
 // ---------- BREAKING ----------
 const BREAKING_WINDOW = 6 * 3600e3;
 const CYBER_BREAK = /zero[- ]?day|0-day|actively exploited|in the wild|emergency (patch|update|directive)|out[- ]of[- ]band|mass exploitation|\b(outage|shuts? down|shut down|grounded|halts?|disrupt\w*|nationwide|millions)\b/i;
-const GEO_BREAK = /\b(breaking|killed|kills|dead|deaths|explosions?|blasts?|missiles?|air ?strikes?|invad\w*|invasion|coup|ceasefire|truce|declares?|martial law|assassinat\w*|resigns?|ousted|earthquake|tsunami|hostages?|mobiliz\w*|nuclear)\b/i;
+const GEO_BREAK = /\b(tues?|morts|uccis\w*|morti|explosions?|esplosion\w*|frappes?|invasione|coup d'etat|golpe|cessez-le-feu|tregua|seisme|terremoto|otages?|ostagg\w*|attentat\w*|breaking|killed|kills|dead|deaths|explosions?|blasts?|missiles?|air ?strikes?|invad\w*|invasion|coup|ceasefire|truce|declares?|martial law|assassinat\w*|resigns?|ousted|earthquake|tsunami|hostages?|mobiliz\w*|nuclear)\b/i;
 const FIN_BREAK = /\b(crash\w*|plunge\w*|plummet\w*|tumble\w*|soar\w*|surge\w*|slump\w*|rout|sell-?off|meltdown|panic|emergency|surprise (rate|cut|hike)|rate (cut|hike)s?|raises? rates|cuts? rates|default\w*|bankrupt\w*|collapse\w*|bail-?out|downgrade\w*|record (high|low)|halts? trading|circuit breaker)\b/i;
 function isBreaking(a) {
   if (Date.now() - new Date(a.date) > BREAKING_WINDOW) return false;
   if (a.category === 'cyber') return a._topics.includes('exploited') || CYBER_BREAK.test(a.title);
   if (a.category === 'fin') return FIN_BREAK.test(a.title);
-  return GEO_BREAK.test(a.title) && (a._topics.includes('conflict') || a._topics.includes('terror') || a._topics.includes('humanitarian') || a._topics.includes('elections') || /breaking|coup|ceasefire|earthquake|tsunami/i.test(a.title));
+  return GEO_BREAK.test(SF.norm(a.title)) && (a._topics.includes('conflict') || a._topics.includes('terror') || a._topics.includes('humanitarian') || a._topics.includes('elections') || /breaking|coup|ceasefire|earthquake|tsunami|cessez-le-feu|tregua|seisme|terremoto/i.test(SF.norm(a.title)));
 }
 const brk = { list: [], i: 0, paused: false, timer: null };
 function renderBreaking() {

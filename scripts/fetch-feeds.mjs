@@ -36,6 +36,8 @@ export const SOURCES = [
   { name: 'Foreign Policy', category: 'geo', type: 'rss', url: 'https://foreignpolicy.com/feed/' },
   { name: 'France 24',      category: 'geo', type: 'rss', url: 'https://www.france24.com/en/monde/rss',
     keep: it => !/\/sport\//.test(it.link) },
+  { name: 'Le Monde',       category: 'geo', type: 'rss', url: 'https://www.lemonde.fr/international/rss_full.xml' },   // in French
+  { name: 'La Repubblica',  category: 'geo', type: 'rss', url: 'https://www.repubblica.it/rss/esteri/rss2.0.xml' },    // in Italian, world section
 
   // ---- Economy & Finance ----
   // FT and The Economist are paywalled: their feeds give the headline and a one-line summary, and the link opens their site.
