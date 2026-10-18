@@ -5,20 +5,22 @@
 //  1. Ransomware victims named on leak sites, from ransomware.live (free API, no key).
 //     Counted per day and per month for Global, Europe, USA, Singapore and China,
 //     with the sectors and ransomware groups behind them.
-//  2. Exploited vulnerabilities from CISA's Known Exploited Vulnerabilities catalogue.
+//  2. Cyberattacks reported in the press, by country and attack type (ransomware.live).
 //  3. How often SignalFeed's own cyber headlines mention each attack type, per week.
+//  4. Number of organisations per sector (10+ employees) in the USA (Census Bureau) and the EU (Eurostat),
+//     so the page can compare how often each sector is hit relative to its size.
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import vm from 'node:vm';
 import { pathToFileURL } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const OUT_DIR = 'site/data';
 const OUT = `${OUT_DIR}/stats.json`;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const REFRESH_HOURS = 12;              // outside sources: refresh about twice a day
-const KEV_VERSION = 2;                 // bump when the product/weakness sorting changes, to re-sort right away
-const RW_VERSION = 2;                  // bump when the monthly ransomware summary changes; months are re-read gradually
-const ATTACKS_VERSION = 2;             // bump when the attack-type sorting changes
+const RW_VERSION = 3;                  // bump when the monthly ransomware summary changes; months are re-read gradually
+const ATTACKS_VERSION = 3;             // bump when the attack-type sorting changes
 const FIRST_MONTH = '2022-01';         // ransomware history starts here
 const BACKFILL_PER_RUN = 24;           // fetch at most this many old months per run (be polite)
 const RECENT_MONTHS = 3;               // always re-read the current month and the 2 before it
@@ -26,6 +28,8 @@ const RECENT_MONTHS = 3;               // always re-read the current month and t
 const REGIONS = ['global', 'europe', 'usa', 'singapore', 'china'];
 const EUROPE = new Set(('AL AD AT BA BE BG BY CH CY CZ DE DK EE ES FI FO FR GB GG GI GR HR HU IE IM IS IT JE ' +
   'LI LT LU LV MC MD ME MK MT NL NO PL PT RO RS SE SI SK SM UA UK VA XK').split(' '));
+// Countries whose ransomware victims are also counted per sector (USA + EU-27), for the sector comparison.
+const EU27 = new Set('AT BE BG CY CZ DE DK EE ES FI FR GR HR HU IE IT LT LU LV MT NL PL PT RO SE SI SK'.split(' '));
 const regionOf = cc => {
   cc = String(cc || '').toUpperCase();
   if (cc === 'US') return 'usa';
@@ -67,7 +71,7 @@ const cleanLabel = s => {
 function summariseMonth(victims) {
   const regions = Object.fromEntries(REGIONS.map(r => [r, { n: 0, sectors: {}, groups: {} }]));
   regions.global.noCountry = 0;   // victims with no country recorded (they count only in Global)
-  const daily = {};
+  const daily = {}, cs = {};   // cs = victims per country per sector (USA + EU-27 only)
   for (const v of victims) {
     const when = new Date(v.discovered || v.published || v.attackdate);
     if (isNaN(when)) continue;
@@ -76,6 +80,8 @@ function summariseMonth(victims) {
     if (!String(v.country || '').trim()) regions.global.noCountry++;
     const sector = cleanLabel(v.activity);
     const group = cleanLabel(v.group || v.group_name);
+    const cc = String(v.country || '').toUpperCase();
+    if (cc === 'US' || EU27.has(cc)) { cs[cc] ||= {}; cs[cc][sector] = (cs[cc][sector] || 0) + 1; }
     daily[day] ||= Object.fromEntries(REGIONS.map(r => [r, 0]));
     for (const r of reg ? ['global', reg] : ['global']) {
       const R = regions[r];
@@ -84,7 +90,7 @@ function summariseMonth(victims) {
     }
   }
   for (const r of REGIONS) { regions[r].sectors = top(regions[r].sectors, 20); regions[r].groups = top(regions[r].groups, 15); }
-  return { regions, daily };
+  return { regions, daily, cs };
 }
 
 async function updateRansomware(prev) {
@@ -100,7 +106,7 @@ async function updateRansomware(prev) {
       const list = await getJSON(`https://api.ransomware.live/v2/victims/${y}/${m}`);
       if (!Array.isArray(list)) throw new Error('unexpected reply');
       const s = summariseMonth(list);
-      months[ym] = { ...s.regions, v: RW_VERSION, fetchedAt: new Date().toISOString() };
+      months[ym] = { ...s.regions, cs: s.cs, v: RW_VERSION, fetchedAt: new Date().toISOString() };
       for (const day of Object.keys(daily)) if (day.startsWith(ym)) delete daily[day];
       for (const [day, c] of Object.entries(s.daily)) if (day.startsWith(ym)) daily[day] = c;
       fetched++;
@@ -121,6 +127,8 @@ async function updateRansomware(prev) {
 // with the victim's country. Summaries are often in French, so the type rules match English and French.
 const ATTACK_TYPES = [
   ['Ransomware', /ransom|ran[cç]on|lockbit|akira|qilin|blackcat|play ransomware|encrypt|chiffr/i],
+  // How the attackers got in, when the report says so (English, French, Italian, Spanish, German, Portuguese)
+  ['Exploited vulnerability', /vulnerab|vuln[ée]rabilit|faille|falla de seguridad|vulnerabilit[àa]|schwachstelle|sicherheitsl[üu]cke|exploit|\bcve-\d|zero[- ]?day|0-day|unpatched|non corrig|patch(ed)? (flaw|bug)|security (flaw|hole|bug)|br[eè]che de s[ée]curit[ée]/i],
   ['DDoS & website takedowns', /ddos|d[ée]ni de service|denial[- ]of[- ]service|noname057|hacktivis|website.{0,30}(down|offline)|sites?.{0,40}inaccessible/i],
   ['Espionage & state-backed', /espionn|espionage|\bapt ?\d|state[- ]sponsored|[ée]tatique|nation[- ]state|chinese hackers|russian hackers|north korea|cor[ée]e du nord|salt typhoon|volt typhoon/i],
   ['Phishing & fraud', /phishing|hame[cç]onnage|fraud|scam|arnaque|business email|usurpation|social engineering|ing[ée]nierie sociale/i],
@@ -149,43 +157,59 @@ async function updateAttacks() {
   return { source: 'ransomware.live (press-reported cyberattacks)', version: ATTACKS_VERSION, items, updatedAt: new Date().toISOString() };
 }
 
-// ---------- 2. EXPLOITED VULNERABILITIES (CISA KEV) ----------
-const PRODUCT_TYPES = [   // first match wins, so the more specific groups come first
-  ['AI & developer tools', /langflow|litellm|mlflow|ray-project|marimo|\bn8n\b|jfrog|artifactory|teamcity|jenkins|gitlab|gitea|gogs|\bgit\b|github action|nx console|tanstack|\bvite|prettier|eslint|react native|trivy|kestra|ollama|openai/i],
-  ['Browsers', /chrome|chromium|firefox|mozilla|webkit|safari|internet explorer|flash player|\bskia\b|google \| dawn|\bdawn\b/i],
-  ['Network & edge devices', /cisco|fortinet|fortios|fortigate|fortiweb|ivanti|pulse secure|palo alto|pan-os|citrix|netscaler|sonicwall|juniper|\bf5\b|big-ip|zyxel|d-link|tp-link|netgear|check point|sophos|array networks|draytek|mikrotik|ubiquiti|barracuda|watchguard|versa|aruba|arista|brocade|aviatrix|velocloud|dd-wrt|sierra wireless|aleos|lantronix|\bbind\b|proftpd|nhttpd|nostromo|router|firewall|vpn/i],
-  ['IT management, backup & file transfer', /simplehelp|n-able|n-central|beyondtrust|connectwise|screenconnect|sysaid|\bkace\b|prtg|configuration manager|workspace one|omnissa|lanscope|skysea|papercut|commvault|nakivo|acronis|veeam|\bcleo\b|goanywhere|gladinet|centrestack|triofox|filezen|proself|moveit|crushftp|ahsay|recoverpoint|oneview|splunk|sciencelogic|servicenow|trend micro|apex one|defender|threatsonar|kaseya|solarwinds/i],
-  ['Web apps, CMS & email', /roundcube|craft cms|kentico|sitecore|joomla|wordpress|drupal|magento|commerce|laravel|livewire|\brails\b|\byii\b|strapi|xwiki|projectsend|adminer|cyberpanel|control web panel|cpanel|smartermail|zimbra|owncloud|metabase|grafana|zammad|jquery|ajax\.net|output messenger|active! mail|mirth|cityworks|usaherds|veracore|apriso|windchill|\bqlik\b|power pages|partner center|starlette|erlang|\bphp\b|struts|log4j|tomcat|apache|weblogic|coldfusion|experience manager|sharepoint|exchange|confluence|jira|atlassian|webmail/i],
-  ['Office, documents & apps', /\boffice\b|\bword\b|excel|outlook|powerpoint|publisher|microsoft \| project|visual basic|acrobat|reader|winrar|7-zip|whatsapp|authy|notepad\+\+|daemon tools|telemessage|trueconf|imagemagick|freetype|jai-ext/i],
-  ['Operating systems & phones', /windows|win32k|kernel|\bios\b|ipados|macos|android|pixel|samsung|qualcomm|chipset|\bmali\b|\bdwm\b|smartscreen|directx|\.net framework|streaming service|active directory|\bsudo\b|\bbash\b|inetutils|libuser|bug reporting|red hat|igel|apple/i],
-  ['IoT, cameras & industrial', /hikvision|dahua|qnap|synology|siemens|schneider|rockwell|camera|\bnas\b|\bdvr\b|scada|\bplc\b|\biot\b|geovision|nuuo|digiever|\bknx\b|meteobridge|megarac|linear emerge|mitel|sangoma|freepbx|switchvox|audinate|dante|sunhillo/i],
-  ['Virtualisation & enterprise software', /vmware|vcenter|esxi|oracle|\bsap\b|progress|kubernetes|docker|salesforce|\bibm\b|\bhpe\b|\bdell\b|wso2|server|microsoft/i],
-];
-const WEAKNESS_TYPES = [
-  ['Code & command injection', /CWE-(77|78|94|95|74|917|1336|502|20)\b/, /command injection|code injection|deserializ|remote code/i],
-  ['Memory corruption', /CWE-(787|416|125|119|120|121|122|190|476|843|415|704|822|824)\b/, /use-after-free|out-of-bounds|buffer overflow|memory corruption|type confusion|heap/i],
-  ['Login & access bypass', /CWE-(287|288|290|306|862|863|284|285|269|639|798|640|294|1390|266|250)\b/, /authentication bypass|missing authentication|improper authentication|privilege escalation|access control|hard-coded|authorization/i],
-  ['Files: path traversal & upload', /CWE-(22|23|35|552|434|73|59)\b/, /path traversal|directory traversal|file upload|arbitrary file/i],
-  ['Web attacks (XSS, SSRF, CSRF, SQL)', /CWE-(79|918|352|601|89)\b/, /cross-site|server-side request|sql injection|open redirect/i],
-];
-export const classifyKev = v => {
-  const prod = `${v.vendorProject} | ${v.product}`;
-  const p = PRODUCT_TYPES.find(([, re]) => re.test(prod))?.[0] || 'Other';
-  const cwes = (v.cwes || []).join(' ');
-  const text = `${v.vulnerabilityName} ${v.shortDescription}`;
-  const w = WEAKNESS_TYPES.find(([, cwe]) => cwe.test(cwes))?.[0] || WEAKNESS_TYPES.find(([, , kw]) => kw.test(text))?.[0] || 'Other';
-  return { p, w };
-};
-async function updateKev() {
-  let data;
-  try { data = await getJSON('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'); }
-  catch { data = await getJSON('https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json'); }
-  const list = (data.vulnerabilities || []).map(v => {
-    const { p, w } = classifyKev(v);
-    return { d: v.dateAdded, c: v.cveID, v: v.vendorProject, n: v.product, p, w, r: /^known$/i.test(String(v.knownRansomwareCampaignUse || '').trim()) ? 1 : 0 };
-  }).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.d)).sort((a, b) => b.d.localeCompare(a.d));
-  console.log(`CISA KEV: ${list.length} entries.`);
-  return { source: 'CISA KEV', version: KEV_VERSION, items: list, updatedAt: new Date().toISOString() };
+// ---------- 4. ORGANISATIONS PER SECTOR (10+ employees) ----------
+const ORGS_VERSION = 1, ORGS_REFRESH_DAYS = 30;   // official counts change once a year
+const EU_NACE = ['C', 'D', 'E', 'F', 'G', 'G47', 'H', 'I', 'J', 'J61', 'J62', 'J63', 'K', 'K65', 'L', 'M', 'M69', 'N', 'P', 'Q', 'R'];
+const US_NAICS = ['11----', '22----', '23----', '31----', '42----', '44----', '48----', '51----', '517///', '518///', '52----', '524///', '53----', '54----', '5411//', '5415//', '56----', '61----', '62----', '71----', '72----', '81----'];
+async function eurostatCounts() {
+  const geos = ['EU27_2020', ...[...EU27].map(c => c === 'GR' ? 'EL' : c)];
+  for (const year of [new Date().getUTCFullYear() - 2, new Date().getUTCFullYear() - 3, new Date().getUTCFullYear() - 4]) {
+    const q = [...geos.map(g => `geo=${g}`), ...EU_NACE.map(n => `nace_r2=${n}`), 'indic_sbs=ENT_NR', 'size_emp=TOTAL', 'size_emp=0-9', `time=${year}`].join('&');
+    const j = await getJSON(`https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/sbs_sc_ovw?format=JSON&lang=EN&${q}`, 120000);
+    const d = j.dimension, ids = j.id, size = j.size, val = j.value || {};
+    if (!Object.keys(val).length) continue;
+    const pos = (dim, code) => d[dim].category.index[code];
+    const at = coords => { let idx = 0; for (let i = 0; i < ids.length; i++) idx = idx * size[i] + coords[ids[i]]; return val[idx]; };
+    const out = {};
+    for (const g of geos) for (const n of EU_NACE) {
+      const base = { freq: 0, indic_sbs: pos('indic_sbs', 'ENT_NR'), nace_r2: pos('nace_r2', n), geo: pos('geo', g), time: 0 };
+      if (base.nace_r2 == null || base.geo == null) continue;
+      const tot = at({ ...base, size_emp: pos('size_emp', 'TOTAL') }), small = at({ ...base, size_emp: pos('size_emp', '0-9') });
+      if (tot == null || small == null) continue;
+      const geo = g === 'EU27_2020' ? 'EU27' : g === 'EL' ? 'GR' : g;
+      (out[geo] ||= {})[n] = Math.max(0, Math.round(tot - small));
+    }
+    if (Object.keys(out).length) return { year, counts: out };
+  }
+  throw new Error('no Eurostat data');
+}
+function censusCounts() {
+  // County Business Patterns, national file: establishments by industry and employee size class. No key needed.
+  for (const yy of [new Date().getUTCFullYear() - 3, new Date().getUTCFullYear() - 4, new Date().getUTCFullYear() - 5]) {
+    const y2 = String(yy).slice(2);
+    try {
+      execSync(`curl -sSfL -o /tmp/cbp.zip https://www2.census.gov/programs-surveys/cbp/datasets/${yy}/cbp${y2}us.zip && rm -rf /tmp/cbp && unzip -o -q /tmp/cbp.zip -d /tmp/cbp`, { stdio: 'ignore', timeout: 120000 });
+      const file = execSync('ls /tmp/cbp/*.txt').toString().trim().split('\n')[0];
+      const lines = execSync(`cat "${file}"`, { maxBuffer: 64 * 1024 * 1024 }).toString().split('\n');
+      const head = lines[0].split(',').map(h => h.replace(/"/g, ''));
+      const col = n => head.indexOf(n), iN = col('naics'), iL = col('lfo'), iE = col('est'), i5 = col('n<5'), i9 = col('n5_9');
+      const want = new Set(US_NAICS), out = {};
+      for (const line of lines.slice(1)) {
+        const c = line.split(',').map(x => x.replace(/"/g, ''));
+        if (c[iL] !== '-' || !want.has(c[iN])) continue;
+        out[c[iN]] = Math.max(0, +c[iE] - +c[i5] - +c[i9]);
+      }
+      if (Object.keys(out).length > 5) return { year: yy, counts: out };
+    } catch (e) { console.log(`Census ${yy}: ${String(e.message).slice(0, 100)}`); }
+  }
+  throw new Error('no Census data');
+}
+async function updateOrgs(prev) {
+  const out = { version: ORGS_VERSION, eu: prev.eu || null, us: prev.us || null, updatedAt: new Date().toISOString() };
+  try { out.eu = await eurostatCounts(); console.log(`Eurostat: ${out.eu.year}, ${Object.keys(out.eu.counts).length} areas.`); } catch (e) { console.log('Eurostat failed:', e.message); }
+  try { out.us = censusCounts(); console.log(`Census: ${out.us.year}, ${Object.keys(out.us.counts).length} sectors.`); } catch (e) { console.log('Census failed:', e.message); }
+  if (!out.eu && !out.us) throw new Error('no organisation counts');
+  return out;
 }
 
 // ---------- 3. NEWS COVERAGE BY ATTACK TYPE ----------
@@ -216,7 +240,7 @@ async function updateCoverage(prev) {
 // ---------- MAIN ----------
 async function main() {
   const prev = await loadPrevious();
-  const out = { generatedAt: new Date().toISOString(), ransomware: prev.ransomware || null, attacks: prev.attacks || null, kev: prev.kev || null, coverage: prev.coverage || null, errors: {} };
+  const out = { generatedAt: new Date().toISOString(), ransomware: prev.ransomware || null, attacks: prev.attacks || null, orgs: prev.orgs || null, coverage: prev.coverage || null, errors: {} };
 
   const rwDue = hoursSince(prev.ransomware?.updatedAt) >= REFRESH_HOURS || !prev.ransomware?.complete;
   if (rwDue) {
@@ -227,9 +251,9 @@ async function main() {
     try { out.attacks = await updateAttacks(); }
     catch (e) { out.errors.attacks = String(e.message || e); console.log('Attacks failed:', e.message); }
   }
-  if (hoursSince(prev.kev?.updatedAt) >= REFRESH_HOURS || prev.kev?.version !== KEV_VERSION) {
-    try { out.kev = await updateKev(); }
-    catch (e) { out.errors.kev = String(e.message || e); console.log('KEV failed:', e.message); }
+  if (hoursSince(prev.orgs?.updatedAt) >= ORGS_REFRESH_DAYS * 24 || prev.orgs?.version !== ORGS_VERSION || !prev.orgs?.eu || !prev.orgs?.us) {
+    try { out.orgs = await updateOrgs(prev.orgs || {}); }
+    catch (e) { out.errors.orgs = String(e.message || e); console.log('Organisation counts failed:', e.message); }
   }
   try { out.coverage = await updateCoverage(prev.coverage || {}); }
   catch (e) { out.errors.coverage = String(e.message || e); console.log('Coverage failed:', e.message); }
