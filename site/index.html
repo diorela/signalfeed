@@ -29,8 +29,8 @@
   :root, [data-theme="light"] {
     --bg: #F3F5FA; --surface: #FFFFFF; --surface-2: #F7F9FC; --border: #E3E7F0; --border-2: #DDE2EC;
     --ink: #10142A; --ink-2: #3B4258; --muted: #5A6178; --faint: #8A90A3;
-    --cyber: #16B57E; --cyber-ink: #047857; --on-cyber: #0B0F17; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF; --fin: #2851E8; --fin-ink: #2241C7; --on-fin: #FFFFFF; --stats: #C8506F; --stats-ink: #A23552; --on-stats: #FFFFFF;
-    --lead-cyber: #E8F7F0; --lead-geo: #FFF1EA; --lead-fin: #EEF3FF; --lead-stats: #FBEEF2; --lead-chip: #FFFFFF;
+    --cyber: #16B57E; --cyber-ink: #047857; --on-cyber: #0B0F17; --geo: #E8501F; --geo-ink: #9C2F10; --on-geo: #FFFFFF; --fin: #2851E8; --fin-ink: #2241C7; --on-fin: #FFFFFF; --eu: #7C4DDB; --eu-ink: #5B32B8; --on-eu: #FFFFFF; --stats: #C8506F; --stats-ink: #A23552; --on-stats: #FFFFFF;
+    --lead-cyber: #E8F7F0; --lead-geo: #FFF1EA; --lead-fin: #EEF3FF; --lead-eu: #F2EDFD; --lead-stats: #FBEEF2; --lead-chip: #FFFFFF;
     --ticker-bg: #10142A; --ticker-ink: #FFFFFF; --ticker-muted: #9AA6C9; --ticker-tag-bg: #B9F18C; --ticker-tag-ink: #10142A;
     --new-bg: #E3F7EA; --new-ink: #146C3A; --live-bg: #E8F8EE; --live-ink: #146C3A; --live-dot: #1FA855;
     --warn-bg: #FFF4D6; --warn-ink: #7A4B00; --err-bg: #FFE9E7; --err-ink: #A8261A;
@@ -43,8 +43,8 @@
   [data-theme="dark"] {
     --bg: #0B0F17; --surface: #131A26; --surface-2: #0F1520; --border: #1E2738; --border-2: #263045;
     --ink: #EEF2F8; --ink-2: #C3CBDB; --muted: #9BA6BC; --faint: #7C879D;
-    --cyber: #34D399; --cyber-ink: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17; --fin: #60A5FA; --fin-ink: #93C5FD; --on-fin: #0B0F17; --stats: #EE8AA4; --stats-ink: #F5A9BD; --on-stats: #0B0F17;
-    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-fin: #0F1A2B; --lead-stats: #2A1520; --lead-chip: #0B0F17;
+    --cyber: #34D399; --cyber-ink: #34D399; --on-cyber: #0B0F17; --geo: #FBBF24; --geo-ink: #FCD267; --on-geo: #0B0F17; --fin: #60A5FA; --fin-ink: #93C5FD; --on-fin: #0B0F17; --eu: #C4B5FD; --eu-ink: #DDD6FE; --on-eu: #0B0F17; --stats: #EE8AA4; --stats-ink: #F5A9BD; --on-stats: #0B0F17;
+    --lead-cyber: #12222B; --lead-geo: #221D0E; --lead-fin: #0F1A2B; --lead-eu: #1E1830; --lead-stats: #2A1520; --lead-chip: #0B0F17;
     --ticker-bg: #1A2333; --ticker-ink: #EEF2F8; --ticker-muted: #9BA6BC; --ticker-tag-bg: #34D399; --ticker-tag-ink: #0B0F17;
     --new-bg: #11281F; --new-ink: #6EE7B7; --live-bg: #11281F; --live-ink: #6EE7B7; --live-dot: #34D399;
     --warn-bg: #2A220C; --warn-ink: #FCD267; --err-bg: #3A1C16; --err-ink: #FF9B80;
@@ -223,7 +223,7 @@
   /* ---------- COLUMNS ---------- */
   .cols { display: block; }
   .col[hidden] { display: none; }
-  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
+  .tabs { position: sticky; top: var(--hdr-h, 71px); z-index: 15; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; padding: 10px 0; margin: -8px 0 10px; background: var(--bg); }
   .tab { position: relative; display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 18px; border-radius: 18px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; }
   .tab:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tab-accent) 60%, transparent); border-color: color-mix(in srgb, var(--tab-accent) 45%, var(--border)); }
   .tab .ti { flex: none; width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--tab-accent) 14%, transparent); color: var(--tab-accent); }
@@ -241,6 +241,7 @@
   .tab.cyber { --tab-accent: var(--cyber); --tab-on: var(--on-cyber); }
   .tab.geo { --tab-accent: var(--geo); --tab-on: var(--on-geo); }
   .tab.fin { --tab-accent: var(--fin); --tab-on: var(--on-fin); }
+  .tab.eu { --tab-accent: var(--eu); --tab-on: var(--on-eu); }
   .tab.stats { --tab-accent: var(--stats); --tab-on: var(--on-stats); }
   .col.stats { --accent: var(--stats); --on-accent: var(--on-stats); --lead: var(--lead-stats); --accent-ink: var(--stats-ink); }
   body.on-stats .tiles, body.on-stats #breaking { display: none !important; }
@@ -345,6 +346,7 @@
     .ticker-items button { width: 100%; }
   }
   .col.geo { --accent: var(--geo); --on-accent: var(--on-geo); --lead: var(--lead-geo); --accent-ink: var(--geo-ink); }
+  .col.eu { --accent: var(--eu); --on-accent: var(--on-eu); --lead: var(--lead-eu); --accent-ink: var(--eu-ink); }
   .col.fin { --accent: var(--fin); --on-accent: var(--on-fin); --lead: var(--lead-fin); --accent-ink: var(--fin-ink); }
   .col.cyber { --accent: var(--cyber); --on-accent: var(--on-cyber); --lead: var(--lead-cyber); --accent-ink: var(--cyber-ink); }
   .col-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
@@ -396,7 +398,9 @@
     header { position: static; }
     .tabs { top: 0; gap: 8px; margin-inline: -16px; padding: 8px 16px; }
     #tabs-anchor { scroll-margin-top: 8px !important; }
-    .tab { min-height: 64px; padding: 8px 4px; gap: 4px; border-radius: 14px; flex-direction: column; justify-content: center; text-align: center; }
+    .tab { min-height: 64px; padding: 8px 2px; gap: 4px; border-radius: 14px; flex-direction: column; justify-content: center; text-align: center; }
+    .tab .tl { font-size: 13px !important; }
+    .tab .tn { font-size: 11px !important; }
     .tab[aria-selected="true"] { padding: 7px 3px; }
     .tab .tt { align-items: center; gap: 1px; }
     .tabs { gap: 6px; }
@@ -511,7 +515,8 @@
   <div id="tabs-anchor" style="scroll-margin-top: calc(var(--hdr-h, 71px) + 8px)"></div>
   <div class="tabs" role="tablist" aria-label="Choose a news section">
     <button class="tab cyber" role="tab" id="tab-cyber" data-tab="cyber" aria-controls="col-cyber" aria-selected="true"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path></svg></span><span class="tt"><span class="tl"><span class="full">Cybersecurity</span><span class="short">Cyber</span></span><span class="tn" id="tabN-cyber"></span></span></button>
-    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl"><span class="full">World News</span><span class="short">World</span></span><span class="tn" id="tabN-geo"></span></span></button>
+    <button class="tab geo" role="tab" id="tab-geo" data-tab="geo" aria-controls="col-geo" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span><span class="tt"><span class="tl"><span class="full">Geopolitics</span><span class="short">World</span></span><span class="tn" id="tabN-geo"></span></span></button>
+    <button class="tab eu" role="tab" id="tab-eu" data-tab="eu" aria-controls="col-eu" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"></path><path d="M17 8h3v9a2 2 0 0 1-2 2"></path><path d="M7 9h7M7 12h7M7 15h4"></path></svg></span><span class="tt"><span class="tl"><span class="full">Europe News</span><span class="short">Europe</span></span><span class="tn" id="tabN-eu"></span></span></button>
     <button class="tab fin" role="tab" id="tab-fin" data-tab="fin" aria-controls="col-fin" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path><path d="M15 7h6v6"></path></svg></span><span class="tt"><span class="tl"><span class="full">Economy &amp; Finance</span><span class="short">Finance</span></span><span class="tn" id="tabN-fin"></span></span></button>
     <button class="tab stats" role="tab" id="tab-stats" data-tab="stats" aria-controls="col-stats" aria-selected="false"><span class="ti"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M21 20H3"></path></svg></span><span class="tt"><span class="tl"><span class="full">Cyber Stats</span><span class="short">Stats</span></span><span class="tn" id="tabN-stats">Updated twice a day</span></span></button>
   </div>
@@ -534,7 +539,7 @@
     <section class="col geo" id="col-geo" aria-labelledby="h-geo" role="tabpanel" hidden>
       <div class="col-head">
         <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c2.8 3 2.8 15 0 18"></path><path d="M12 3c-2.8 3-2.8 15 0 18"></path></svg></span>
-        <div><h2 class="display" id="h-geo">World News</h2><span class="counts" id="geoCounts"></span></div>
+        <div><h2 class="display" id="h-geo">Geopolitics</h2><span class="counts" id="geoCounts"></span></div>
       </div>
       <div class="filters">
         <label class="fsel"><span>Topic</span><select id="geoTopic" data-key="geo" data-f="topic"></select></label>
@@ -544,6 +549,21 @@
       <div class="resultline" id="geoResult" hidden></div>
       <div id="geoLead"></div>
       <div class="stories" id="geoList"></div>
+    </section>
+
+    <section class="col eu" id="col-eu" aria-labelledby="h-eu" role="tabpanel" hidden>
+      <div class="col-head">
+        <span class="col-icon"><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"></path><path d="M17 8h3v9a2 2 0 0 1-2 2"></path><path d="M7 9h7M7 12h7M7 15h4"></path></svg></span>
+        <div><h2 class="display" id="h-eu">Europe News</h2><span class="counts" id="euCounts"></span></div>
+      </div>
+      <div class="filters">
+        <label class="fsel"><span>Topic</span><select id="euTopic" data-key="eu" data-f="topic"></select></label>
+        <label class="fsel"><span>Source</span><select id="euSource" data-key="eu" data-f="source"></select></label>
+        <label class="fsel"><span>Region</span><select id="euRegion" data-key="eu" data-f="region"></select></label>
+      </div>
+      <div class="resultline" id="euResult" hidden></div>
+      <div id="euLead"></div>
+      <div class="stories" id="euList"></div>
     </section>
 
     <section class="col fin" id="col-fin" aria-labelledby="h-fin" role="tabpanel" hidden>
@@ -616,12 +636,14 @@ const TOPIC_COLOR = {
   infra: 'teal', ai: 'indigo', phishing: 'amber', supply: 'teal', regulation: 'indigo',
   conflict: 'orange', diplomacy: 'blue', sanctions: 'amber', elections: 'violet', cybertech: 'teal',
   energy: 'amber', humanitarian: 'green', terror: 'pink',
+  eupolitics: 'violet', euworld: 'orange', eudiplomacy: 'blue', eueconomy: 'green', eusociety: 'slate', euclimate: 'teal', euculture: 'pink', eusport: 'amber',
   rates: 'blue', markets: 'green', macro: 'violet', trade: 'amber', companies: 'slate', banking: 'indigo', energyfin: 'orange', techbiz: 'teal', crypto: 'pink',
 };
 // Order topics by urgency, not by definition order.
 const TOPIC_ORDER = {
   cyber: ['exploited', 'impact', 'vulns', 'ransomware', 'nation', 'law', 'infra', 'ai', 'phishing', 'supply', 'regulation'],
   geo: ['conflict', 'diplomacy', 'sanctions', 'elections', 'cybertech', 'energy', 'humanitarian', 'terror'],
+  eu: ['eupolitics', 'euworld', 'eudiplomacy', 'eueconomy', 'eusociety', 'euclimate', 'euculture', 'eusport'],
   fin: ['rates', 'markets', 'macro', 'trade', 'companies', 'banking', 'energyfin', 'techbiz', 'crypto'],
 };
 const SOURCE_BADGE = {
@@ -640,6 +662,7 @@ const state = {
   f: {
     cyber: { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
     geo:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
+    eu:    { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
     fin:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
   },
   seen: new Set(), firstVisit: false,
@@ -647,9 +670,9 @@ const state = {
 };
 const $ = id => document.getElementById(id);
 const BASE_TITLE = document.title;
-const SECTIONS = ['cyber', 'geo', 'fin'];
+const SECTIONS = ['cyber', 'geo', 'eu', 'fin'];
 const TABS = [...SECTIONS, 'stats'];
-const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo, ...SF.TOPICS.fin].find(t => t.id === id);
+const topicDef = id => [...SF.TOPICS.cyber, ...SF.TOPICS.geo, ...SF.TOPICS.eu, ...SF.TOPICS.fin].find(t => t.id === id);
 const regionLabel = id => (SF.REGIONS.find(r => r.id === id) || {}).label || '';
 
 // ---------- STORAGE (remembers what you've read, on this browser only) ----------
@@ -759,7 +782,7 @@ function updateLive() {
 }
 
 // ---------- HERO ----------
-const HERO = { cyber: { name: 'cybersecurity', noun: 'cyber' }, geo: { name: 'world news', noun: 'world' }, fin: { name: 'economy and finance', noun: 'finance' } };
+const HERO = { cyber: { name: 'cybersecurity', noun: 'cyber' }, geo: { name: 'geopolitics', noun: 'world' }, eu: { name: 'Europe news', noun: 'European' }, fin: { name: 'economy and finance', noun: 'finance' } };
 const BIG_WINDOW = 48 * 3600e3;
 const CLUSTER_STOP = new Set(('the a an of on in and or for to by with at from is are was were about into its it as be news says said say after over new how what why amid could would will can may us report reports reported calls call live latest update updates than more has have had not who his her their they this that these been first two one three year years day days week weeks back off out up down against under amid via just now still also get gets make makes made take takes set sets while where when which there here our your all any most many some other such only').split(' '));
 function titleTokens(a) {
@@ -935,6 +958,7 @@ function isBreaking(a) {
   if (Date.now() - new Date(a.date) > BREAKING_WINDOW) return false;
   if (a.category === 'cyber') return a._topics.includes('exploited') || CYBER_BREAK.test(a.title);
   if (a.category === 'fin') return FIN_BREAK.test(a.title);
+  if (a.category === 'eu') return GEO_BREAK.test(SF.norm(a.title)) && (a._topics.includes('euworld') || /breaking|coup|ceasefire|earthquake|tsunami|cessez-le-feu|tregua|seisme|terremoto|attentat/i.test(SF.norm(a.title)));
   return GEO_BREAK.test(SF.norm(a.title)) && (a._topics.includes('conflict') || a._topics.includes('terror') || a._topics.includes('humanitarian') || a._topics.includes('elections') || /breaking|coup|ceasefire|earthquake|tsunami|cessez-le-feu|tregua|seisme|terremoto/i.test(SF.norm(a.title)));
 }
 const brk = { list: [], i: 0, paused: false, timer: null };
@@ -996,7 +1020,8 @@ function openSources() {
     <h3 class="display">Sources</h3>
     <p style="font-size:14px">Status from the last read of all sites${state.generatedAt ? ` (${esc(ago(state.generatedAt))})` : ''}. A ✗ means a site couldn't be read that time; its earlier stories stay visible.</p>
     <div class="srchead mono">CYBERSECURITY</div>${group('cyber')}
-    <div class="srchead mono">WORLD NEWS</div>${group('geo')}
+    <div class="srchead mono">GEOPOLITICS</div>${group('geo')}
+    <div class="srchead mono">EUROPE NEWS</div>${group('eu')}
     <div class="srchead mono">ECONOMY &amp; FINANCE</div>${group('fin')}
     <div class="modal-actions"><button class="btn" data-close style="flex:1;justify-content:center">Close</button></div>`);
 }
@@ -1061,7 +1086,7 @@ $('theme').onclick = () => {
 };
 const NOTIF_KEY = 'signalfeed_notify';
 const NOTIF_PREFS_KEY = 'signalfeed_notify_prefs';
-const SECTION_NAME = { cyber: 'Cybersecurity', geo: 'World News', fin: 'Economy & Finance' };
+const SECTION_NAME = { cyber: 'Cybersecurity', geo: 'Geopolitics', eu: 'Europe News', fin: 'Economy & Finance' };
 function notifWanted() { try { return localStorage.getItem(NOTIF_KEY) !== 'off'; } catch { return true; } }
 function setNotifWanted(v) { try { localStorage.setItem(NOTIF_KEY, v ? 'on' : 'off'); } catch {} }
 function notifPrefs() {

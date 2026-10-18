@@ -26,7 +26,7 @@ export const SOURCES = [
   { name: 'IT-Connect',        category: 'cyber', type: 'rss', url: 'https://www.it-connect.tech/feed/',
     keep: it => SECURITY_TITLE.test(it.title) },                          // security stories only, no how-to guides
 
-  // ---- World News (was "Geopolitics") ----
+  // ---- Geopolitics ----
   { name: 'BBC World',      category: 'geo', type: 'rss', url: 'https://feeds.bbci.co.uk/news/world/rss.xml',
     keep: it => !/\/(sport|sounds|iplayer|videos)\//.test(it.link) },
   { name: 'The Guardian',   category: 'geo', type: 'rss', url: 'https://www.theguardian.com/world/rss',
@@ -36,10 +36,11 @@ export const SOURCES = [
   { name: 'Foreign Policy', category: 'geo', type: 'rss', url: 'https://foreignpolicy.com/feed/' },
   { name: 'France 24',      category: 'geo', type: 'rss', url: 'https://www.france24.com/en/monde/rss',
     keep: it => !/\/sport\//.test(it.link) },
+  // ---- Europe News ----
   // Le Monde and La Repubblica: all their news, not only the world pages (she asked for everything they publish).
-  { name: 'Le Monde',       category: 'geo', type: 'rss', url: 'https://www.lemonde.fr/rss/en_continu.xml' },         // in French, every new article
-  { name: 'La Repubblica',  category: 'geo', type: 'rss', url: 'https://www.repubblica.it/rss/homepage/rss2.0.xml' },  // in Italian, home page
-  { name: 'La Repubblica',  category: 'geo', type: 'rss', url: 'https://www.repubblica.it/rss/esteri/rss2.0.xml' },    // plus the full world section
+  { name: 'Le Monde',       category: 'eu',  type: 'rss', url: 'https://www.lemonde.fr/rss/en_continu.xml' },         // in French, every new article
+  { name: 'La Repubblica',  category: 'eu',  type: 'rss', url: 'https://www.repubblica.it/rss/homepage/rss2.0.xml' },  // in Italian, home page
+  { name: 'La Repubblica',  category: 'eu',  type: 'rss', url: 'https://www.repubblica.it/rss/esteri/rss2.0.xml' },    // plus the full world section
 
   // ---- Economy & Finance ----
   // FT and The Economist are paywalled: their feeds give the headline and a one-line summary, and the link opens their site.
@@ -60,7 +61,7 @@ export const SOURCES = [
   { name: 'Federal Reserve',   category: 'fin', type: 'rss', url: 'https://www.federalreserve.gov/feeds/press_all.xml' },
 ];
 
-const DAYS = { cyber: 21, geo: 21, fin: 21 };   // keep 3 weeks of news; older stories are deleted
+const DAYS = { cyber: 21, geo: 21, fin: 21, eu: 21 };   // keep 3 weeks of news; older stories are deleted
 const MAX_PER_COLUMN = 2000;
 const USER_AGENT = 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)';
 const OUT_DIR = 'site/data';
@@ -214,6 +215,8 @@ export async function main() {
     // Re-apply today's filters to stories kept from earlier runs, so a tightened filter cleans up old ones too.
     const rules = SOURCES.filter(s => s.name === it.source && s.keep);
     if (rules.some(s => !s.keep(it))) continue;
+    const home = SOURCES.find(s => s.name === it.source);   // a source moved to another section takes its stored stories with it
+    if (home) it.category = home.category;
     byLink.set(it.link, it);
   }
 
@@ -256,7 +259,7 @@ export async function main() {
 
   // Drop expired items, keep newest first, cap each column.
   const items = [];
-  for (const cat of ['cyber', 'geo', 'fin']) {
+  for (const cat of ['cyber', 'geo', 'fin', 'eu']) {
     items.push(...[...byLink.values()]
       .filter(it => it.category === cat)
       .filter(it => {
