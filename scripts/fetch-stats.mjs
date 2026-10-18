@@ -242,7 +242,7 @@ async function main() {
   const prev = await loadPrevious();
   const out = { generatedAt: new Date().toISOString(), ransomware: prev.ransomware || null, attacks: prev.attacks || null, orgs: prev.orgs || null, coverage: prev.coverage || null, errors: {} };
 
-  const rwDue = hoursSince(prev.ransomware?.updatedAt) >= REFRESH_HOURS || !prev.ransomware?.complete;
+  const rwDue = hoursSince(prev.ransomware?.updatedAt) >= REFRESH_HOURS || !prev.ransomware?.complete || Object.values(prev.ransomware?.months || {}).some(m => m.v !== RW_VERSION);
   if (rwDue) {
     try { out.ransomware = await updateRansomware(prev.ransomware || {}); }
     catch (e) { out.errors.ransomware = String(e.message || e); console.log('Ransomware failed:', e.message); }
