@@ -26,7 +26,7 @@ export const SOURCES = [
   { name: 'IT-Connect',        category: 'cyber', type: 'rss', url: 'https://www.it-connect.tech/feed/',
     keep: it => SECURITY_TITLE.test(it.title) },                          // security stories only, no how-to guides
 
-  // ---- Geopolitics ----
+  // ---- World News (was "Geopolitics") ----
   { name: 'BBC World',      category: 'geo', type: 'rss', url: 'https://feeds.bbci.co.uk/news/world/rss.xml',
     keep: it => !/\/(sport|sounds|iplayer|videos)\//.test(it.link) },
   { name: 'The Guardian',   category: 'geo', type: 'rss', url: 'https://www.theguardian.com/world/rss',

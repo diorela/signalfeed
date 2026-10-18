@@ -1,6 +1,6 @@
 # SignalFeed
 
-Live cybersecurity, geopolitics and economy & finance headlines, read directly from each publisher.
+Live cybersecurity, world news and economy & finance headlines, read directly from each publisher.
 
 - `scripts/fetch-feeds.mjs` reads every source and writes `site/data/headlines.json`.
 - `.github/workflows/update-headlines.yml` runs it every 5 minutes and publishes `site/` to GitHub Pages.
@@ -9,7 +9,7 @@ Live cybersecurity, geopolitics and economy & finance headlines, read directly f
 
 ## Sources
 
-| Cybersecurity | Geopolitics | Economy & Finance |
+| Cybersecurity | World News | Economy & Finance |
 |---|---|---|
 | The Hacker News, BleepingComputer (feed + home-page backup), Dark Reading, SecurityWeek, Krebs on Security, SANS ISC (no podcast entries), IT-Connect (security stories only) | BBC World, The Guardian, Al Jazeera (news only, no sport or video), Foreign Policy, France 24, Le Monde (French), La Repubblica (Italian) | Financial Times and The Economist (headline + summary; articles are paywalled), BBC Business, Guardian Business, CNBC, MarketWatch, DW Business, France 24 Business, ECB, Federal Reserve |
 
