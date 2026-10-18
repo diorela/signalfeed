@@ -1,4 +1,19 @@
+import { parseFeed } from './fetch-feeds.mjs';
 import { writeFile } from 'node:fs/promises';
-const r = await fetch('https://diorela.github.io/signalfeed/data/stats.json?t=' + Date.now()); const txt = await r.text(); const s = JSON.parse(txt);
-const A = s.attacks.items;
-await writeFile('probe.json', JSON.stringify({ sizeKB: Math.round(txt.length / 1024), version: s.attacks.version, n: A.length, withHeadline: A.filter(x => x.h).length, oct17: A.filter(x => x.d >= '2026-10-12').map(x => [x.d, x.cc, x.t, x.v, x.h]) }, null, 1));
+const C = {
+  'Le Monde FR international': 'https://www.lemonde.fr/international/rss_full.xml',
+  'Le Monde EN international': 'https://www.lemonde.fr/en/international/rss_full.xml',
+  'Le Monde EN all': 'https://www.lemonde.fr/en/rss/une.xml',
+  'Repubblica esteri': 'https://www.repubblica.it/rss/esteri/rss2.0.xml',
+  'Repubblica homepage': 'https://www.repubblica.it/rss/homepage/rss2.0.xml',
+};
+const out = {};
+await Promise.all(Object.entries(C).map(async ([name, url]) => {
+  try {
+    const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SignalFeed/1.0; personal news reader)', 'Accept': 'application/rss+xml, application/xml, text/xml, */*' }, signal: AbortSignal.timeout(20000) });
+    const items = parseFeed(await r.text());
+    const dates = items.map(i => +new Date(i.date)).filter(Boolean);
+    out[name] = { status: r.status, count: items.length, withDesc: items.filter(i => i.description).length, newestH: dates.length ? +((Date.now() - Math.max(...dates)) / 36e5).toFixed(1) : null, sample: items.slice(0, 4).map(i => [i.title, i.link, i.description.slice(0, 90), i.date]) };
+  } catch (e) { out[name] = { error: String(e.message) }; }
+}));
+await writeFile('probe.json', JSON.stringify(out, null, 1));
