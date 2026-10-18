@@ -1,48 +1,63 @@
 {
- "health": [
-  {
-   "name": "Le Monde",
-   "category": "geo",
-   "ok": true,
-   "found": 20,
-   "error": "",
-   "stored": 20,
-   "newest": "2026-10-18T01:00:50.000Z"
+ "LM en_continu": {
+  "status": 200,
+  "count": 60,
+  "sections": {
+   "international": 22,
+   "societe": 13,
+   "sport": 2,
+   "politique": 6,
+   "la-chronique-de-thomas-piketty": 1,
+   "idees": 1,
+   "economie": 4,
+   "planete": 4,
+   "outre-mer": 1,
+   "campus": 1,
+   "culture": 1,
+   "m-le-mag": 1,
+   "disparitions": 1,
+   "les-decodeurs": 1,
+   "afrique": 1
   },
-  {
-   "name": "La Repubblica",
-   "category": "geo",
-   "ok": true,
-   "found": 25,
-   "error": "",
-   "stored": 25,
-   "newest": "2026-10-18T00:14:33.000Z"
-  }
- ],
- "counts": {
-  "Le Monde": 20,
-  "La Repubblica": 25
+  "oldestH": 55.3
  },
- "sample": {
-  "Le Monde": [
-   [
-    "2026-10-18T01:00:50.000Z",
-    "En Cisjordanie occupée, des colons attaquent un convoi diplomatique européen et frappent un maire français"
-   ],
-   [
-    "2026-10-17T23:37:42.000Z",
-    "Le pape Léon XIV, jugé « apte » à quitter l’hôpital, est de retour au Vatican, quatre jours après son opération au poumon"
-   ]
-  ],
-  "La Repubblica": [
-   [
-    "2026-10-18T00:14:33.000Z",
-    "Usa, auto irrompe in un campo da calcio. Almeno due morti e diversi feriti"
-   ],
-   [
-    "2026-10-17T23:04:40.000Z",
-    "Trump ferma le sanzioni previste dal Graham Act. Mosca: “Giornata storica”"
-   ]
-  ]
+ "LM une": {
+  "status": 200,
+  "count": 16,
+  "sections": {
+   "societe": 3,
+   "international": 4,
+   "sciences": 1,
+   "m-le-mag": 1,
+   "sport": 1,
+   "cinema": 1,
+   "idees": 2,
+   "economie": 2,
+   "politique": 1
+  },
+  "oldestH": 19.6
+ },
+ "LR homepage": {
+  "status": 200,
+  "count": 30,
+  "sections": {
+   "spettacoli": 1,
+   "esteri": 7,
+   "cronaca": 6,
+   "politica": 5,
+   "economia": 1,
+   "sport": 6,
+   "fashion-design": 1,
+   "news": 1,
+   "culture": 1,
+   "food-travel": 1
+  },
+  "oldestH": 44
+ },
+ "LR ultimora": {
+  "status": 404,
+  "count": 0,
+  "sections": {},
+  "oldestH": null
  }
 }
