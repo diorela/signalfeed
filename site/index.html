@@ -1414,7 +1414,7 @@ function sectorMonths(rw) {
 function sectorCard(D, regionWord, country) {
   const rw = D.ransomware, orgs = D.orgs;
   const area = ST.region === 'usa' ? 'US' : ST.region === 'europe' ? (country && EU27_CC.has(country) ? country : 'EU27') : null;
-  const head = `<div class="st-head"><div><h3>Most targeted sectors relative to their size${area ? ' ' + esc(area === 'US' ? 'in the USA' : area === 'EU27' ? 'in the EU' : 'in ' + countryName(area)) : ''}</h3><p>Ransomware victims per sector, compared with how many organisations with 10 or more employees that sector has · sources: ransomware.live, ${area === 'US' ? 'US Census Bureau' : 'Eurostat'}</p></div>`;
+  const head = `<div class="st-head"><div><h3>Share of organisations hit by ransomware, by sector${area ? ' ' + esc(area === 'US' ? 'in the USA' : area === 'EU27' ? 'in the EU' : 'in ' + countryName(area)) : ''}</h3><p>Percentage of organisations with 10 or more employees in each sector that were named as ransomware victims in the period · sources: ransomware.live, ${area === 'US' ? 'US Census Bureau' : 'Eurostat'}</p></div>`;
   if (!area) return `<article class="st-card">${head}</div><div class="st-note">Available for the USA and Europe only: official counts of organisations per sector are published by the US Census Bureau and Eurostat, but there is no comparable free source ${ST.region === 'singapore' ? 'for Singapore' : 'worldwide'}. Choose USA or Europe above.</div></article>`;
   const den = area === 'US' ? orgs?.us : orgs?.eu, counts = area === 'US' ? den?.counts : den?.counts?.[area];
   if (!counts) return `<article class="st-card">${head}</div><div class="st-note">The official organisation counts are not available yet${D.errors?.orgs ? ': the source could not be reached on the last try' : ''}.</div></article>`;
@@ -1432,21 +1432,21 @@ function sectorCard(D, regionWord, country) {
   const orgCount = m => (area === 'US' ? m.us : m.eu).reduce((a, c) => c[0] === '-' ? a - (counts[c.slice(1)] || 0) : a + (counts[c] || 0), 0);
   const rows = SECTOR_MAP.map(m => ({ name: m.name, v: victims[m.name] || 0, o: orgCount(m) })).filter(r => r.o > 0);
   const V = rows.reduce((a, r) => a + r.v, 0), O = rows.reduce((a, r) => a + r.o, 0);
-  for (const r of rows) { r.rate = r.v / r.o * 1e4; r.idx = V ? (r.v / V) / (r.o / O) : 0; }
-  rows.sort((a, b) => b.idx - a.idx || b.v - a.v);
-  const max = Math.max(2, ...rows.map(r => r.idx)) * 1.05;
-  const fmt1 = x => x >= 10 ? Math.round(x).toLocaleString('en-GB') : x.toFixed(1);
+  for (const r of rows) r.pct = r.v / r.o * 100;
+  rows.sort((a, b) => b.pct - a.pct || b.v - a.v);
+  const max = Math.max(...rows.map(r => r.pct), 0.0001) * 1.05;
+  const pctFmt = x => x === 0 ? '0%' : x < 0.01 ? '<0.01%' : x < 1 ? x.toFixed(2) + '%' : x.toFixed(1) + '%';
+  const oneIn = r => r.v ? `about 1 in ${(Math.round(r.o / r.v / (r.o / r.v >= 1000 ? 100 : 10)) * (r.o / r.v >= 1000 ? 100 : 10) || 1).toLocaleString('en-GB')} organisations` : 'no victims named';
   const sel = `<label class="detail-filter">Period <select id="stSecYear"><option value="12m"${ST.secYear === '12m' ? ' selected' : ''}>Last 12 months</option>${years.map(y => `<option value="${y}"${ST.secYear === y ? ' selected' : ''}>${y}</option>`).join('')}</select></label>`;
-  const list = !V ? `<div class="st-note">No ransomware victims with a matching sector in this period.</div>` : rows.map(r => `<div class="secrow" title="${esc(r.name)}: ${r.v} victims among ${r.o.toLocaleString('en-GB')} organisations · ${fmt1(r.rate)} per 10,000 · ${r.idx.toFixed(1)}× its share">
-      <span class="lbl">${esc(r.name)}</span><span class="area"><span class="fill${r.idx >= 1 ? '' : ' low'}" style="width:${Math.max(0.5, r.idx / max * 100)}%"></span><span class="mark" style="left:${1 / max * 100}%"></span></span><span class="num">${r.idx.toFixed(1)}×</span><span class="sub">${r.v.toLocaleString('en-GB')} victims · ${fmt1(r.rate)} per 10,000 organisations</span></div>`).join('');
+  const list = !V ? `<div class="st-note">No ransomware victims with a matching sector in this period.</div>` : rows.map(r => `<div class="secrow" title="${esc(r.name)}: ${r.v} victims out of ${r.o.toLocaleString('en-GB')} organisations">
+      <span class="lbl">${esc(r.name)}</span><span class="area"><span class="fill" style="width:${Math.max(0.5, r.pct / max * 100)}%"></span></span><span class="num">${pctFmt(r.pct)}</span><span class="sub">${oneIn(r)} · ${r.v.toLocaleString('en-GB')} victims out of ${r.o.toLocaleString('en-GB')}</span></div>`).join('');
   const partial = have.length < months.length;
   return `<article class="st-card">${head}${sel}</div>
-    <div class="sec-legend"><span><i class="k-line"></i> 1× = attacked exactly as often as its size would predict</span><span>2× = twice as often</span></div>
     ${list}
-    <div class="st-note"><b>How to read it:</b> the number is the sector’s share of ransomware victims divided by its share of organisations. Under each bar: victims in the period and victims per 10,000 organisations with 10+ employees.
-    Organisation counts: ${area === 'US' ? `US Census Bureau County Business Patterns ${esc(String(den.year))} (workplaces, private sector)` : `Eurostat business statistics ${esc(String(den.year))} (companies${area === 'EU27' ? ', EU-27 only: UK, Switzerland and Norway are not included' : ''})`}. Public bodies are not in these counts, so state schools and public hospitals are missing from the total and education and healthcare look more targeted than they are. Government and agriculture are left out because no comparable count exists.
+    <div class="st-note"><b>How to read it:</b> 0.10% means 1 in 1,000 organisations in that sector was named on a ransomware leak site in the period. Only victims named on leak sites are counted, so the real share of organisations attacked is higher; use it to compare sectors.
+    Organisation counts: ${area === 'US' ? `US Census Bureau County Business Patterns ${esc(String(den.year))} (private sector; it counts workplaces, not companies, so a group with 10 sites counts 10 times and US percentages come out a little lower than EU ones)` : `Eurostat business statistics ${esc(String(den.year))} (companies${area === 'EU27' ? ', EU-27 only: UK, Switzerland and Norway are not included' : ''})`}. Public bodies are not in these counts, so state schools and public hospitals are missing from the total and education and healthcare look more targeted than they are. Government and agriculture are left out because no comparable count exists.
     ${unstated || unmatched ? ` Of ${total.toLocaleString('en-GB')} victims ${area === 'US' ? 'in the USA' : area === 'EU27' ? 'in the EU' : 'in ' + esc(countryName(area))}, ${unstated.toLocaleString('en-GB')} have no sector recorded and ${unmatched.toLocaleString('en-GB')} are in sectors without a count (such as government, agriculture or “other”).` : ''}
-    ${partial ? ` History is still being collected: ${have.length} of ${months.length} months available so far.` : ''} Leak sites show only part of all attacks, so compare sectors with each other rather than reading these as full rates.</div>
+    ${partial ? ` History is still being collected: ${have.length} of ${months.length} months available so far.` : ''}</div>
   </article>`;
 }
 
