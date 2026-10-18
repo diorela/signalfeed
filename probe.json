@@ -1,161 +1,47 @@
 {
- "Le Monde EN all": {
-  "status": 200,
-  "count": 14,
-  "withDesc": 14,
-  "newestH": 0.3,
-  "sample": [
-   [
-    "Clashes erupt in France as protesters vow to make government 'tremble'",
-    "https://www.lemonde.fr/en/france/article/2026/10/17/france-faces-day-of-combined-protests_6758706_7.html",
-    "Following weeks of student protests, the country's Yellow Vest movement called for nationw",
-    "Sat, 17 Oct 2026 12:40:49 +0200"
-   ],
-   [
-    "Escalation between Pakistan and Afghanistan leads to heavy human toll",
-    "https://www.lemonde.fr/en/international/article/2026/10/17/escalation-between-pakistan-and-afghanistan-leads-to-heavy-human-toll_6758716_4.html",
-    "In eastern Afghanistan, a Pakistani airstrike killed a shepherd and five of his family mem",
-    "Sat, 17 Oct 2026 22:48:10 +0200"
-   ],
-   [
-    "Smiling pope returns to Vatican after cancer surgery",
-    "https://www.lemonde.fr/en/international/article/2026/10/18/smiling-pope-returns-to-vatican-after-cancer-surgery_6758720_4.html",
-    "Pope Leo XIV's discharge on Saturday, four days after undergoing lung cancer surgery, ende",
-    "Sun, 18 Oct 2026 03:56:26 +0200"
-   ],
-   [
-    "US ambassador urges Israel to prosecute over 'act of terror' against American photographer",
-    "https://www.lemonde.fr/en/international/article/2026/10/18/us-ambassador-urges-israel-to-prosecute-over-act-of-terror-against-american-photographer_6758719_4.html",
-    "Heidi Levine had been covering Palestinians' annual harvest of olives, which has been repe",
-    "Sun, 18 Oct 2026 02:38:13 +0200"
-   ]
-  ]
+ "health": [
+  {
+   "name": "Le Monde",
+   "category": "geo",
+   "ok": true,
+   "found": 20,
+   "error": "",
+   "stored": 20,
+   "newest": "2026-10-18T01:00:50.000Z"
+  },
+  {
+   "name": "La Repubblica",
+   "category": "geo",
+   "ok": true,
+   "found": 25,
+   "error": "",
+   "stored": 25,
+   "newest": "2026-10-18T00:14:33.000Z"
+  }
+ ],
+ "counts": {
+  "Le Monde": 20,
+  "La Repubblica": 25
  },
- "Le Monde EN international": {
-  "status": 200,
-  "count": 20,
-  "withDesc": 20,
-  "newestH": 0.3,
-  "sample": [
+ "sample": {
+  "Le Monde": [
    [
-    "Israeli settlers attack European diplomats, beat French mayor",
-    "https://www.lemonde.fr/en/international/article/2026/10/18/israeli-settlers-attack-european-diplomats-beat-french-mayor_6758721_4.html",
-    "French Foreign Minister Jean-Noel Barrot said in a statement that Israel must 'urgently ha",
-    "Sun, 18 Oct 2026 04:30:11 +0200"
+    "2026-10-18T01:00:50.000Z",
+    "En Cisjordanie occupée, des colons attaquent un convoi diplomatique européen et frappent un maire français"
    ],
    [
-    "Smiling pope returns to Vatican after cancer surgery",
-    "https://www.lemonde.fr/en/international/article/2026/10/18/smiling-pope-returns-to-vatican-after-cancer-surgery_6758720_4.html",
-    "Pope Leo XIV's discharge on Saturday, four days after undergoing lung cancer surgery, ende",
-    "Sun, 18 Oct 2026 03:56:26 +0200"
-   ],
-   [
-    "US ambassador urges Israel to prosecute over 'act of terror' against American photographer",
-    "https://www.lemonde.fr/en/international/article/2026/10/18/us-ambassador-urges-israel-to-prosecute-over-act-of-terror-against-american-photographer_6758719_4.html",
-    "Heidi Levine had been covering Palestinians' annual harvest of olives, which has been repe",
-    "Sun, 18 Oct 2026 02:38:13 +0200"
-   ],
-   [
-    "Escalation between Pakistan and Afghanistan leads to heavy human toll",
-    "https://www.lemonde.fr/en/international/article/2026/10/17/escalation-between-pakistan-and-afghanistan-leads-to-heavy-human-toll_6758716_4.html",
-    "In eastern Afghanistan, a Pakistani airstrike killed a shepherd and five of his family mem",
-    "Sat, 17 Oct 2026 22:48:10 +0200"
+    "2026-10-17T23:37:42.000Z",
+    "Le pape Léon XIV, jugé « apte » à quitter l’hôpital, est de retour au Vatican, quatre jours après son opération au poumon"
    ]
-  ]
- },
- "Le Monde FR international": {
-  "status": 200,
-  "count": 20,
-  "withDesc": 20,
-  "newestH": 1.8,
-  "sample": [
+  ],
+  "La Repubblica": [
    [
-    "En Cisjordanie occupée, des colons attaquent un convoi diplomatique européen et frappent un maire français",
-    "https://www.lemonde.fr/international/article/2026/10/18/en-cisjordanie-des-colons-attaquent-un-convoi-diplomatique-europeen-et-frappent-un-maire-du-nord-de-la-france_6796789_3210.html",
-    "Le bureau du premier ministre israélien, Benyamin Nétanyahou, a affirmé que les diplomates",
-    "Sun, 18 Oct 2026 03:00:50 +0200"
+    "2026-10-18T00:14:33.000Z",
+    "Usa, auto irrompe in un campo da calcio. Almeno due morti e diversi feriti"
    ],
    [
-    "Le pape Léon XIV, jugé « apte » à quitter l’hôpital, est de retour au Vatican, quatre jours après son opération au poumon",
-    "https://www.lemonde.fr/international/article/2026/10/18/le-pape-leon-xiv-juge-apte-a-quitter-l-hopital-est-de-retour-au-vatican-quatre-jours-apres-son-operation-au-poumon_6796756_3210.html",
-    "Après avoir été opéré d’un nodule pulmonaire cancéreux à la polyclinique Gemelli de Rome, ",
-    "Sun, 18 Oct 2026 01:37:42 +0200"
-   ],
-   [
-    "Journaliste rouée de coups en Cisjordanie : l’ambassadeur des Etats-Unis appelle Israël à poursuivre les colons impliqués",
-    "https://www.lemonde.fr/international/article/2026/10/18/journaliste-rouee-de-coups-en-cisjordanie-l-ambassadeur-des-etats-unis-appelle-israel-a-poursuivre-les-colons-impliques_6796723_3210.html",
-    "« Attaquer une photographe est un acte de terreur ignoble perpétré par des lâches masqués ",
-    "Sun, 18 Oct 2026 00:57:35 +0200"
-   ],
-   [
-    "« L’économie du Brésil est en croissance grâce au niveau élevé des cours mondiaux des matières premières plus qu’à un succès du gouvernement Lula »",
-    "https://www.lemonde.fr/idees/article/2026/10/17/l-economie-du-bresil-est-en-croissance-grace-au-niveau-eleve-des-cours-mondiaux-des-matieres-premieres-plus-qu-a-un-succes-du-gouvernement-lula_6796586_3232.html",
-    "Si, le 25 octobre, Lula échoue au second tour de la présidentielle au Brésil, sa défaite s",
-    "Sat, 17 Oct 2026 20:00:12 +0200"
-   ]
-  ]
- },
- "Repubblica homepage": {
-  "status": 200,
-  "count": 30,
-  "withDesc": 30,
-  "newestH": 1.9,
-  "sample": [
-   [
-    "Ballando con le stelle, Ornella Muti confessa: “Pasquale mi ha fatto ricredere sul mondo maschile”",
-    "https://www.repubblica.it/spettacoli/tv-radio/2026/10/18/news/ballando_con_le_stelle_ornella_muti_confessa_pasquale_mi_ha_fatto_ricredere_sul_mondo_maschile-425655763/",
-    "L’attrice: “Non baciavo nessuno da 13 anni, con La Rocca potrebbe esserci qualcosa”. Lo ps",
-    "Sun, 18 Oct 2026 00:57:27 +0000"
-   ],
-   [
-    "Trump ferma le sanzioni previste dal Graham Act. Mosca: “Giornata storica”",
-    "https://www.repubblica.it/esteri/2026/10/18/news/trump_ferma_le_sanzioni_previste_dal_graham_act_mosca_giornata_storica-425655596/",
-    "Cancellate le misure dalla legge con il nome del senatore scomparso. La delusione di Zelen",
-    "Sat, 17 Oct 2026 23:04:40 +0000"
-   ],
-   [
-    "Il sociologo Fourquet: “Nei giovani francesi tanta rabbia, si è rotto il patto tra generazioni”",
-    "https://www.repubblica.it/esteri/2026/10/18/news/proteste_studenti_francia_sociologo_fourquet_rabbia_rotto_il_patto_tra_generazioni-425655282/",
-    "Parla il direttore del dipartimento Opinione dell’Ifop: “Abbiamo privilegiato la spesa per",
-    "Sat, 17 Oct 2026 23:00:52 +0000"
-   ],
-   [
-    "Francia, edifici in fiamme: i violenti oscurano la protesta. “Utili idioti della destra”. Più di mille arresti, 150 poliziotti feriti",
-    "https://www.repubblica.it/esteri/2026/10/18/news/francia_proteste_studenti_gilet_guerriglia-425655520/",
-    "Oltre 500mila in piazza con gli studenti. Ma i black bloc si prendono la scena. Più di mil",
-    "Sat, 17 Oct 2026 23:00:49 +0000"
-   ]
-  ]
- },
- "Repubblica esteri": {
-  "status": 200,
-  "count": 25,
-  "withDesc": 25,
-  "newestH": 2.6,
-  "sample": [
-   [
-    "Usa, auto irrompe in un campo da calcio. Almeno due morti e diversi feriti",
-    "https://www.repubblica.it/esteri/2026/10/18/news/usa_auto_irrompe_in_un_campo_da_calcio_almeno_due_morti_e_diversi_feriti-425655755/?rss",
-    "Preso in custodia il conducente",
-    "Sun, 18 Oct 2026 02:14:33 +0200"
-   ],
-   [
-    "Trump ferma le sanzioni previste dal Graham Act. Mosca: “Giornata storica”",
-    "https://www.repubblica.it/esteri/2026/10/18/news/trump_ferma_le_sanzioni_previste_dal_graham_act_mosca_giornata_storica-425655596/?rss",
-    "Cancellate le misure dalla legge con il nome del senatore scomparso. La delusione di Zelen",
-    "Sun, 18 Oct 2026 01:04:40 +0200"
-   ],
-   [
-    "Il sociologo Fourquet: “Nei giovani francesi tanta rabbia, si è rotto il patto tra generazioni”",
-    "https://www.repubblica.it/esteri/2026/10/18/news/proteste_studenti_francia_sociologo_fourquet_rabbia_rotto_il_patto_tra_generazioni-425655282/?rss",
-    "Parla il direttore del dipartimento Opinione dell’Ifop: “Abbiamo privilegiato la spesa per",
-    "Sun, 18 Oct 2026 01:00:52 +0200"
-   ],
-   [
-    "Francia, i violenti oscurano la protesta: “Utili idioti della destra”. Più di mille arresti e 150 poliziotti feriti",
-    "https://www.repubblica.it/esteri/2026/10/18/news/francia_proteste_studenti_gilet_guerriglia-425655520/?rss",
-    "Oltre 500mila in piazza con gli studenti. Ma i black bloc si prendono la scena. Più di mil",
-    "Sun, 18 Oct 2026 01:00:49 +0200"
+    "2026-10-17T23:04:40.000Z",
+    "Trump ferma le sanzioni previste dal Graham Act. Mosca: “Giornata storica”"
    ]
   ]
  }
