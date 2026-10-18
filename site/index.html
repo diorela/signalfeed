@@ -248,6 +248,9 @@
   .st-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
   .st-threat { flex: 1 1 240px; max-width: 360px; }
   .seg.na { opacity: .45; }
+  #stCountryWrap[hidden] { display: none; }
+  .detail-filter { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .detail-filter select { height: 34px; border-radius: 9px; border: 1px solid var(--border-2); background: var(--surface); padding: 0 8px; font-size: 13px; color: var(--ink); max-width: 100%; }
   .st-threat select { height: 46px; }
   .st-go { align-self: flex-start; height: 36px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; }
   .st-go:hover { border-color: var(--accent); color: var(--accent-ink); }
@@ -590,6 +593,7 @@
         <div class="seg" id="stPeriod" role="group" aria-label="Period">
           <button data-period="week" aria-pressed="true">Weekly</button><button data-period="month" aria-pressed="false">Monthly</button><button data-period="year" aria-pressed="false">Yearly</button>
         </div>
+        <label class="fsel st-threat" id="stCountryWrap" hidden><span>Country</span><select id="stCountry"></select></label>
         <label class="fsel st-threat"><span>Data source</span><select id="stSource"></select></label>
         <label class="fsel st-threat"><span>Threat type</span><select id="stThreat"></select></label>
       </div>
@@ -1195,8 +1199,8 @@ document.addEventListener('keydown', e => {
 
 // ---------- CLICKS ----------
 // ---------- CYBER STATS ----------
-const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', threat: 'all', source: 'all', table: {} };
-try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region && v.region !== 'china') ST.region = v.region; if (v.period) ST.period = v.period; if (v.threat) ST.threat = v.threat; if (v.source) ST.source = v.source; } catch {}
+const ST = { data: null, error: '', loading: false, loadedAt: 0, region: 'global', period: 'week', threat: 'all', source: 'all', country: '', listCountry: '', table: {} };
+try { const v = JSON.parse(localStorage.getItem('signalfeed_stats') || '{}'); if (v.region && v.region !== 'china') ST.region = v.region; if (v.period) ST.period = v.period; if (v.threat) ST.threat = v.threat; if (v.source) ST.source = v.source; if (v.country) ST.country = v.country; } catch {}
 const ST_REGION = { global: 'worldwide', europe: 'in Europe', usa: 'in the USA', singapore: 'in Singapore', china: 'in China' };
 const DAY_MS = 864e5;
 const fmtN = n => n == null ? '–' : n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en-GB');
@@ -1361,11 +1365,12 @@ function typeSummary(list, key, n = 3) {
   const o = {}; for (const x of list) o[x[key]] = (o[x[key]] || 0) + 1;
   return Object.entries(o).sort((a, b) => b[1] - a[1]);
 }
-function detailPanel(title, list, rowHTML, key, emptyText) {
+function detailPanel(title, list, rowHTML, key, emptyText, filterHTML = '') {
   const types = typeSummary(list, key);
   const shown = list.slice(0, ST.showAll ? 500 : 40);
   return `<div class="detail" id="stDetail">
     <div class="detail-head"><b>${esc(title)}</b><button class="detail-close" data-unpick>Close list</button></div>
+    ${filterHTML}
     ${types.length ? `<div class="chips">${types.map(([t, n]) => `<span>${esc(t)} · ${n}</span>`).join('')}</div>` : ''}
     ${list.length ? `<div class="dlist">${shown.map(rowHTML).join('')}</div>` : `<div class="st-note">${esc(emptyText)}</div>`}
     ${list.length > shown.length ? `<button class="detail-close" data-showall>Show all ${list.length}</button>` : ''}
@@ -1393,13 +1398,24 @@ function renderStats() {
   seg.classList.toggle('na', !regionApplies);
   seg.title = regionApplies ? '' : 'This statistic is worldwide only: the source has no country information';
   const kevKey = T.startsWith('kev:') ? T.split(':')[1] : null, kevVal = kevKey ? T.split(':').slice(2).join(':') : null;
-  const regionWord = ST_REGION[ST.region];
+  // Country filter for reported attacks (only meaningful for multi-country regions)
+  const cWrap = $('stCountryWrap');
+  const countryApplies = show.atk && D.attacks?.items && (ST.region === 'global' || ST.region === 'europe');
+  if (countryApplies) {
+    const cnt = {}; for (const x of D.attacks.items) if (x.cc && inRegion(x.cc, ST.region)) cnt[x.cc] = (cnt[x.cc] || 0) + 1;
+    const list = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+    if (ST.country && !cnt[ST.country]) ST.country = '';
+    $('stCountry').innerHTML = `<option value="">All countries</option>` + list.map(([cc, n]) => `<option value="${esc(cc)}"${ST.country === cc ? ' selected' : ''}>${esc(countryName(cc))} (${n})</option>`).join('');
+  }
+  cWrap.hidden = !countryApplies;
+  cWrap.classList.toggle('on', !!(countryApplies && ST.country));
+  const regionWord = countryApplies && ST.country ? `in ${countryName(ST.country)}` : ST_REGION[ST.region];
 
   // 0. Publicly reported cyberattacks, by country and type
   const atk = D.attacks;
   if (show.atk && atk?.items) {
     const typ = T.startsWith('atk:') ? T.slice(4) : null;
-    const items = atk.items.filter(x => inRegion(x.cc, ST.region) && (!typ || x.t === typ));
+    const items = atk.items.filter(x => inRegion(x.cc, ST.region) && (!countryApplies || !ST.country || x.cc === ST.country) && (!typ || x.t === typ));
     const first = new Date('2023-01-01T00:00:00Z');
     const buckets = per.map(p => { if (p.to <= first) return null; const a = isoDay(p.from), b = isoDay(p.to); return items.filter(x => x.d >= a && x.d < b); });
     const vals = buckets.map(b => b ? b.length : null);
@@ -1408,7 +1424,16 @@ function renderStats() {
       const inner = `<span class="dd">${esc(shortDate(x.d))}</span><span class="dc" title="${esc(x.cc ? countryName(x.cc) : 'Country unknown')}">${esc(x.cc || '··')}</span><span><span class="dt">${esc(x.t)}</span>${x.v ? `<span class="dv">${esc(x.v)}</span> · ` : ''}<span class="dh">${esc(x.h || 'No headline recorded')}</span>${x.u ? ` <span class="dd">· ${esc(hostOf(x.u))}</span>` : ''}</span>`;
       return x.u ? `<a class="drow" href="${esc(safeUrl(x.u))}" target="_blank" rel="noopener noreferrer">${inner}</a>` : `<div class="drow">${inner}</div>`;
     };
-    const atkDetail = i => detailPanel(`${vals[i]} ${vals[i] === 1 ? 'attack' : 'attacks'} reported ${regionWord} · ${per[i].long}${per[i].partial ? ' (so far)' : ''}`, buckets[i] || [], atkRow, 't', 'No attacks reported in this period.');
+    const atkDetail = i => {
+      const all = buckets[i] || [];
+      const cnt = {}; for (const x of all) { const k = x.cc || '??'; cnt[k] = (cnt[k] || 0) + 1; }
+      const ccs = Object.entries(cnt).sort((a, b) => b[1] - a[1]);
+      if (ST.listCountry && !cnt[ST.listCountry]) ST.listCountry = '';
+      const list = ST.listCountry ? all.filter(x => (x.cc || '??') === ST.listCountry) : all;
+      const filter = ccs.length > 1 ? `<label class="detail-filter">Country <select id="stListCountry"><option value="">All countries (${all.length})</option>${ccs.map(([cc, n]) => `<option value="${esc(cc)}"${ST.listCountry === cc ? ' selected' : ''}>${esc(cc === '??' ? 'Country unknown' : countryName(cc))} (${n})</option>`).join('')}</select></label>` : '';
+      const where = ST.listCountry ? `in ${ST.listCountry === '??' ? 'an unknown country' : countryName(ST.listCountry)}` : regionWord;
+      return detailPanel(`${list.length} ${list.length === 1 ? 'attack' : 'attacks'} reported ${where} · ${per[i].long}${per[i].partial ? ' (so far)' : ''}`, list, atkRow, 't', 'No attacks reported in this period.', filter);
+    };
     const start = ST.period === 'year' ? `${new Date().getUTCFullYear()}-01-01` : kevWindowStart();
     const win = items.filter(x => x.d >= start);
     const tally = (arr, f) => { const o = {}; for (const x of arr) { const k = f(x); o[k] = (o[k] || 0) + 1; } return Object.entries(o).sort((a, b) => (a[0] === 'Not specified' || a[0] === 'Unknown') - (b[0] === 'Not specified' || b[0] === 'Unknown') || b[1] - a[1]); };
@@ -1551,8 +1576,10 @@ function statsSummary() {
   return out.join(' ') || 'Cyber statistics, updated about twice a day.';
 }
 
-for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; ST.sel = null; saveStatsPrefs(); renderStats(); };
+for (const b of document.querySelectorAll('#stRegion button')) b.onclick = () => { ST.region = b.dataset.region; ST.sel = null; ST.country = ''; ST.listCountry = ''; saveStatsPrefs(); renderStats(); };
 for (const b of document.querySelectorAll('#stPeriod button')) b.onclick = () => { ST.period = b.dataset.period; ST.sel = null; saveStatsPrefs(); renderStats(); };
+$('stCountry').onchange = e => { ST.country = e.target.value; ST.sel = null; ST.listCountry = ''; saveStatsPrefs(); renderStats(); };
+document.addEventListener('change', e => { if (e.target.id === 'stListCountry') { ST.listCountry = e.target.value; ST.showAll = false; renderStats(); document.getElementById('stDetail')?.scrollIntoView({ block: 'nearest' }); } });
 $('stSource').onchange = e => { ST.source = e.target.value; ST.sel = null; saveStatsPrefs(); renderStats(); };
 $('stThreat').onchange = e => { ST.threat = e.target.value; ST.sel = null; saveStatsPrefs(); renderStats(); };
 document.addEventListener('click', e => {
@@ -1560,7 +1587,7 @@ document.addEventListener('click', e => {
   if (pick) {
     const [chart, idx] = pick.dataset.pick.split(':');
     ST.sel = ST.sel?.chart === chart && ST.sel.idx === +idx ? null : { chart, idx: +idx };
-    ST.showAll = false; renderStats();
+    ST.showAll = false; ST.listCountry = ''; renderStats();
     if (ST.sel) document.getElementById('stDetail')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     return;
   }
@@ -1569,7 +1596,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('[data-pick]')) { e.preventDefault(); e.target.click(); } });
 document.addEventListener('click', e => { const g = e.target.closest?.('[data-gotopic]'); if (g) { setTab('cyber'); setTopic('cyber', g.dataset.gotopic); } });
-function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat, source: ST.source })); } catch {} }
+function saveStatsPrefs() { try { localStorage.setItem('signalfeed_stats', JSON.stringify({ region: ST.region, period: ST.period, threat: ST.threat, source: ST.source, country: ST.country })); } catch {} }
 document.addEventListener('click', e => { const t = e.target.closest?.('[data-table]'); if (t) { ST.table[t.dataset.table] = !ST.table[t.dataset.table]; renderStats(); } });
 function showTip(el) {
   const tip = $('tip'); if (!el?.dataset?.tip) { tip.hidden = true; return; }
