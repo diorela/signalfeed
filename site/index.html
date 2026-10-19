@@ -643,6 +643,7 @@ const NEW_WINDOW_MS = 24 * 3600 * 1000;    // only stories from the last 24h can
 const PAGE_SIZE = 25;
 const TOPICS_SHOWN = 5;
 const SEEN_KEY = 'signalfeed_seen_v2';
+const READ_KEY = 'signalfeed_read';   // stories actually opened (used for the breaking counter and bar)
 
 // Colour for each topic, and a badge for each source.
 const TOPIC_COLOR = {
@@ -679,7 +680,7 @@ const state = {
     eu:    { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
     fin:   { breaking: false, source: null, topic: null, region: '', limit: PAGE_SIZE, allTopics: false },
   },
-  seen: new Set(), firstVisit: false,
+  seen: new Set(), read: new Set(), firstVisit: false,
   lastCheck: null, nextCheck: 0, error: '', busy: false, unseenWhileHidden: 0,
 };
 const $ = id => document.getElementById(id);
@@ -694,6 +695,11 @@ try {
   const raw = localStorage.getItem(SEEN_KEY);
   if (raw) JSON.parse(raw).forEach(l => state.seen.add(l)); else state.firstVisit = true;
 } catch { state.firstVisit = true; }
+try { JSON.parse(localStorage.getItem(READ_KEY) || '[]').forEach(l => state.read.add(l)); } catch {}
+function markRead(link) {
+  state.seen.add(link); state.read.add(link); saveSeen();
+  try { localStorage.setItem(READ_KEY, JSON.stringify([...state.read].slice(-3000))); } catch {}
+}
 function saveSeen() { try { localStorage.setItem(SEEN_KEY, JSON.stringify([...state.seen].slice(-6000))); } catch {} }
 
 // ---------- HELPERS ----------
@@ -874,10 +880,13 @@ function renderHero() {
   const newCount = pool.filter(isNew).length;
   currentBig = state.generatedAt ? biggestStory(tab) : null;
 
-  $('exNum').textContent = state.generatedAt ? breaking.length : '–';
-  $('exSub').textContent = breaking.length ? `urgent ${breaking.length === 1 ? 'story' : 'stories'} · last 6 hours · tap to see` : 'nothing urgent in the last 6 hours';
+  const unread = breaking.filter(a => !state.read.has(a.link)).length;
+  $('exNum').textContent = state.generatedAt ? unread : '–';
+  $('exSub').textContent = !breaking.length ? 'nothing urgent in the last 6 hours'
+    : unread ? `unread · ${breaking.length} breaking in the last 6 hours · tap to see`
+    : `all read · ${breaking.length} breaking in the last 6 hours · tap to see again`;
   $('tileExploited').disabled = !breaking.length;
-  $('tileExploited').setAttribute('aria-label', `${breaking.length} breaking ${breaking.length === 1 ? 'story' : 'stories'} in the last 6 hours${breaking.length ? ', show them' : ''}`);
+  $('tileExploited').setAttribute('aria-label', `${unread} unread of ${breaking.length} breaking ${breaking.length === 1 ? 'story' : 'stories'} in the last 6 hours${breaking.length ? ', show them' : ''}`);
   currentTrend = state.generatedAt ? trendingTopic(tab) : null;
   const tr = currentTrend;
   $('trNum').innerHTML = !tr ? '–' : tr.ratio !== null ? `↑${tr.ratio >= 10 ? Math.round(tr.ratio) : tr.ratio.toFixed(1)}<small>×</small>` : `${tr.today}<small> today</small>`;
@@ -892,7 +901,7 @@ function renderHero() {
 
   if (!state.generatedAt) { $('heroLine').textContent = state.error || 'Loading today\'s briefing…'; return; }
   const lead = newCount ? `${newCount} new ${T.noun} ${newCount === 1 ? 'story' : 'stories'} since your last visit.` : `You're all caught up on ${T.name}.`;
-  const urgent = breaking.length === 0 ? 'Nothing breaking in the last 6 hours.' : breaking.length === 1 ? 'One breaking story in the last 6 hours.' : `${breaking.length} breaking stories in the last 6 hours.`;
+  const urgent = breaking.length === 0 ? 'Nothing breaking in the last 6 hours.' : `${breaking.length === 1 ? 'One breaking story' : breaking.length + ' breaking stories'} in the last 6 hours${unread === breaking.length ? '' : unread ? `, ${unread} unread` : ', all read'}.`;
   $('heroLine').textContent = `${lead} ${urgent}`;
 }
 
@@ -978,7 +987,7 @@ function isBreaking(a) {
 const brk = { list: [], i: 0, paused: false, timer: null };
 function renderBreaking() {
   const prev = brk.list[brk.i]?.link;
-  brk.list = state.items.filter(a => a.category === currentTab && isBreaking(a)).slice(0, 6);
+  brk.list = state.items.filter(a => a.category === currentTab && isBreaking(a) && !state.read.has(a.link)).slice(0, 6);
   const bar = $('breaking');
   bar.hidden = !brk.list.length;
   if (!brk.list.length) return;
@@ -1012,7 +1021,7 @@ function openModal(html) { lastFocus = document.activeElement; $('modal').innerH
 function closeModal() { $('overlay').classList.remove('show'); lastFocus?.focus?.(); }
 
 function openArticle(a) {
-  state.seen.add(a.link); saveSeen(); render();
+  markRead(a.link); render();
   openModal(`
     <div class="row">${badge(a.source, 'sm')}<span>${esc(a.source)} · ${esc(ago(a.date))} · ${esc(new Date(a.date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span></div>
     <h3 class="display">${esc(a.title)}</h3>
@@ -1683,7 +1692,7 @@ function setTopic(key, topic) { setTab(key); const f = state.f[key]; f.topic = t
 document.addEventListener('click', e => {
   const t = e.target;
   if (t.closest('[data-close]') || t === $('overlay')) { closeModal(); return; }
-  if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; state.seen.add(l); saveSeen(); setTimeout(render, 0); return; }
+  if (t.closest('[data-read]')) { const l = t.closest('[data-read]').dataset.read; markRead(l); setTimeout(render, 0); return; }
   const reset = t.closest('[data-reset]');
   if (reset) { const k = reset.dataset.reset; Object.assign(state.f[k], { breaking: false, topic: null, region: '', source: null, limit: PAGE_SIZE }); $(k + 'Region').value = ''; setQuery(''); SECTIONS.forEach(k => renderColumn(k)); return; }
   const more = t.closest('[data-more]');
